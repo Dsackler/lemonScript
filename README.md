@@ -11,4 +11,18 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 - switch statements
 - etc... *not done with this yet*
 
+## Types
+
+## Variable Declaration and Assignment
+
+## Built In Functions
+
+## Function Declarations
+
+## Comments
+
+## Arithmetic
+
+## A guide to lemonscript's keywords
+
 
