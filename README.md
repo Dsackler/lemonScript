@@ -56,7 +56,7 @@ Toss the lemon and do
 </pre>
 
 JavaScript
-<pre>
+```javascript
 if (x == 10) {
 	console.log(“Number is 10”)
 } else if (x == 20) {
@@ -64,7 +64,7 @@ if (x == 10) {
 } else {
 	console.log(“Number is not 10 or 20”)
 }
-</pre>
+```
 
 ### For loops
 lemonscript
@@ -76,11 +76,11 @@ forEachLemon (slice i = 0; i < 5; i++) {
 </pre>
 
 JavaScript
-<pre>
+```javascript
 for (i = 0; i < 5; i++) {
 	console.log(“Number: ” + i)
 }
-</pre>
+```
 
 ### While loops
 lemonscript
@@ -93,12 +93,12 @@ Drink the lemonade while (x > 0)
 </pre>
 
 JavaScript
-<pre>
+```javascript
 while (x > 0) {
 	console.log(x)
 	x--
 }
-</pre>
+```
 
 ## Example Programs
 ### Hello World
@@ -111,11 +111,11 @@ When life gives you lemons try noLemon helloWorld()
 </pre>
 
 JavaScript
-<pre>
+```javascript
 function helloWorld() {
 	console.log(“Hello World”)
 }
-</pre>
+```
 
 ### Adding Two Numbers
 lemonscript
@@ -127,11 +127,11 @@ When life gives you lemons try slices add(slices a, slices b)
 </pre>
 
 JavaScript
-<pre>
+```javascript
 function add(a, b) {
 	return a + b
 }
-</pre>
+```
 
 
 
