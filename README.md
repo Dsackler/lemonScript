@@ -4,3 +4,4 @@ One morning, a young Khalid awoke and decided to finish his A.I assignment. “G
 The stage has been set. lemonScript was to be a self-explanatory, statically-typed, esoteric language with the sole purpose of saving people who had a sour taste in their mouth from using popular languages. 
 
 Brought to you by: Julian Arregoces, Raul Rodriguez, Brent Shafer, Justin Yee, David Sackler, Khalid *lastName* (sorry Khalid your last name isnt on slack:( )
+*I will link everyones name to their github account later*
