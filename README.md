@@ -5,3 +5,5 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 
 **Brought to you by:** [Julian Arregoces](https://github.com/Jarregoc), Raul Rodriguez, Brent Shafer, Justin Yee, [David Sackler](https://github.com/Dsackler), Khalid *lastName* (sorry Khalid your last name isnt on slack:( )
 *I will link everyones name to their github account later*
+
+## Features
