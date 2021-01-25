@@ -34,13 +34,10 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 
 ## Example Programs
 ### Hello World
-When life gives you lemons try noLemon helloWorld()
-
-BEGIN JUICING
-
-	pour(“Hello World”)
-	
-END JUICING
+When life gives you lemons try noLemon helloWorld()<br />
+BEGIN JUICING<br /> 
+	pour(“Hello World”)<br />	
+END JUICING<br />
 
 
 ## Optimizations
