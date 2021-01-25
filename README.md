@@ -7,3 +7,7 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 *I will link everyones name to their github account later*
 
 ## Features
+-statically typed language
+-switch statements
+
+
