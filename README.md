@@ -42,6 +42,13 @@ When life gives you lemons try noLemon helloWorld()
 	END JUICING
 </pre>
 
+javascript
+<pre>
+function helloWorld() {
+	console.log(“Hello World”)
+}
+</pre>
+
 
 ## Optimizations
 
