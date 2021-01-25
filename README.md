@@ -49,6 +49,23 @@ function helloWorld() {
 }
 </pre>
 
+### Adding Two Numbers
+lemonscript
+<pre>
+When life gives you lemons try slices add(slices a, slices b) 
+	BEGIN JUICING
+	you get lemonade and a + b
+	END JUICING	
+</pre>
+
+JavaScript
+<pre>
+function add(a, b) {
+	return a + b
+}
+</pre>
+
+
 
 ## Optimizations
 
