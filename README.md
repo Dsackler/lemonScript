@@ -27,10 +27,60 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 
 ## Types of Static Semantic Errors
 
-## Control Flow
-### If Statements
+## Conditional Statements
+### If/else Statements
+lemonscript
+<pre>
+Squeeze the lemon if(x == 10)
+	BEGIN JUICING
+	pour(“Number is 10”)
+	END JUICING
+
+Keep juicing if(x == 20)
+	BEING JUICING
+	pour(“Number is 10”)
+	END JUICING
+
+Toss the lemon and do
+	BEGIN JUICING
+	pour(“Number is not 10 or 20”)
+	END JUICING
+</pre>
+
+JavaScript
+<pre>
+if (x == 10) {
+	console.log(“Number is 10”)
+} else if (x == 20) {
+	console.log(“Number is 20”)
+} else {
+	console.log(“Number is not 10 or 20”)
+}
+</pre>
+
 ### For loops
+lemonscript
+<pre>
+forEachLemon (slice i = 0; i < 5; i++) {
+	BEGIN JUICING
+	pour(“Number: ” + i)
+	END JUICING
+</pre>
+
+JavaScript
+<pre>
+for (i = 0; i < 5; i++) {
+	console.log(“Number: ” + i)
+}
+</pre>
 ### While loops
+lemonscript
+<pre>
+</pre>
+
+JavaScript
+<pre>
+</pre>
 
 ## Example Programs
 ### Hello World
