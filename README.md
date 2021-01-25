@@ -73,13 +73,23 @@ for (i = 0; i < 5; i++) {
 	console.log(“Number: ” + i)
 }
 </pre>
+
 ### While loops
 lemonscript
 <pre>
+Drink the lemonade while (x > 0) 
+	BEGIN JUICING
+	pour(x)
+	x--
+	END JUICING
 </pre>
 
 JavaScript
 <pre>
+while (x > 0) {
+	console.log(x)
+	x--
+}
 </pre>
 
 ## Example Programs
