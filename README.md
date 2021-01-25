@@ -37,25 +37,34 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 
 ## Conditional Statements
 ### If/else Statements
-lemonscript
-<pre>
-Squeeze the lemon if(x == 10)
-	BEGIN JUICING
-	pour(“Number is 10”)
-	END JUICING
 
-Keep juicing if(x == 20)
-	BEING JUICING
-	pour(“Number is 10”)
-	END JUICING
 
-Toss the lemon and do
-	BEGIN JUICING
-	pour(“Number is not 10 or 20”)
-	END JUICING
-</pre>
+<table>
+<tr>
+<td> <h3>lemonScript</h3> </td> <td> <h3>javascript</h3> </td>
+</tr>
+<tr>
+<td> 
+	
+	Squeeze the lemon if(x == 10)
+		BEGIN JUICING
+		pour(“Number is 10”)
+		END JUICING
+		
+	Keep juicing if(x == 20)
+		BEING JUICING
+		pour(“Number is 10”)
+		END JUICING
 
-JavaScript
+	Toss the lemon and do
+		BEGIN JUICING
+		pour(“Number is not 10 or 20”)
+		END JUICING
+	
+</td>
+<td>
+
+
 ```javascript
 if (x == 10) {
 	console.log(“Number is 10”)
@@ -65,6 +74,13 @@ if (x == 10) {
 	console.log(“Number is not 10 or 20”)
 }
 ```
+
+
+</td>
+</tr>
+</table>
+
+
 
 ### For loops
 lemonscript
