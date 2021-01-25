@@ -25,4 +25,15 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 
 ## A guide to lemonscript's keywords
 
+## Types of Static Semantic Errors
+
+## Control Flow
+### If Statements
+### For loops
+### While loops
+
+## Example Programs
+
+## Optimizations
+
 
