@@ -33,6 +33,12 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 ### While loops
 
 ## Example Programs
+### Hello World
+When life gives you lemons try noLemon helloWorld()
+BEGIN JUICING
+	pour(“Hello World”)
+END JUICING
+
 
 ## Optimizations
 
