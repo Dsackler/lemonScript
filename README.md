@@ -12,6 +12,14 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 - etc... *not done with this yet*
 
 ## Types
+| JavaScript | lemonscript |
+| ---------- | ----------- |
+| String     | Pulp	   |
+| Number     | Slices      |
+| Boolean    | Sour        |
+| Class      | Lemon       |
+| const      | LemonStain  |
+| void       | noLemon     |
 
 ## Variable Declaration and Assignment
 
