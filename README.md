@@ -41,9 +41,10 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 
 <table>
 <tr>
-<td> <h3>lemonScript</h3> </td> <td> <h3>javascript</h3> </td>
+<td> <h3>Programming Feature</h3>      </td><td> <h3>lemonScript</h3> </td> <td> <h3>javascript</h3> </td>
 </tr>
 <tr>
+<td> If/Else </td>
 <td> 
 	
 	Squeeze the lemon if(x == 10)
@@ -63,32 +64,22 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 	
 </td>
 <td>
-
-
-```javascript
-if (x == 10) {
-	console.log(“Number is 10”)
-} else if (x == 20) {
-	console.log(“Number is 20”)
-} else {
-	console.log(“Number is not 10 or 20”)
-}
-```
-
-
+	
+	```javascript
+	if (x == 10) {
+		console.log(“Number is 10”)
+	} else if (x == 20) {
+		console.log(“Number is 20”)
+	} else {
+		console.log(“Number is not 10 or 20”)
+	}
+	```
 </td>
 </tr>
-</table>
 
-
-
-### For loops
-
-<table>
 <tr>
-<td> <h3>lemonScript</h3> </td> <td> <h3>javascript</h3> </td>
-</tr>
-<tr>
+<td> For Loops </td>
+	
 <td> 
 
 	forEachLemon (slice i = 0; i < 5; i++) {
@@ -101,31 +92,20 @@ if (x == 10) {
 <td>
 
 
-```javascript
-for (i = 0; i < 5; i++) {
-	console.log(“Number: ” + i)
-}
-```
+	```javascript
+	for (i = 0; i < 5; i++) {
+		console.log(“Number: ” + i)
+	}
+	```
 
 </td>
-</tr>
-</table>
-
-
-
-
-
-
-### While loops
-
-
-<table>
-<tr>
-<td> <h3>lemonScript</h3> </td> <td> <h3>javascript</h3> </td>
+	
+	
 </tr>
 <tr>
+<td> While Loops </td>
 <td> 
-
+	
 	Drink the lemonade while (x > 0) 
 		BEGIN JUICING
 		pour(x)
@@ -135,15 +115,15 @@ for (i = 0; i < 5; i++) {
 </td>
 <td>
 
-
-```javascript
-while (x > 0) {
-	console.log(x)
-	x--
-}
-```
+	```javascript
+	while (x > 0) {
+		console.log(x)
+		x--
+	}
+	```
 
 </td>
+	
 </tr>
 </table>
 
