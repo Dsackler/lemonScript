@@ -83,32 +83,59 @@ if (x == 10) {
 
 
 ### For loops
-lemonscript
-<pre>
-forEachLemon (slice i = 0; i < 5; i++) {
-	BEGIN JUICING
-	pour(“Number: ” + i)
-	END JUICING
-</pre>
 
-JavaScript
+<table>
+<tr>
+<td> <h3>lemonScript</h3> </td> <td> <h3>javascript</h3> </td>
+</tr>
+<tr>
+<td> 
+
+	forEachLemon (slice i = 0; i < 5; i++) {
+		BEGIN JUICING
+		pour(“Number: ” + i)
+		END JUICING
+	}
+	
+</td>
+<td>
+
+
 ```javascript
 for (i = 0; i < 5; i++) {
 	console.log(“Number: ” + i)
 }
 ```
 
-### While loops
-lemonscript
-<pre>
-Drink the lemonade while (x > 0) 
-	BEGIN JUICING
-	pour(x)
-	x--
-	END JUICING
-</pre>
+</td>
+</tr>
+</table>
 
-JavaScript
+
+
+
+
+
+### While loops
+
+
+<table>
+<tr>
+<td> <h3>lemonScript</h3> </td> <td> <h3>javascript</h3> </td>
+</tr>
+<tr>
+<td> 
+
+	Drink the lemonade while (x > 0) 
+		BEGIN JUICING
+		pour(x)
+		x--
+		END JUICING
+	
+</td>
+<td>
+
+
 ```javascript
 while (x > 0) {
 	console.log(x)
@@ -116,39 +143,72 @@ while (x > 0) {
 }
 ```
 
+</td>
+</tr>
+</table>
+
+
 ## Example Programs
 ### Hello World
-lemonscript
-<pre>
-When life gives you lemons try noLemon helloWorld()
-	BEGIN JUICING
-	pour(“Hello World”)
-	END JUICING
-</pre>
 
-JavaScript
+
+<table>
+<tr>
+<td> <h3>lemonScript</h3> </td> <td> <h3>javascript</h3> </td>
+</tr>
+<tr>
+<td> 
+
+
+	When life gives you lemons try noLemon helloWorld()
+		BEGIN JUICING
+		pour(“Hello World”)
+		END JUICING
+	
+</td>
+<td>
+
+
 ```javascript
 function helloWorld() {
 	console.log(“Hello World”)
 }
 ```
 
-### Adding Two Numbers
-lemonscript
-<pre>
-When life gives you lemons try slices add(slices a, slices b) 
-	BEGIN JUICING
-	you get lemonade and a + b
-	END JUICING	
-</pre>
+</td>
+</tr>
+</table>
 
-JavaScript
+
+
+### Adding Two Numbers
+
+<table>
+<tr>
+<td> <h3>lemonScript</h3> </td> <td> <h3>javascript</h3> </td>
+</tr>
+<tr>
+<td> 
+
+
+	When life gives you lemons try slices add(slices a, slices b) 
+		BEGIN JUICING
+		you get lemonade and a + b
+		END JUICING	
+	
+</td>
+<td>
+
+
 ```javascript
 function add(a, b) {
 	return a + b
 }
 ```
 
+</td>
+</tr>
+</table>
 
 
 ## Optimizations
