@@ -36,8 +36,6 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 ## Types of Static Semantic Errors
 
 ## Conditional Statements
-### If/else Statements
-
 
 <table>
 <tr>
