@@ -30,7 +30,8 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 ## Comments
 | JavaScript | lemonscript |
 | --- | ----|
-| //this is a comment | (\*)this is a comment(\*) |
+| //this is a single line comment | ( \*)this is a single line comment |
+| /\*this is a multi-line comment\*/ | ( \*)this is a multi-line comment(\* ) |
 
 
 ## Arithmetic
