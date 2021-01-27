@@ -132,7 +132,7 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 </td>
 <td>
 	
-	```javascript
+```javascript
 	if (x == 10) {
 		console.log(“Number is 10”)
 	} else if (x == 20) {
@@ -140,7 +140,7 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 	} else {
 		console.log(“Number is not 10 or 20”)
 	}
-	```
+```
 </td>
 </tr>
 
@@ -159,11 +159,11 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 <td>
 
 
-	```javascript
-	for (i = 0; i < 5; i++) {
-		console.log(“Number: ” + i)
-	}
-	```
+```javascript
+for (i = 0; i < 5; i++) {
+	console.log(“Number: ” + i)
+}
+```
 
 </td>
 	
@@ -182,12 +182,12 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 </td>
 <td>
 
-	```javascript
-	while (x > 0) {
-		console.log(x)
-		x--
-	}
-	```
+```javascript
+while (x > 0) {
+	console.log(x)
+	x--
+}
+```
 
 </td>
 	
