@@ -28,6 +28,10 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 ## Function Declarations
 
 ## Comments
+| JavaScript | lemonscript |
+| --- | ----|
+| //this is a comment | (\*)this is a comment(\*) |
+
 
 ## Arithmetic
 
