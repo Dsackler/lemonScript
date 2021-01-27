@@ -39,8 +39,8 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 - difference = 2 - 4
 - multiplication = 2 * 4
 - integer division = 4 / 2
-- float division = 4 // 2 *note we dont have to have this be different but rn its an idea
-- exponents = 4 ^ 2 *note we can change this to ** or something else
+- float division = 4 // 2 *note we dont have to have this be different but rn its an idea*
+- exponents = 4 ^ 2 *note we can change this to ** or something else*
 - modulus = 4 % 2
 
 ## A guide to lemonscript's keywords
