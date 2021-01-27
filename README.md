@@ -26,46 +26,85 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 ## Built In Functions
 
 ## Function Declarations
-<table>
-<tr>
-<td> <h3>lemonScript</h3> </td> <td> <h3>javascript</h3> </td>
-</tr>
-<tr>
-<td> 
-	When life gives you lemons try (return type) *name*() BEGIN JUICING
-	  statements                          		
-        END JUICING
-</td>
-<td>
-	function name([param[, param,[..., param]]]) {
-            [statements]
-        }
-</td>
-</tr>
-</table>
 
 ## Comments
-| JavaScript | lemonscript |
-| --- | ----|
-| //this is a single line comment | ( \*)this is a single line comment |
-| /\*this is a multi-line comment\*/ | ( \*)this is a multi-line comment(\* ) |
-
 
 ## Arithmetic
-- sum = 2 + 4
-- difference = 2 - 4
-- multiplication = 2 * 4
-- integer division = 4 / 2
-- float division = 4 // 2 *note we dont have to have this be different but rn its an idea*
-- exponents = 4 ^ 2 *note we can change this to ** or something else*
-- modulus = 4 % 2
 
 ## A guide to lemonscript's keywords
 
+| JavaScript | lemonscript |
+| ---------- | ----------- |
+|   abstract     |             |
+|   arguments    |             |
+|   boolean      |  sour           |
+|   break        |  chop       |
+|   byte         |             |
+|   case         |  lemonCase #   |
+|   catch        |             |
+|   char         |             |
+|   const        |  lemonStain           |
+|   continue     |  nextLemon           |
+|   debugger     |             |
+|   default      |   pickThis          |
+|   delete       |             |
+|   do           |             |
+|   double       |             |
+|   else         |             |
+|   eval         |             |
+|   false        |             |
+|   final        |             |
+|   finally      |             |
+|   float        |             |
+|   for          |             |
+|   function     | When life gives you lemons try (return type) *name*() BEGIN    |
+|   goto         |             |
+|   if           |             |
+|   implements   |             |
+|   in           |             |
+|   instanceof   |             |
+|   int          |             |
+|   interface    |             |
+|   let          |             |
+|   long         |             |
+|   long         |             |
+|   native       |             |
+|   new          |             |
+|   null         |             |
+|   package      |             |
+|   private      |             |
+|   protected    |             |
+|   public       |             |
+|   return       | you get lemonade and ... |
+|   short        |             |
+|   static       |             |
+|   switch       | Pick ():    |
+|   synchronized |             |
+|   this         |             |
+|   throw        |             |
+|   throws       |             |
+|   transient    |             |
+|   true         |             |
+|   try          |             |
+|   typeof       |             |
+|   var          |             |
+|   void         |  noLemon           |
+|   volatile     |             |
+|   while        |             |
+|   with         |             |
+|   yield        |             |
+|   class        |  Lemon           |
+|   enum         |             |
+|   export       |             |
+|   extends      |             |
+|   import       |             |
+|   super        |  takeLemonadeBreak           |
+|   async        |  whileJuicing           |
+|   await        |  whileJuicing           |
+|  spread        |  ream           |
 ## Types of Static Semantic Errors
-**Not sure if we need this yet but its here if so**
 
-## Conditional Statements
+## Control Flow
 
 <table>
 <tr>
@@ -220,5 +259,5 @@ function add(a, b) {
 
 
 ## Optimizations
-**Not sure if we need this yet but its here if so**
+
 
