@@ -71,6 +71,11 @@ console.log("Hello, World!")
 
 ## Comments
 
+| JavaScript | lemonscript |
+| --- | ----|
+| //this is a comment | (\*)this is a comment(\*) |
+
+
 ## Arithmetic
 
 - sum = 2 + 4
