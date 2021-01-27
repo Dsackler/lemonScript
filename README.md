@@ -23,6 +23,22 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 
 ## Variable Declaration and Assignment
 
+<table>
+<tr>
+<td> <h3>lemonScript</h3> </td> <td> <h3>javascript</h3> </td>
+</tr>
+<tr>
+<td> 
+	TBD
+</td>
+<td>
+	var x;
+        var y = 6;
+        var z = x + y;
+</td>
+</tr>
+</table>
+
 ## Built In Functions
 
 <table>
