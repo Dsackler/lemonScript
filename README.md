@@ -51,6 +51,24 @@ console.log("Hello, World!")
 
 ## Function Declarations
 
+<table>
+<tr>
+<td> <h3>lemonScript</h3> </td> <td> <h3>javascript</h3> </td>
+</tr>
+<tr>
+<td> 
+	When life gives you lemons try (return type) *name*() BEGIN JUICING
+	  statements                          		
+        END JUICING
+</td>
+<td>
+	function name([param[, param,[..., param]]]) {
+            [statements]
+        }
+</td>
+</tr>
+</table>
+
 ## Comments
 
 ## Arithmetic
