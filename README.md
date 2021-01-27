@@ -46,7 +46,7 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 ## A guide to lemonscript's keywords
 
 ## Types of Static Semantic Errors
-**Not sure if we need this yet but its here if so
+**Not sure if we need this yet but its here if so**
 
 ## Conditional Statements
 
@@ -203,5 +203,5 @@ function add(a, b) {
 
 
 ## Optimizations
-**Not sure if we need this yet but its here if so
+**Not sure if we need this yet but its here if so**
 
