@@ -25,6 +25,30 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 
 ## Built In Functions
 
+<table>
+<tr>
+<td> <h3>lemonScript</h3> </td> <td> <h3>javascript</h3> </td>
+</tr>
+<tr>
+<td> 
+
+
+	pour(“Hello World”)	
+	
+</td>
+<td>
+
+
+```javascript
+console.log("Hello, World!")
+```
+
+</td>
+</tr>
+</table>
+
+
+
 ## Function Declarations
 
 ## Comments
