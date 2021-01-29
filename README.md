@@ -89,7 +89,8 @@ console.log("Hello, World!")
 
 | JavaScript | lemonscript |
 | --- | ----|
-| //this is a comment | (\*)this is a comment(\*) |
+| //this is a single line comment | ( \*)this is a comment |
+| /\*this is a multi-line comment | ( \*)this is a multi-comment(\* ) |
 
 
 ## Arithmetic
