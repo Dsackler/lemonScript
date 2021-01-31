@@ -17,9 +17,8 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 | String     | Pulp	   |
 | Number     | Slices      |
 | Boolean    | Sour        |
-| Class      | Lemon       |
-| const      | LemonStain  |
-| void       | noLemon     |
+| Class      | Limon       |
+
 
 ## Variable Declaration and Assignment
 
