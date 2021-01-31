@@ -107,45 +107,47 @@ console.log("Hello, World!")
 
 | JavaScript | lemonscript |
 | ---------- | ----------- |
-|   boolean      |  sour       |
+|   boolean      |  taste      |
 |   break        |  chop       |
 |   case         |  lemonCase #|
-|   catch        |             |
+|   catch        |  spit       |
 |   const        |  lemonStain |
 |   continue     |  nextLemon  |
-|   default      |   pickThis  |
-|   do           |             |
-|   else         |             |
-|   false        |             |
-|   for          |             |
+|   default      |  Citrus Limon |
+|   do           |  do           |
+|   else         | Toss the lemon and do |
+|   else if      | Keep juicing if |
+|   false        | sour        |
+|   for          | forEachLemon|
 |   function     | When life gives you lemons try (return type) *name*() BEGIN    |
-|   if           |             |
-|   implements   |             |
-|   in           |             |
-|   interface    |             |
-|   let          |             |
-|   new          |             |
-|   null         |             |
-|   private      |             |
-|   protected    |             |
-|   public       |             |
+|   if           | Squeeze the lemon if|
+|   implements   | graft       |
+|   in           | in          |
+|   interface    | lemonDNA    |
+|   let          | harvest     |
+|   new          | seed      |
+|   null         | empty     |
+|   private      | greenhouse|
+|   protected    | garden    |
+|   public       | orchard   |
 |   return       | you get lemonade and ... |
-|   static       |             |
+|   static       | trunk     |
 |   switch       | Pick ():    |
-|   this         |             |
-|   throw        |             |
-|   throws       |             |
-|   true         |             |
-|   try          |             |
-|   typeof       |             |
-|   void         |  noLemon    |
-|   while        |             |
-|   class        |  Lemon      |
-|   export       |             |
-|   extends      |             |
-|   import       |             |
-|   super        |  takeLemonadeBreak           |
-|  spread        |  ream           |
+|   this         | thisLemon   |
+|   throw        | tossLemonade |
+|   throws       | tossLemonades|
+|   true         | sweet      |
+|   try          | bite       |
+|   typeof       | species    |
+|   void         | noLemon    |
+|   while        | Drink the lemonade while |
+|   class        | Limon      |
+|   export       | ship       |
+|   extends      | branches   |
+|   import       | receive    |
+|   super        | takeLemonadeBreak  |
+
+
 ## Types of Static Semantic Errors
 
 ## Control Flow
