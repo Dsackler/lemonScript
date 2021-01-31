@@ -107,72 +107,44 @@ console.log("Hello, World!")
 
 | JavaScript | lemonscript |
 | ---------- | ----------- |
-|   abstract     |             |
-|   arguments    |             |
-|   boolean      |  sour           |
+|   boolean      |  sour       |
 |   break        |  chop       |
-|   byte         |             |
-|   case         |  lemonCase #   |
+|   case         |  lemonCase #|
 |   catch        |             |
-|   char         |             |
-|   const        |  lemonStain           |
-|   continue     |  nextLemon           |
-|   debugger     |             |
-|   default      |   pickThis          |
-|   delete       |             |
+|   const        |  lemonStain |
+|   continue     |  nextLemon  |
+|   default      |   pickThis  |
 |   do           |             |
-|   double       |             |
 |   else         |             |
-|   eval         |             |
 |   false        |             |
-|   final        |             |
-|   finally      |             |
-|   float        |             |
 |   for          |             |
 |   function     | When life gives you lemons try (return type) *name*() BEGIN    |
-|   goto         |             |
 |   if           |             |
 |   implements   |             |
 |   in           |             |
-|   instanceof   |             |
-|   int          |             |
 |   interface    |             |
 |   let          |             |
-|   long         |             |
-|   long         |             |
-|   native       |             |
 |   new          |             |
 |   null         |             |
-|   package      |             |
 |   private      |             |
 |   protected    |             |
 |   public       |             |
 |   return       | you get lemonade and ... |
-|   short        |             |
 |   static       |             |
 |   switch       | Pick ():    |
-|   synchronized |             |
 |   this         |             |
 |   throw        |             |
 |   throws       |             |
-|   transient    |             |
 |   true         |             |
 |   try          |             |
 |   typeof       |             |
-|   var          |             |
-|   void         |  noLemon           |
-|   volatile     |             |
+|   void         |  noLemon    |
 |   while        |             |
-|   with         |             |
-|   yield        |             |
-|   class        |  Lemon           |
-|   enum         |             |
+|   class        |  Lemon      |
 |   export       |             |
 |   extends      |             |
 |   import       |             |
 |   super        |  takeLemonadeBreak           |
-|   async        |  whileJuicing           |
-|   await        |  whileJuicing           |
 |  spread        |  ream           |
 ## Types of Static Semantic Errors
 
