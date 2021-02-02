@@ -22,27 +22,15 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 
 ## Variable Declaration and Assignment
 
-<table>
-<tr>
-<td> <h3>lemonScript</h3> </td> <td> <h3>javascript</h3> </td>
-</tr>
-<tr>
-<td> 
-	Slices x = 10
-	Pulp y = "Lemons are great"
-	dontUseMeForEyeDrops z = 4.20
-	Sour a = true
-	lemonStain color = "yellow"
-</td>
-<td>
-	let x = 10;
-        let y = "Lemons are great";
-	let z = 4.20;
-        var a = true;
-	const color = "yellow";
-</td>
-</tr>
-</table>
+
+| JavaScript                           | RealHotGirlScript                     |
+| ------------------------------------ | ------------------------------------- |
+| let x = 10;                          | Slices x = 10                         |
+| let y = "Lemons are great";          | Pulp y = "Lemons are great"           |
+| let z = 4.20;                        | dontUseMeForEyeDrops z = 4.20         |
+| let a = true;                        | Sour a = true                         |
+| const name = "yellow";               | lemonStain color = "yellow"           |
+
 
 ## Built In Functions
 
