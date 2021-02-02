@@ -351,6 +351,49 @@ console.log(“Our result is ” + twofoursix);
 </tr>
 </table>
 
+### Nth Fibonacci 
+
+<table>
+<tr>
+<td> <h3>lemonScript</h3> </td> <td> <h3>javascript</h3> </td>
+</tr>
+<tr>
+<td> 
+
+
+	When life gives you lemons try slices fibonacci(slices num) 
+		BEGIN JUICING
+		Squeeze the lemon if(num == 0)
+		  BEGIN JUICING
+		  you get lemonade and 0
+		  END JUICING
+		Squeeze the lemon if(num == 1 || num == 2)
+		  BEGIN JUICING
+		  you get lemonade and 1
+		  END JUICING
+		you get lemonade and fibonacci(num - 2) + fibonacci(num - 1)
+		END JUICING	
+	
+</td>
+<td>
+
+
+```javascript
+function fibonacci(num){
+  if(num == 0){
+    return 0;
+  }
+  if(num == 1 || num == 2){
+    return 1
+  }
+  return fibonacci(num - 2) + fibonacci(num - 1)
+}
+```
+
+</td>
+</tr>
+</table>
+
 
 ## Optimizations
 
