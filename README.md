@@ -15,9 +15,9 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 | JavaScript | lemonscript |
 | ---------- | ----------- |
 | String     | Pulp	   |
-| Number     | Slices      |
+| Number     | Slices (for integers) or dontUseMeForEyeDrops (for floats)      |
 | Boolean    | Sour        |
-| Class      | Limon       |
+| const      | lemonStain  |
 
 
 ## Variable Declaration and Assignment
@@ -28,12 +28,18 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 </tr>
 <tr>
 <td> 
-	TBD
+	Slices x = 10
+	Pulp y = "Lemons are great"
+	dontUseMeForEyeDrops z = 4.20
+	Sour a = true
+	lemonStain color = "yellow"
 </td>
 <td>
-	var x;
-        var y = 6;
-        var z = x + y;
+	let x = 10;
+        let y = "Lemons are great";
+	let z = 4.20;
+        var a = true;
+	const color = "yellow";
 </td>
 </tr>
 </table>
