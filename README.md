@@ -28,7 +28,7 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 | let x = 10;                          | Slices x = 10                         |
 | let y = "Lemons are great";          | Pulp y = "Lemons are great"           |
 | let z = 4.20;                        | dontUseMeForEyeDrops z = 4.20         |
-| let a = true;                        | Sour a = true                         |
+| let a = true;                        | Sour a = sweet                        |
 | const name = "yellow";               | lemonStain color = "yellow"           |
 
 
