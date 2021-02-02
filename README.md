@@ -9,7 +9,7 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 ## Features
 - statically typed language
 - switch statements
-- etc... *not done with this yet*
+- easily defined blocks of code seperated by the words BEGIN JUICING and END JUICING
 
 ## Types
 | JavaScript | lemonscript |
