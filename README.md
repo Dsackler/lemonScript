@@ -105,7 +105,7 @@ console.log("Hello, World!")
 |   catch        |  spit       |
 |   const        |  lemonStain |
 |   continue     |  nextLemon  |
-|   default      |  Citrus Limon |
+|   default      |  citrusLimon |
 |   do           |  do           |
 |   else         | Toss the lemon and do |
 |   else if      | Keep juicing if |
@@ -124,7 +124,7 @@ console.log("Hello, World!")
 |   public       | orchard   |
 |   return       | you get lemonade and ... |
 |   static       | trunk     |
-|   switch       | Pick ():    |
+|   switch       | Pick ()    |
 |   this         | thisLemon   |
 |   throw        | tossLemonade |
 |   throws       | tossLemonades|
@@ -289,6 +289,62 @@ function helloWorld() {
 function add(a, b) {
 	return a + b
 }
+```
+
+</td>
+</tr>
+</table>
+
+### Switch Statements
+
+<table>
+<tr>
+<td> <h3>lemonScript</h3> </td> <td> <h3>javascript</h3> </td>
+</tr>
+<tr>
+<td> 
+	
+	slice even = 4
+	Pulp twofoursixeight
+	Pick (even)
+	  BEGIN JUICING
+	  lemonCase 2
+	    twofoursix = "two"
+	    chop
+	  lemonCase 4
+	    twofoursix = "four"
+	    chop
+	  lemonCase 6
+	    twofoursix = "six"
+	    chop
+	  citrusLimon
+	    twofoursix = "eight"
+	  END JUICING
+	pour(“Our result is ” + twofoursix)
+		
+	
+</td>
+<td>
+
+
+```javascript
+let even = 4;
+let twofoursixeight;
+switch (even) {
+  case 2:
+    twofoursix = "two";
+    break;
+  case 4:
+    twofoursix = "four";
+    break;
+  case 6:
+    twofoursix = "six";
+    break;
+  default:
+    twofoursix = "Eight";
+}
+
+console.log(“Our result is ” + twofoursix);
 ```
 
 </td>
