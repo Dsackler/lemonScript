@@ -12,8 +12,8 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 - Switch statements using keywords pick()
 - Easily defined blocks of code seperated by the words BEGIN JUICING and END JUICING
 - Declare functions with "When life gives you lemons try (return type) *name*()"
-- Single line comments with 🍋
-- Multiple line comments with 🍋🍋🍋
+- Single line comments with ( \*)
+- Multiple line comments with ( \*) (\* )
 - AND SO MUCH MORE TASTY FEATURES
   ITS A BITTER PILL TO SWALLOW TO LET GO OF THE FAMOUS PYTHON, BUT
   GIVE LEMONSCRIPT A TRY! ITS REFRESHING!
