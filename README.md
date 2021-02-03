@@ -140,7 +140,7 @@ console.log("Hello, World!")
 |   super        | takeLemonadeBreak  |
 
 
-## Types of Static Semantic Errors
+
 
 ## Control Flow
 
@@ -395,6 +395,6 @@ function fibonacci(num){
 </table>
 
 
-## Optimizations
+
 
 
