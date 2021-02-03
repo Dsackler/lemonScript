@@ -32,7 +32,7 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 ## Variable Declaration and Assignment
 
 
-| JavaScript                           | RealHotGirlScript                     |
+| JavaScript                           | lemonscript                           |
 | ------------------------------------ | ------------------------------------- |
 | let x = 10;                          | Slices x = 10                         |
 | let y = "Lemons are great";          | Pulp y = "Lemons are great"           |
