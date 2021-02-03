@@ -21,7 +21,7 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 
 
 ## Types
-| JavaScript | lemonscript |
+| JavaScript | lemonScript |
 | ---------- | ----------- |
 | String     | Pulp	   |
 | Number     | Slices (for integers) or dontUseMeForEyeDrops (for floats)      |
@@ -32,7 +32,7 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 ## Variable Declaration and Assignment
 
 
-| JavaScript                           | lemonscript                           |
+| JavaScript                           | lemonScript                           |
 | ------------------------------------ | ------------------------------------- |
 | let x = 10;                          | Slices x = 10                         |
 | let y = "Lemons are great";          | Pulp y = "Lemons are great"           |
@@ -45,7 +45,7 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 
 <table>
 <tr>
-<td> <h3>lemonScript</h3> </td> <td> <h3>javascript</h3> </td>
+<td> <h3>lemonScript</h3> </td> <td> <h3>JavaScript</h3> </td>
 </tr>
 <tr>
 <td> 
@@ -71,7 +71,7 @@ console.log("Hello, World!")
 
 <table>
 <tr>
-<td> <h3>lemonScript</h3> </td> <td> <h3>javascript</h3> </td>
+<td> <h3>lemonScript</h3> </td> <td> <h3>JavaScript</h3> </td>
 </tr>
 <tr>
 <td> 
@@ -89,7 +89,7 @@ console.log("Hello, World!")
 
 ## Comments
 
-| JavaScript | lemonscript |
+| JavaScript | lemonScript |
 | --- | ----|
 | //this is a single line comment | ( \*)this is a comment |
 | /\*this is a multi-line comment | ( \*)this is a multi-comment(\* ) |
@@ -106,7 +106,7 @@ console.log("Hello, World!")
 
 ## A guide to lemonscript's keywords
 
-| JavaScript | lemonscript |
+| JavaScript | lemonScript |
 | ---------- | ----------- |
 |   boolean      |  taste      |
 |   break        |  chop       |
@@ -155,7 +155,7 @@ console.log("Hello, World!")
 
 <table>
 <tr>
-<td> <h3>Programming Feature</h3>      </td><td> <h3>lemonScript</h3> </td> <td> <h3>javascript</h3> </td>
+<td> <h3>Programming Feature</h3>      </td><td> <h3>lemonScript</h3> </td> <td> <h3>JavaScript</h3> </td>
 </tr>
 <tr>
 <td> If/Else </td>
@@ -179,7 +179,7 @@ console.log("Hello, World!")
 </td>
 <td>
 	
-```javascript
+```JavaScript
 	if (x == 10) {
 		console.log(“Number is 10”)
 	} else if (x == 20) {
@@ -206,7 +206,7 @@ console.log("Hello, World!")
 <td>
 
 
-```javascript
+```JavaScript
 for (i = 0; i < 5; i++) {
 	console.log(“Number: ” + i)
 }
@@ -229,7 +229,7 @@ for (i = 0; i < 5; i++) {
 </td>
 <td>
 
-```javascript
+```JavaScript
 while (x > 0) {
 	console.log(x)
 	x--
@@ -248,7 +248,7 @@ while (x > 0) {
 
 <table>
 <tr>
-<td> <h3>lemonScript</h3> </td> <td> <h3>javascript</h3> </td>
+<td> <h3>lemonScript</h3> </td> <td> <h3>JavaScript</h3> </td>
 </tr>
 <tr>
 <td> 
@@ -263,7 +263,7 @@ while (x > 0) {
 <td>
 
 
-```javascript
+```JavaScript
 function helloWorld() {
 	console.log(“Hello World”)
 }
@@ -279,7 +279,7 @@ function helloWorld() {
 
 <table>
 <tr>
-<td> <h3>lemonScript</h3> </td> <td> <h3>javascript</h3> </td>
+<td> <h3>lemonScript</h3> </td> <td> <h3>JavaScript</h3> </td>
 </tr>
 <tr>
 <td> 
@@ -294,7 +294,7 @@ function helloWorld() {
 <td>
 
 
-```javascript
+```JavaScript
 function add(a, b) {
 	return a + b
 }
@@ -308,7 +308,7 @@ function add(a, b) {
 
 <table>
 <tr>
-<td> <h3>lemonScript</h3> </td> <td> <h3>javascript</h3> </td>
+<td> <h3>lemonScript</h3> </td> <td> <h3>JavaScript</h3> </td>
 </tr>
 <tr>
 <td> 
@@ -336,7 +336,7 @@ function add(a, b) {
 <td>
 
 
-```javascript
+```JavaScript
 let even = 4;
 let twofoursixeight;
 switch (even) {
@@ -364,7 +364,7 @@ console.log(“Our result is ” + twofoursix);
 
 <table>
 <tr>
-<td> <h3>lemonScript</h3> </td> <td> <h3>javascript</h3> </td>
+<td> <h3>lemonScript</h3> </td> <td> <h3>JavaScript</h3> </td>
 </tr>
 <tr>
 <td> 
@@ -387,7 +387,7 @@ console.log(“Our result is ” + twofoursix);
 <td>
 
 
-```javascript
+```JavaScript
 function fibonacci(num){
   if(num == 0){
     return 0;
