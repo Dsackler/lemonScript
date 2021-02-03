@@ -1,0 +1,19 @@
+{
+  "name": "lemonscript",
+  "version": "1.0.0",
+  "description": "This repository will write a compiler for the lemonscript language specified in our grammar",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --collect-coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dsackler/lemonScript.git"
+  },
+  "author": "Justin Yee, David Sackler, Khalid Alghunaim, Raul Rodriguez, Julian Arregoces, Brent Shafer",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Dsackler/lemonScript/issues"
+  },
+  "homepage": "https://github.com/Dsackler/lemonScript#readme"
+}
