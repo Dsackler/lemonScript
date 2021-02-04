@@ -109,6 +109,7 @@ console.log("Hello, World!");
 | default    | citrusLimon                                                 |
 | else       | Toss the lemon and do                                       |
 | else if    | Keep juicing if                                             |
+| extends    | branches                                                    |
 | false      | sour                                                        |
 | for        | forEachLemon                                                |
 | function   | When life gives you lemons try (return type) _name_() BEGIN |
