@@ -6,7 +6,6 @@ One morning, a young Khalid awoke and decided to finish his A.I assignment. “G
 The stage has been set. lemonScript was to be a self-explanatory, statically-typed, esoteric language with the sole purpose of saving people who had a sour taste in their mouth from using popular languages.
 
 **Brought to you by:** [Julian Arregoces](https://github.com/Jarregoc),[Raul Rodriguez](https://github.com/RaulRdz15), [Brent Shafer](https://github.com/bshafer93), [Justin Yee](https://github.com/jyee5), [David Sackler](https://github.com/Dsackler), [Khalid Alghunaim](https://github.com/kfg2000)
-_I will link everyones name to their github account later_
 
 ## Features
 
@@ -25,20 +24,20 @@ _I will link everyones name to their github account later_
 
 | JavaScript | lemonScript                                                |
 | ---------- | ---------------------------------------------------------- |
-| String     | Pulp                                                       |
-| Number     | Slices (for integers) or dontUseMeForEyeDrops (for floats) |
-| Boolean    | Sour                                                       |
+| String     | pulp                                                       |
+| Number     | slice (for integers) or dontUseMeForEyeDrops (for floats)  |
+| Boolean    | taste                                                      |
 | const      | lemonStain                                                 |
 
 ## Variable Declaration and Assignment
 
 | JavaScript                  | lemonScript                   |
 | --------------------------- | ----------------------------- |
-| let x = 10;                 | Slices x = 10                 |
-| let y = "Lemons are great"; | Pulp y = "Lemons are great"   |
+| let x = 10;                 | slice x = 10                  |
+| let y = "Lemons are great"; | pulp y = "Lemons are great"   |
 | let z = 4.20;               | dontUseMeForEyeDrops z = 4.20 |
 | let a = true;               | Sour a = sweet                |
-| const name = "yellow";      | lemonStain color = "yellow"   |
+| const c = "blue";           | lemonStain pulp c = "blue"    |
 
 ## Built In Functions
 
@@ -104,22 +103,17 @@ console.log("Hello, World!");
 | ---------- | ----------------------------------------------------------- |
 | boolean    | taste                                                       |
 | break      | chop                                                        |
-| case       | lemonCase #                                                 |
-| catch      | spit                                                        |
+| case       | lemonCase                                                   |
 | const      | lemonStain                                                  |
 | continue   | nextLemon                                                   |
 | default    | citrusLimon                                                 |
-| do         | do                                                          |
 | else       | Toss the lemon and do                                       |
 | else if    | Keep juicing if                                             |
 | false      | sour                                                        |
 | for        | forEachLemon                                                |
 | function   | When life gives you lemons try (return type) _name_() BEGIN |
 | if         | Squeeze the lemon if                                        |
-| implements | graft                                                       |
-| in         | in                                                          |
 | interface  | lemonDNA                                                    |
-| let        | harvest                                                     |
 | new        | seed                                                        |
 | null       | empty                                                       |
 | private    | greenhouse                                                  |
