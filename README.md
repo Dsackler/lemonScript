@@ -105,6 +105,7 @@ console.log("Hello, World!");
 | break      | chop                                                        |
 | case       | lemonCase                                                   |
 | const      | lemonStain                                                  |
+| constructor| plant                                                  |
 | continue   | nextLemon                                                   |
 | default    | citrusLimon                                                 |
 | else       | Toss the lemon and do                                       |
