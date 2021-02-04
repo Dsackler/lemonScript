@@ -158,7 +158,7 @@ console.log("Hello, World!");
 		END JUICING
 		
 	Keep juicing if(x == 20)
-		BEING JUICING
+		BEGIN JUICING
 		pour(“Number is 10”)
 		END JUICING
 
@@ -187,11 +187,10 @@ console.log("Hello, World!");
 	
 <td>
 
-    forEachLemon (slice i = 0; i < 5; i++) {
+    forEachLemon (slice i = 0; i < 5; i++)
     	BEGIN JUICING
     	pour(“Number: ” + i)
     	END JUICING
-    }
 
 </td>
 <td>
@@ -297,7 +296,7 @@ function add(a, b) {
 <td> 
 	
 	slice even = 4
-	Pulp twofoursixeight
+	pulp twofoursixeight
 	Pick (even)
 	  BEGIN JUICING
 	  lemonCase 2
@@ -351,7 +350,7 @@ console.log(“Our result is ” + twofoursix);
 <tr>
 <td>
 
-    When life gives you lemons try slices fibonacci(slices num)
+    When life gives you lemons try slice fibonacci(slice num)
     	BEGIN JUICING
     	Squeeze the lemon if(num == 0)
     	  BEGIN JUICING
