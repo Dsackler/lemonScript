@@ -113,28 +113,16 @@ console.log("Hello, World!");
 | for        | forEachLemon                                                |
 | function   | When life gives you lemons try (return type) _name_() BEGIN |
 | if         | Squeeze the lemon if                                        |
-| interface  | lemonDNA                                                    |
 | new        | seed                                                        |
-| null       | empty                                                       |
-| private    | greenhouse                                                  |
-| protected  | garden                                                      |
-| public     | orchard                                                     |
 | return     | you get lemonade and ...                                    |
 | static     | trunk                                                       |
 | switch     | Pick ()                                                     |
-| this       | thisLemon                                                   |
-| throw      | tossLemonade                                                |
-| throws     | tossLemonades                                               |
 | true       | sweet                                                       |
-| try        | bite                                                        |
 | typeof     | species                                                     |
 | void       | noLemon                                                     |
 | while      | Drink the lemonade while                                    |
 | class      | Limon                                                       |
-| export     | ship                                                        |
-| extends    | branches                                                    |
 | import     | receive                                                     |
-| super      | takeLemonadeBreak                                           |
 
 ## Control Flow
 
