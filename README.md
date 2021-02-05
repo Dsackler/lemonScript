@@ -36,7 +36,7 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 | let x = 10;                 | slice x = 10                  |
 | let y = "Lemons are great"; | pulp y = "Lemons are great"   |
 | let z = 4.20;               | dontUseMeForEyeDrops z = 4.20 |
-| let a = true;               | Sour a = sweet                |
+| let a = true;               | taste a = sweet               |
 | const c = "blue";           | lemonStain pulp c = "blue"    |
 
 ## Built In Functions
@@ -252,7 +252,7 @@ function helloWorld() {
 <tr>
 <td>
 
-    When life gives you lemons try slices add(slices a, slices b)
+    When life gives you lemons try slice add(slice a, slice b)
     	BEGIN JUICING
     	you get lemonade and a + b
     	END JUICING
@@ -378,14 +378,14 @@ function fibonacci(num){
     Limon Car
     BEGIN JUICING
 
-    	When life gives you lemons try Car constructor(Pulp name ,Slices year)
+    	plant(pulp name ,slice year)
     		BEGIN JUICING
-    		Pulp thisLemon.name = name
-    		Slices thisLemon.year = year
+    		thisLemon.name = name
+    		thisLemon.year = year
     		END JUICING
 
 
-    	When life gives you lemons try Slices getYear()
+    	When life gives you lemons try slice getYear()
     		BEGIN JUICING
     		you get lemonade and thisLemon.year
     		END JUICING
@@ -396,10 +396,10 @@ function fibonacci(num){
 
     Limon Ferrari branches Car
     BEGIN JUICING
-        	When life gives you lemons try Ferrari constructor(Slices year)
+        	plant(slice year)
     		BEGIN JUICING
-    		Pulp thisLemon.name = "F8 Spider"
-    		Slices thisLemon.year = year
+    		thisLemon.name = "F8 Spider"
+    		thisLemon.year = year
     		END JUICING
     END JUICING
 
