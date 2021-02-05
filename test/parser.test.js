@@ -18,7 +18,6 @@ describe("The parser", () => {
         });
       });
   });
-
 })
 
 describe("The parser", () => {
@@ -30,6 +29,5 @@ describe("The parser", () => {
         });
       });
   });
-
 })
   

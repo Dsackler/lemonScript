@@ -1,10 +1,24 @@
-When life gives you lemons try slice sumOfArray( slice[] arr, slice arrLength )
-    BEGIN JUICING
-    slice sum = 0
-    forEachLemon (slice i = 0; i < arrLength; i++)
+Limon Car
+BEGIN JUICING
+    plant(pulp name ,slice year)
         BEGIN JUICING
-        sum = sum + arr[i]
+        pulp thisLemon = name
+        thisLemon.year = year
         END JUICING
-    you get lemonade and sum
-    END JUICING
-    ( *) tests for loops
+
+    When life gives you lemons try slice getYear()
+        BEGIN JUICING
+        you get lemonade and thisLemon.year
+        END JUICING
+
+END JUICING
+Car myCar = seed Car("Ford",2014)
+
+Limon Ferrari branches Car
+BEGIN JUICING
+        plant(slice year)
+        BEGIN JUICING
+        thisLemon.name = "F8 Spider"
+        thisLemon.year = year
+        END JUICING
+END JUICING

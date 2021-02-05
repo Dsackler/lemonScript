@@ -108,8 +108,8 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
     id        			= ~keyword letter (alnum | "_")*
     Arguments 			= (BoolOp",")* BoolOp			--unary
                           |""
-    Parameters			= (Type id",")* Type id	--params
-                            |""
+    Parameters			= ((Type | id) id",")* (Type | id) id	--params
+                    |""
     DictValues			= (BoolOp ":" BoolOp ",")* BoolOp ":" BoolOp --params
                             |""
     space    				+= "( *)" (~"(* )" any)* "(* )"  				 --longComment
