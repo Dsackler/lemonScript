@@ -125,5 +125,5 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
     if (!match.succeeded()) {
       throw new Error(match.message)
     }
-    console.log("Successful")
+    return true
   }
