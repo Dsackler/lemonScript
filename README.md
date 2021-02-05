@@ -93,7 +93,7 @@ console.log("Hello, World!");
 - sum = 2 + 4
 - difference = 2 - 4
 - multiplication = 2 \* 4
-- integer division = 4 / 2
+- division = 4 / 2
 - exponents = 4 ^ 2 \*note we can change this to \*\* or something else
 - modulus = 4 % 2
 
