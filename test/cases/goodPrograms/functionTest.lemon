@@ -1,0 +1,4 @@
+When life gives you lemons try noLemon displayText(pulp message)
+BEGIN JUICING
+pour(message)
+END JUICING

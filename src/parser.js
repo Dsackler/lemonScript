@@ -63,6 +63,7 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
                           | "{" DictValues "}"					--dictionary
                           | numlit
                           | stringlit
+                          | boollit
                           | Var
     numlit       		= digit+ ("." digit+)?
     boollit 		     = "sweet" | "sour"
@@ -120,10 +121,7 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
   }`)
 
 
-  export default function parse(sourceCode) {
-    const match = lemonScriptGrammar.match(sourceCode)
-    if (!match.succeeded()) {
-      throw new Error(match.message)
-    }
-    return true
-  }
+export default function parse(sourceCode) {
+  const match = lemonScriptGrammar.match(sourceCode)
+  return match.succeeded()
+}

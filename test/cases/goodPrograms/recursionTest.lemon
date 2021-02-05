@@ -1,0 +1,12 @@
+When life gives you lemons try slice fibonacci(slice num)
+	BEGIN JUICING
+	Squeeze the lemon if(num == 0)
+	  BEGIN JUICING
+	  you get lemonade and 0
+	  END JUICING
+	Squeeze the lemon if(num == 1 || num == 2)
+	  BEGIN JUICING
+	  you get lemonade and 1
+	  END JUICING
+	you get lemonade and fibonacci(num - 2) + fibonacci(num - 1)
+	END JUICING

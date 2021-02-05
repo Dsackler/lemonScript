@@ -1,0 +1,30 @@
+When life gives you lemons try noLemon juicySwitches() 
+    BEGIN JUICING
+    slice day = 8
+    Pick (day)
+        BEGIN JUICING
+        lemonCase 1
+            pour("its Monday")
+            chop
+        lemonCase 2
+            pour("its Tuesday")
+            chop 
+        lemonCase 3
+            pour("its Wednesday")
+            chop 
+        lemonCase 4
+            pour("its Thursday")
+            chop
+        lemonCase 5
+            pour("its Friday")
+            chop
+        lemonCase 6
+            pour("its Saturday")
+            chop
+        lemonCase 7
+            pour("its Sunday")
+            chop
+        citrusLimon
+            pour("Who fucking knows what day it is")
+        END JUICING
+    END JUICING

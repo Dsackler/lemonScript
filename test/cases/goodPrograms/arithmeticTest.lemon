@@ -1,0 +1,7 @@
+When life gives you lemons try noLemon arithmeticTest() 
+    BEGIN JUICING
+    slice x = 4
+    slice y = 2
+    slice z = 1
+    pour(x + y - z ^ y % x / y)
+    END JUICING

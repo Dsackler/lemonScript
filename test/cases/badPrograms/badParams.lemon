@@ -1,0 +1,5 @@
+When life gives you lemons try taste badParams( truthyVal )
+    BEGIN JUICING
+    pour("truthyVal should have its type defined when declared as a parameter")
+    END JUICING
+    ( *) tests the parameter passing, should fail because lemonScript is a statically typed language

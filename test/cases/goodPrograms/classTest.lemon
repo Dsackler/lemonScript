@@ -1,0 +1,10 @@
+When life gives you lemons try slice sumOfArray( slice[] arr, slice arrLength )
+    BEGIN JUICING
+    slice sum = 0
+    forEachLemon (slice i = 0; i < arrLength; i++)
+        BEGIN JUICING
+        sum = sum + arr[i]
+        END JUICING
+    you get lemonade and sum
+    END JUICING
+    ( *) tests for loops

@@ -1,0 +1,16 @@
+Squeeze the lemon if(x == 10)
+	BEGIN JUICING
+	taste good = sweet
+	pour("Number is 10")
+	END JUICING
+	
+Keep juicing if(x == 20)
+	BEGIN JUICING
+	pour("Number is 10")
+	END JUICING
+
+Toss the lemon and do
+	BEGIN JUICING
+	<pulp, slice> d = {"s": 1, "l": 2}
+	pour("Number is not 10 or 20")
+	END JUICING
