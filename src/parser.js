@@ -6,13 +6,13 @@
 import ohm from "ohm-js"
 
 const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
-    Program   	= Import* Statement*
-    Import 		   = import id from id
-    Statement 	= const? static? Type id "=" BoolOp                  	--declareAssign
-                          | const? static? Type id							        	 --declare
-                          | Var "=" BoolOp                      		 --assign
+    Program   	= Import* Statement*                              --program      
+    Import 		   = import id from id                                --importDec
+    Statement 	= const? static? Type id "=" BoolOp                  	--varDec
+                          | const? static? Type id							      --varDec
+                          | Var "=" BoolOp                      		  --assignExp
                           | SwitchStatement
-                          | FunctionCall                      								--function_call
+                          | FunctionCall
                           | FunctionDec
                           | IfStatement
                           | WhileStatement
@@ -25,26 +25,26 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
                           | continue
                           | break
                           | BoolOp
-    ClassDec					= classType id (extends id)? ClassBeginToEnd
+    ClassDec					= classType id (extends id)? ClassBeginToEnd    --classDec
     ClassBeginToEnd 	  = openBrace Constructor Statement* closeBrace
     Constructor				= "plant" "(" Parameters ")" BeginToEnd
-    FunctionDec 			  = functionBeginning static? (Type | void | id) id "(" Parameters ")" BeginToEnd
-    FunctionCall         	   = Var "(" Arguments ")" 
-    IfStatement  			    = ifBeginning "(" BoolOp ")" BeginToEnd ElseifStatement* ElseStatement?
-    ElseifStatement  		 = elifBeginning "(" BoolOp ")" BeginToEnd 
-    ElseStatement  		 = elseBeginning BeginToEnd 
-    WhileStatement 		= whileBeginning "(" BoolOp ")" BeginToEnd 
-    ForStatement 			  = forBeginning "(" ForArgs ")" BeginToEnd
+    FunctionDec 			  = functionBeginning static? (Type | void | id) id "(" Parameters ")" BeginToEnd     --funcDec
+    FunctionCall        = Var "(" Arguments ")"     --funcCall
+    IfStatement  			    = ifBeginning "(" BoolOp ")" BeginToEnd ElseifStatement* ElseStatement?       --ifStatement
+    ElseifStatement  		 = elifBeginning "(" BoolOp ")" BeginToEnd                                      --ifStatement
+    ElseStatement  		 = elseBeginning BeginToEnd                                                       --elseStatement
+    WhileStatement 		= whileBeginning "(" BoolOp ")" BeginToEnd                                        --whileStatement
+    ForStatement 			  = forBeginning "(" ForArgs ")" BeginToEnd                                       --forStatement
     ForArgs          			  = "slice" id "=" BoolOp ";" BoolOp ";" SliceCrement
     SliceCrement   		  = (id"+=" AddOp | id"-=" AddOp )   -- binary
                                         | (id"++" | id"--" )							--unary
-    SwitchStatement 		= switch "("Var")" SwitchBeginToEnd
+    SwitchStatement 		= switch "("Var")" SwitchBeginToEnd                                             --switchStatement
     SwitchBeginToEnd 		= openBrace Lemoncase+ Defaultcase? closeBrace
     Lemoncase 			= case BoolOp Statement* 
     Defaultcase					= default Statement* 
     Print								= print"("BoolOp")"
     TypeOf						= typeof "("BoolOp")"
-    ReturnStatement		= return BoolOp?
+    ReturnStatement		= return BoolOp?      -returnStatement
     BeginToEnd 	 = openBrace Statement+ closeBrace 
     BoolOp 			= BoolOp conop Bool  --binary
                             | Bool
@@ -56,31 +56,31 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
                           | Exponential
     Exponential   = Factor "^" Exponential                --binary
                             | Factor
-    Factor 		   = FunctionCall
-                          | ("-" ) Factor       --unary
-                          | "(" BoolOp ")"                     --parens
-                          | "[" Arguments "]"					--arrays
-                          | "{" DictValues "}"					--dictionary
-                          | numlit
-                          | stringlit
+    Factor 		   = FunctionCall                 
+                          | ("-" ) Factor             --unary
+                          | "(" BoolOp ")"            --templateLit
+                          | "[" Arguments "]"					--arrayLit
+                          | "{" DictValues "}"				--objLit
+                          | numlit              
+                          | stringlit           
                           | boollit
                           | Var
-    numlit       		= digit+ ("." digit+)?
-    boollit 		     = "sweet" | "sour"
-    stringlit 		  = "\"" char* "\""
+    numlit       		= digit+ ("." digit+)?    --literal
+    boollit 		     = "sweet" | "sour"       --boolLit
+    stringlit 		  = "\"" char* "\""         --strLit
     char 				 = "\\n" 
                           | "\\'"  
                           | "\\\""
                           | "\\\\"
                           | "\\u{" hexDigit hexDigit? hexDigit? hexDigit? hexDigit? hexDigit?  "}" 			--hex
                           | ~"\"" ~"\\" any
-    Var					= Var "." Var		 --property_or_dictionary
-                                | Var "["digit+"]"	--array
+    Var					= Var "." Var		 --memberExp        
+                                | Var "["digit+"]"	--memberExp
                               | id
     Type       			= ArrayType | types | DictType
     types                 = ("pulp"|"slice"|"taste"|"dontUseMeForEyeDrops") ~alnum
-    ArrayType			= Type "[]" 
-    DictType			  = "<" Type "," Type ">" 
+    ArrayType			= Type "[]"   --arrayDec    
+    DictType			  = "<" Type "," Type ">"   --objDec
     void					= "noLemon" ~alnum
     functionBeginning     = "When life gives you lemons try" ~alnum
     ifBeginning       	= "Squeeze the lemon if" ~alnum
@@ -89,20 +89,20 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
     whileBeginning   = "Drink the lemonade while" ~alnum
     forBeginning 		= "forEachLemon" ~alnum
     classType				= "Limon" ~alnum
-    extends				= "branches" ~alnum
-    case					   = "lemonCase" ~alnum
-    print					     = "pour"
+    extends				  = "branches" ~alnum
+    case					  = "lemonCase" ~alnum
+    print					  = "pour"
     typeof					= "species"
     openBrace 			= "BEGIN JUICING" ~alnum
     closeBrace			= "END JUICING" ~alnum
-    switch 					= "Pick" ~alnum
+    switch 					= "Pick" ~alnum                   
     break					= "chop" ~alnum
     continue 			 = "nextLemon" ~alnum
     return				= "you get lemonade and" ~alnum
     default				= "citrusLimon" ~alnum
     const					= "lemonStain" ~alnum
     static				= "trunk" ~alnum
-    import				= "receive" ~alnum
+    import				= "receive" ~alnum        
     from				= "from" ~alnum
     keyword   			= types | void | print | openBrace | closeBrace | switch | break | case | default | classType | const | forBeginning | continue | boollit | typeof
     id        			= ~keyword letter (alnum | "_")*
