@@ -24,3 +24,15 @@ export class Parameters {
     }
 }
 
+export class ForLoop {
+    constructor(iterator, condition, body) {
+        Object.assign(this, {iterator, condition, body})
+    }
+}
+
+export class Assignment {
+    constructor(target, source) {
+        Object.assign(this, {target, source})
+    }
+}
+
