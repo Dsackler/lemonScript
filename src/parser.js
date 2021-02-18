@@ -6,118 +6,118 @@
 import ohm from "ohm-js"
 
 const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
-    Program   	= Import* Statement*                              --program      
-    Import 		   = import id from id                                --importDec
-    Statement 	= const? static? Type id "=" BoolOp                  	--varDec
-                          | const? static? Type id							      --varDec
-                          | Var "=" BoolOp                      		  --assignExp
-                          | SwitchStatement
-                          | FunctionCall
-                          | FunctionDec
-                          | IfStatement
-                          | WhileStatement
-                          | ForStatement
-                          | ClassDec
-                          | Print
-                          | TypeOf
-                          | ReturnStatement
-                          | SliceCrement 
-                          | continue
-                          | break
-                          | BoolOp
-    ClassDec					= classType id (extends id)? ClassBeginToEnd    --classDec
-    ClassBeginToEnd 	  = openBrace Constructor Statement* closeBrace
-    Constructor				= "plant" "(" Parameters ")" BeginToEnd
-    FunctionDec 			  = functionBeginning static? (Type | void | id) id "(" Parameters ")" BeginToEnd     --funcDec
-    FunctionCall        = Var "(" Arguments ")"     --funcCall
-    IfStatement  			    = ifBeginning "(" BoolOp ")" BeginToEnd ElseifStatement* ElseStatement?       --ifStatement
-    ElseifStatement  		 = elifBeginning "(" BoolOp ")" BeginToEnd                                      --ifStatement
-    ElseStatement  		 = elseBeginning BeginToEnd                                                       --elseStatement
-    WhileStatement 		= whileBeginning "(" BoolOp ")" BeginToEnd                                        --whileStatement
-    ForStatement 			  = forBeginning "(" ForArgs ")" BeginToEnd                                       --forStatement
-    ForArgs          			  = "slice" id "=" BoolOp ";" BoolOp ";" SliceCrement
-    SliceCrement   		  = (id"+=" AddOp | id"-=" AddOp )   -- binary
-                                        | (id"++" | id"--" )							--unary
-    SwitchStatement 		= switch "("Var")" SwitchBeginToEnd                                             --switchStatement
-    SwitchBeginToEnd 		= openBrace Lemoncase+ Defaultcase? closeBrace
-    Lemoncase 			= case BoolOp Statement* 
-    Defaultcase					= default Statement* 
-    Print								= print"("BoolOp")"
-    TypeOf						= typeof "("BoolOp")"
-    ReturnStatement		= return BoolOp?      -returnStatement
-    BeginToEnd 	 = openBrace Statement+ closeBrace 
-    BoolOp 			= BoolOp conop Bool  --binary
+    Program   	          = Import* Statement*                              --program      
+    Import 		            = import id from id                                --importDec
+    Statement 	          = const? static? Type id "=" BoolOp                  	--varDec
+                            | const? static? Type id							      --varDec
+                            | Var "=" BoolOp                      		  --assignExp
+                            | SwitchStatement
+                            | FunctionCall
+                            | FunctionDec
+                            | IfStatement
+                            | WhileStatement
+                            | ForStatement
+                            | ClassDec
+                            | Print
+                            | TypeOf
+                            | ReturnStatement
+                            | SliceCrement 
+                            | continue
+                            | break
+                            | BoolOp
+    ClassDec					    = classType id (extends id)? ClassBeginToEnd    --classDec
+    ClassBeginToEnd 	    = openBrace Constructor Statement* closeBrace
+    Constructor				    = "plant" "(" Parameters ")" BeginToEnd
+    FunctionDec 			    = functionBeginning static? (Type | void | id) id "(" Parameters ")" BeginToEnd --funcDec
+    FunctionCall          = Var "(" Arguments ")"     --funcCall
+    IfStatement  			    = ifBeginning "(" BoolOp ")" BeginToEnd ElseifStatement* ElseStatement?         --ifStatement
+    ElseifStatement  		  = elifBeginning "(" BoolOp ")" BeginToEnd                                       --ifStatement
+    ElseStatement  		    = elseBeginning BeginToEnd                                                      --elseStatement
+    WhileStatement 		    = whileBeginning "(" BoolOp ")" BeginToEnd                                      --whileStatement
+    ForStatement 			    = forBeginning "(" ForArgs ")" BeginToEnd                                       --forStatement
+    ForArgs          		  = "slice" id "=" BoolOp ";" BoolOp ";" SliceCrement
+    SliceCrement   		    = (id"+=" AddOp | id"-=" AddOp )                                                -- binary
+                            | (id"++" | id"--" )							                                            --unary
+    SwitchStatement 		  = switch "("Var")" SwitchBeginToEnd                                             --switchStatement
+    SwitchBeginToEnd 		  = openBrace Lemoncase+ Defaultcase? closeBrace
+    Lemoncase 			      = case BoolOp Statement* 
+    Defaultcase					  = default Statement* 
+    Print								  = print"("BoolOp")"
+    TypeOf						    = typeof "("BoolOp")"
+    ReturnStatement		    = return BoolOp?                                                                --returnStatement
+    BeginToEnd 	          = openBrace Statement+ closeBrace 
+    BoolOp 			          = BoolOp conop Bool                                                             --binary
                             | Bool
-    Bool      		= Bool relop AddOp --binary
+    Bool      	          = Bool relop AddOp                                                              --binary
                             | AddOp
-    AddOp       	  = AddOp addop Term            --binary
-                          | Term
-    Term      		= Term mulop Exponential          --binary
-                          | Exponential
-    Exponential   = Factor "^" Exponential                --binary
+    AddOp                 = AddOp addop Term                                                              --binary
+                            | Term
+    Term      	          = Term mulop Exponential                                                        --binary
+                            | Exponential
+    Exponential           = Factor "^" Exponential                                                        --binary
                             | Factor
-    Factor 		   = FunctionCall                 
-                          | ("-" ) Factor             --unary
-                          | "(" BoolOp ")"            --templateLit
-                          | "[" Arguments "]"					--arrayLit
-                          | "{" DictValues "}"				--objLit
-                          | numlit              
-                          | stringlit           
-                          | boollit
-                          | Var
-    numlit       		= digit+ ("." digit+)?    --literal
-    boollit 		     = "sweet" | "sour"       --boolLit
-    stringlit 		  = "\"" char* "\""         --strLit
-    char 				 = "\\n" 
-                          | "\\'"  
-                          | "\\\""
-                          | "\\\\"
-                          | "\\u{" hexDigit hexDigit? hexDigit? hexDigit? hexDigit? hexDigit?  "}" 			--hex
-                          | ~"\"" ~"\\" any
-    Var					= Var "." Var		 --memberExp        
-                                | Var "["digit+"]"	--memberExp
-                              | id
-    Type       			= ArrayType | types | DictType
+    Factor 		            = FunctionCall                 
+                            | ("-" ) Factor                                                               --unary
+                            | "(" BoolOp ")"                                                              --templateLit
+                            | "[" Arguments "]"					                                                  --arrayLit
+                            | "{" DictValues "}"				                                                  --objLit
+                            | numlit              
+                            | stringlit           
+                            | boollit
+                            | Var
+    numlit       		      = digit+ ("." digit+)?                                                          --literal
+    boollit 		          = "sweet" | "sour"                                                              --boolLit
+    stringlit 		        = "\"" char* "\""                                                               --strLit
+    char 				          = "\\n" 
+                            | "\\'"  
+                            | "\\\""
+                            | "\\\\"
+                            | "\\u{" hexDigit hexDigit? hexDigit? hexDigit? hexDigit? hexDigit?  "}" 			--hex
+                            | ~"\"" ~"\\" any
+    Var					          = Var "." Var		                                                                --memberExp        
+                            | Var "["digit+"]"	                                                          --memberExp
+                            | id
+    Type       			      = ArrayType | types | DictType
     types                 = ("pulp"|"slice"|"taste"|"dontUseMeForEyeDrops") ~alnum
-    ArrayType			= Type "[]"   --arrayDec    
-    DictType			  = "<" Type "," Type ">"   --objDec
-    void					= "noLemon" ~alnum
+    ArrayType			        = Type "[]"                                                                     --arrayDec    
+    DictType			        = "<" Type "," Type ">"                                                         --objDec
+    void					        = "noLemon" ~alnum
     functionBeginning     = "When life gives you lemons try" ~alnum
-    ifBeginning       	= "Squeeze the lemon if" ~alnum
+    ifBeginning       	  = "Squeeze the lemon if" ~alnum
     elifBeginning       	= "Keep juicing if" ~alnum
     elseBeginning       	= "Toss the lemon and do" ~alnum
-    whileBeginning   = "Drink the lemonade while" ~alnum
-    forBeginning 		= "forEachLemon" ~alnum
-    classType				= "Limon" ~alnum
-    extends				  = "branches" ~alnum
-    case					  = "lemonCase" ~alnum
-    print					  = "pour"
-    typeof					= "species"
-    openBrace 			= "BEGIN JUICING" ~alnum
-    closeBrace			= "END JUICING" ~alnum
-    switch 					= "Pick" ~alnum                   
-    break					= "chop" ~alnum
-    continue 			 = "nextLemon" ~alnum
-    return				= "you get lemonade and" ~alnum
-    default				= "citrusLimon" ~alnum
-    const					= "lemonStain" ~alnum
-    static				= "trunk" ~alnum
-    import				= "receive" ~alnum        
-    from				= "from" ~alnum
-    keyword   			= types | void | print | openBrace | closeBrace | switch | break | case | default | classType | const | forBeginning | continue | boollit | typeof
-    id        			= ~keyword letter (alnum | "_")*
-    Arguments 			= (BoolOp",")* BoolOp			--unary
-                          |""
-    Parameters			= ((Type | id) id",")* (Type | id) id	--params
-                    |""
-    DictValues			= (BoolOp ":" BoolOp ",")* BoolOp ":" BoolOp --params
+    whileBeginning        = "Drink the lemonade while" ~alnum
+    forBeginning 		      = "forEachLemon" ~alnum
+    classType				      = "Limon" ~alnum
+    extends				        = "branches" ~alnum
+    case					        = "lemonCase" ~alnum
+    print					        = "pour"
+    typeof					      = "species"
+    openBrace 			      = "BEGIN JUICING" ~alnum
+    closeBrace			      = "END JUICING" ~alnum
+    switch 					      = "Pick" ~alnum                   
+    break					        = "chop" ~alnum
+    continue 			        = "nextLemon" ~alnum
+    return				        = "you get lemonade and" ~alnum
+    default				        = "citrusLimon" ~alnum
+    const					        = "lemonStain" ~alnum
+    static			  	      = "trunk" ~alnum
+    import			  	      = "receive" ~alnum        
+    from				          = "from" ~alnum
+    keyword   			      = types | void | print | openBrace | closeBrace | switch | break | case | default | classType | const | forBeginning | continue | boollit | typeof
+    id        			      = ~keyword letter (alnum | "_")*
+    Arguments 			      = (BoolOp",")* BoolOp			                                                      --unary
                             |""
-    space    				+= "( *)" (~"(* )" any)* "(* )"  				 --longComment
-                                    | "( *)" (~"\n" any)* ("\n" | end) 		 	--comment
-    conop				  = "&&" | "||"
-    relop   				= "<=" | "<" | "==" | "!=" | ">=" | ">"
-    addop 			  = "+" | "-"
-    mulop				  = "*"| "/"| "%"
+    Parameters			      = ((Type | id) id",")* (Type | id) id	                                          --params
+                            |""
+    DictValues			      = (BoolOp ":" BoolOp ",")* BoolOp ":" BoolOp                                    --params
+                            |""
+    space    				      += "( *)" (~"(* )" any)* "(* )"  				                                        --longComment
+                            | "( *)" (~"\n" any)* ("\n" | end) 		 	                                      --comment
+    conop				          = "&&" | "||"
+    relop   			        = "<=" | "<" | "==" | "!=" | ">=" | ">"
+    addop 			          = "+" | "-"
+    mulop				          = "*"| "/"| "%"
   }`)
 
 
