@@ -6,11 +6,11 @@
 import ohm from "ohm-js"
 
 const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
-    Program   	          = Import* Statement*                              --program      
-    Import 		            = import id from id                                --importDec
-    Statement 	          = const? static? Type id "=" BoolOp                  	--varDec
-                            | const? static? Type id							      --varDec
-                            | Var "=" BoolOp                      		  --assignExp
+    Program   	          = Import* Statement*                                                            --program      
+    Import 		            = import id from id                                                             --importDec
+    Statement 	          = const? static? Type id "=" BoolOp                                             --varDec
+                            | const? static? Type id							                                        --varDec
+                            | Var "=" BoolOp                      		                                    --assignExp
                             | SwitchStatement
                             | FunctionCall
                             | FunctionDec
@@ -25,11 +25,11 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
                             | continue
                             | break
                             | BoolOp
-    ClassDec					    = classType id (extends id)? ClassBeginToEnd    --classDec
+    ClassDec					    = classType id (extends id)? ClassBeginToEnd                                    --classDec
     ClassBeginToEnd 	    = openBrace Constructor Statement* closeBrace
     Constructor				    = "plant" "(" Parameters ")" BeginToEnd
     FunctionDec 			    = functionBeginning static? (Type | void | id) id "(" Parameters ")" BeginToEnd --funcDec
-    FunctionCall          = Var "(" Arguments ")"     --funcCall
+    FunctionCall          = Var "(" Arguments ")"                                                         --funcCall
     IfStatement  			    = ifBeginning "(" BoolOp ")" BeginToEnd ElseifStatement* ElseStatement?         --ifStatement
     ElseifStatement  		  = elifBeginning "(" BoolOp ")" BeginToEnd                                       --ifStatement
     ElseStatement  		    = elseBeginning BeginToEnd                                                      --elseStatement
