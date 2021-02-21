@@ -93,6 +93,12 @@ export class UnaryExpression {
     }
 }
 
+export class IdentifierExpression{
+    constructor(name) {
+        this.name = name
+    }
+}
+
 
 
 
