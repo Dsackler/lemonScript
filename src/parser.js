@@ -123,9 +123,6 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
   }`)
 
 const astBuilder = lemonScriptGrammar.createSemantics().addOperation("tree", {
-  /*
-  Stringlit                               --Expects 1 but got 3 I donno
-  */ 
 
   Program(statements) {
     return new ast.Program(statements.tree())
@@ -172,18 +169,9 @@ const astBuilder = lemonScriptGrammar.createSemantics().addOperation("tree", {
   ReturnStatement(_return, returnValue) {
     return new ast.ReturnStatement(returnValue.tree())
   },
-  // Exp_add(left, addOp, right) {
-  //   return new ast.BinaryExpression(left.tree(), addOp.sourceString, right.tree())
-  // },
-  // Exp_sub(left, subOp, right) {
-  //   return new ast.BinaryExpression(left.tree(), subOp.sourceString, right.tree())
-  // },
   id(_first, _rest) {
     return new ast.IdentifierExpression(this.sourceString)
   },
-  // num(digits) {
-  //   return Number(digits.sourceString)
-  // },
   stringlit_strLit(_left, chars, _right) {
     return chars.sourceString
   },
@@ -198,7 +186,6 @@ export function syntaxIsOkay(sourceCode) {
   return match.succeeded()
 }
 
-
 export default function parse(sourceCode) {
   const match = lemonScriptGrammar.match(sourceCode)
   if (!match.succeeded()) {
@@ -207,19 +194,3 @@ export default function parse(sourceCode) {
   return astBuilder(match).tree()
 }
 
-
-
-
-
-// export function syntaxIsOkay(sourceCode) {
-//   const match = astroGrammar.match(sourceCode)
-//   return match.succeeded()
-// }
-
-// export default function parse(sourceCode) {
-//   const match = astroGrammar.match(sourceCode)
-//   if (!match.succeeded()) {
-//     throw new Error(match.message)
-//   }
-//   return astBuilder(match).tree()
-// }

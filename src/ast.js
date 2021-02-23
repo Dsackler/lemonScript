@@ -56,6 +56,30 @@ export class BinaryExp {
     }
 }
 
+export class ArrayType {
+    constructor(memberType) {
+      Object.assign(this, {memberType})
+    }
+}
+
+export class ObjType {
+    constructor(keyType, valueType) {
+      Object.assign(this, {keyType, valueType})
+    }
+}
+
+export class MemberExpression {
+    constructor(vari, index) {
+        Object.assign(this, {vari, index})
+    }
+}
+
+export class PropertyExpression {
+    constructor(var1, var2) {
+        Object.assign(this, {var1, var2})
+    }
+}
+
 export class PrintStatement {
     constructor(argument) {
         this.argument = argument
@@ -86,7 +110,6 @@ export class IfStatement {
       }
 }
 
-
 export class VariableDec {
     constructor(type, variable) {
         Object.assign(this, {type, variable})
@@ -104,7 +127,6 @@ export class VariableDecInit {
         Object.assign(this, {type, variable, init})
     }
 }
-
 
 export class Break {}
 
