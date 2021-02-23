@@ -1,8 +1,14 @@
 
 
 export class Program {
-    constructor(imp, statements) {
-        Object.assign(this, {imp, statements})
+    constructor(imps, statements) {
+        Object.assign(this, {imps, statements})
+    }
+}
+
+export class Import {
+    constructor(imp, location) {
+        Object.assign(this, {imp, location})
     }
 }
 
@@ -54,6 +60,12 @@ export class PrintStatement {
     }
 }
 
+export class typeOfStatement {
+    constructor(argument) {
+        this.argument = argument
+    }
+}
+
 export class ReturnStatement {
     constructor(returnValue) {
       this.returnValue = returnValue
@@ -67,14 +79,21 @@ export class Call {
 }
 
 export class IfStatement {
-    constructor(condition, body) {
-        Object.assign(this, { condition, body })
+    constructor(condition, body, alternate) {
+        Object.assign(this, {condition, body, alternate})
       }
 }
+
 
 export class VariableDec {
     constructor(type, variable) {
         Object.assign(this, {type, variable})
+    }
+}
+
+export class SwitchStatement {
+    constructor(expression, cases, defaultCase) {
+      Object.assign(this, { expression, cases, defaultCase});
     }
 }
 
@@ -88,8 +107,8 @@ export class VariableDecInit {
 export class Break {}
 
 export class UnaryExpression {
-    constructor(op, operand) {
-      Object.assign(this, { op, operand })
+    constructor(op, operand, isprefix) {
+      Object.assign(this, { op, operand, isprefix })
     }
 }
 
