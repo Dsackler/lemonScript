@@ -36,6 +36,8 @@ export class ForStatement {
     }
 }
 
+export class Continue {}
+
 export class Assignment {
     constructor(target, source) {
         Object.assign(this, {target, source})
