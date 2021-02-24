@@ -45,7 +45,7 @@ describe("The Parser", () => {
   fs.readdirSync(BAD_TESTS).forEach((name) => {
       it(`rejects the bad program named ${name}`, (done) => {
         fs.readFile(`${BAD_TESTS}/${name}`, "utf-8", (err, input) => {
-          assert.throws(() => parse(program))
+          assert.throws(() => parse(input))
           done();
         });
       });
