@@ -32,6 +32,16 @@ describe("The syntax", () => {
 })
 
 describe("The Parser", () => {
+  fs.readdirSync(GOOD_TESTS).forEach((name) => {
+      it(`matches the program ${name}`, (done) => {
+        fs.readFile(`${GOOD_TESTS}/${name}`, "utf-8", (err, input) => {
+          assert.ok(parse(input));
+          done();
+        });
+      });
+  });
+})
+describe("The Parser", () => {
   fs.readdirSync(BAD_TESTS).forEach((name) => {
       it(`rejects the bad program named ${name}`, (done) => {
         fs.readFile(`${BAD_TESTS}/${name}`, "utf-8", (err, input) => {
