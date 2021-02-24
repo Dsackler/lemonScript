@@ -215,8 +215,14 @@ const astBuilder = lemonScriptGrammar.createSemantics().addOperation("tree", {
   Defaultcase(_defaultKeyword, statements){
     return statements.tree()
   },
+  Arguments(exps) {
+    return exps.asIteration().tree()
+  },
   Parameters(values) {
     return values.asIteration().tree()
+  },
+  DictValues(pairs) {
+    return pairs.asIteration().tree()
   },
   BeginToEnd(_left, statements, _right) {
     return statements.tree()
@@ -286,6 +292,9 @@ const astBuilder = lemonScriptGrammar.createSemantics().addOperation("tree", {
   },
   DictType(_arrOpen, keyType, _comma, valueType, _arrClose){
     return new ast.ObjType(keyType.tree(), valueType.tree())
+  },
+  KeyValue(key, _sep, value){
+    return new ast.ObjPair(key.tree(), value.tree())
   },
   Binding(type, name){
     return new ast.VariableDec(type.tree(), name.tree())

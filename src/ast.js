@@ -153,6 +153,12 @@ export class ObjLit {
     }
 }
 
+export class ObjPair {
+    constructor(key, value) {
+      Object.assign(this, {key, value})
+    }
+}
+
 export class MemberExpression {
     constructor(vari, index) {
         Object.assign(this, {vari, index})
