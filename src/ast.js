@@ -13,14 +13,26 @@ export class Import {
 }
 
 export class ClassDec {
-    constructor(name, body) {
-        Object.assign(this, {name, body}) 
+    constructor(name, isExt, ext, classBody) {
+        Object.assign(this, {name, isExt, ext, classBody})
+    }
+}
+
+export class ClassBody {
+    constructor(constructor, statements) {
+        Object.assign(this, {constructor, statements})
+    }
+}
+
+export class Constructor {
+    constructor(parameters, body) {
+        Object.assign(this, {parameters, body})
     }
 }
 
 export class FunctionDec {
-    constructor(name, params, body) {
-        Object.assign(this, {name, params, body})
+    constructor(name, stat, returnType, params, body) {
+        Object.assign(this, {name, stat, returnType, params, body})
     }
 }
 
@@ -141,10 +153,3 @@ export class IdentifierExpression{
         this.name = name
     }
 }
-
-
-
-
-
-
-

@@ -7,8 +7,8 @@ import ohm from "ohm-js"
 import * as ast from "./ast.js"
 
 const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
-    Program   	          = Import* Statement*                                                            --program
-    Import 		            = import id from id                                                             --importDec
+    Program   	          = Import* Statement*
+    Import 		            = import id from id
     Statement 	          = const? static? Type id "=" Exp                                                --varDecInit
                             | const? static? Type id							                                        --varDec
                             | Var "=" Exp                      		                                        --assignExp
@@ -59,7 +59,7 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
     Exponential           = Factor "^" Exponential                                                        --binary
                             | Factor
     Factor 		            = FunctionCall
-                            | ("-" ) Factor                                                               --prefix
+                            | ("-") Factor                                                                --prefix
                             | "(" BoolOp ")"                                                              --templateLit
                             | "[" Arguments "]"					                                                  --arrayLit
                             | "{" DictValues "}"				                                                  --objLit
@@ -124,30 +124,88 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
 
 const astBuilder = lemonScriptGrammar.createSemantics().addOperation("tree", {
 
-  Program(statements) {
-    return new ast.Program(statements.tree())
+  Program(imports, statements) {
+    return new ast.Program(imports.tree(), statements.tree())
   },
-  Statement_varDec(con, stat, type, identifier) {
-    return new ast.VariableDec(con.sourceString, stat.sourceString, type.tree(), identifier.tree())
+  Import(_import, imp, _from, location) {
+    return new ast.Import(imp.tree(), location.tree())
   },
   Statement_varDecInit(con, stat, type, identifiers, _eq, exp) {
-    return new ast.VariableDecInit(con.sourceString, stat.sourceString, type.tree(), identifiers.tree(), exp.tree())
+    return new ast.VariableDecInit(
+      con.tree().length !== 0,
+      stat.tree().length !== 0,
+      type.tree(),
+      identifiers.tree(),
+      exp.tree()
+    )
   },
-  Statement_assignExp(identifier, _eq, exp) {
-    return new ast.Assignment(identifier.tree(), exp.tree())
+  Statement_varDec(con, stat, type, identifier) {
+    return new ast.VariableDec(
+      con.tree().length !== 0,
+      stat.tree().length !== 0,
+      type.tree(),
+      identifiers.tree()
+    )
+  },
+  Statement_assignExp(variable, _eq, exp) {
+    return new ast.Assignment(variable.tree(), exp.tree())
+  },
+  ClassDec(_classtype, name, _extKeyword, ext, classBody) {
+    return new ast.ClassDec(
+      name.tree(),
+      _extKeyword.length !== 0,
+      ext.sourceString,
+      classBody.tree()
+    )
+  },
+  ClassBeginToEnd(_classOpen, constructor, statements, _classClose) {
+    return new ast.ClassBody(
+      constructor.tree(),
+      statements.tree()
+    )
+  },
+  Constructor(_plant, _open, parameters, _close, body) {
+    return new ast.Constructor(
+      parameters.tree(),
+      body.tree()
+    )
   },
   FunctionDec(_functionBeginning, stat, returnType, name, _left, parameters, _right, body) {
     return new ast.FunctionDec(
       name.tree(),
-      stat.sourceString,
-      returnType.sourceString,
-      parameters.asIteration().tree(),
+      stat.tree().length !== 0,
+      returnType.tree(),
+      parameters.tree(),
       body.tree()
     )
   },
   FunctionCall(callee, _left, args, _right) {
     return new ast.Call(callee.tree(), args.tree())
   },
+  // IfStatement(_ifBeginning, _left, condition, _right, ifBlock, alternates) {
+  //   return new ast.IfStatement(callee.tree(), args.tree())
+  // },
+  WhileStatement(_whileBeginning, _left, test, _right, body) {
+    return new ast.WhileLoop(test.tree(), body.tree())
+  },
+  // ForStatement(_whileBeginning, _left, test, _right, body) {
+  //   return new ast.WhileLoop(test.tree(), body.tree())
+  // },
+  SliceCrement_binary(variable, op, exp){
+    return new ast.BinaryExp(variable.tree(), op.sourceString, exp.tree())
+  },
+  SliceCrement_postfix(variable, op){
+    return new ast.UnaryExpression(op.sourceString, variable.tree(), false)
+  },
+  // SwitchStatement(_switch, _left, exp, _right, _open, cases, defaultCase, _close){
+  //   return new ast.SwitchStatement(exp.tree(), cases.tree(), defaultCase.tree())
+  // },
+  // Lemoncase(_switch, _left, exp, _right, _open, cases, defaultCase, _close){
+  //   return new ast.SwitchStatement(exp.tree(), cases.tree(), defaultCase.tree())
+  // },
+  // Defaultcase(_switch, _left, exp, _right, _open, cases, defaultCase, _close){
+  //   return new ast.SwitchStatement(exp.tree(), cases.tree(), defaultCase.tree())
+  // },
   Parameters(values) {
     return values.asIteration().tree()
   },
@@ -157,14 +215,44 @@ const astBuilder = lemonScriptGrammar.createSemantics().addOperation("tree", {
   ForStatement(_forBeginning, _left, iterator, _right, body) {
     return new ast.ForLoop(iterator.tree(), body.tree())
   },
-  WhileStatement(_whileBeginning, _left, test, _right, body) {
-    return new ast.WhileLoop(test.tree(), body.tree())
-  },
-  Print(_pour, _left, argument, _right) { //left and right are parens
+  Print(_pour, _left, argument, _right) {
     return new ast.PrintStatement(argument.tree())
   },
+  TypeOf(_typeof, _left, argument, _right) {
+    return new ast.typeOfStatement(argument.tree())
+  },
+  BoolOp_binary(left, op, right){
+    return new ast.BinaryExp(left.tree(), op.sourceString, right.tree())
+  },
+  Bool_binary(left, op, right){
+    return new ast.BinaryExp(left.tree(), op.sourceString, right.tree())
+  },
+  AddOp_binary(left, op, right){
+    return new ast.BinaryExp(left.tree(), op.sourceString, right.tree())
+  },
+  Term_binary(left, op, right){
+    return new ast.BinaryExp(left.tree(), op.sourceString, right.tree())
+  },
+  Exponential_binary(left, op, right){
+    return new ast.BinaryExp(left.tree(), op.sourceString, right.tree())
+  },
+  Factor_prefix(op, operand){
+    return new ast.UnaryExpression(op.sourceString, operand.tree(), true)
+  },
+  Factor_templateLit(_left, exp, _right){
+    return exp.tree()
+  },
+  // Factor_arrayLit(op, operand){
+  //   return new ast.UnaryExpression(op.sourceString, operand.tree(), true)
+  // },
+  // Factor_objLit(op, operand){
+  //   return new ast.UnaryExpression(op.sourceString, operand.tree(), true)
+  // },
   break(_) {
     return new ast.Break()
+  },
+  continue(_) {
+    return new ast.Continue()
   },
   ReturnStatement(_return, returnValue) {
     return new ast.ReturnStatement(returnValue.tree())
@@ -172,14 +260,26 @@ const astBuilder = lemonScriptGrammar.createSemantics().addOperation("tree", {
   id(_first, _rest) {
     return new ast.IdentifierExpression(this.sourceString)
   },
+  numlit_literal(digits, dot, decimals) {
+    return new Number(this.sourceString)
+  },
   stringlit_strLit(_left, chars, _right) {
     return chars.sourceString
+  },
+  boollit_boolLit(bool) {
+    return bool.sourceString
+  },
+  Property_dotMemberExp(var1, _dot, var2){
+    return new ast.PropertyExpression(var1.tree(), var2.tree())
+  },
+  Property_memberExp(var1, _open, index, _close){
+    return new ast.PropertyExpression(vari.tree(), index.sourceString)
   },
   _terminal() {
     return this.sourceString
   },
 })
-  
+
 
 export function syntaxIsOkay(sourceCode) {
   const match = lemonScriptGrammar.match(sourceCode)
@@ -193,4 +293,3 @@ export default function parse(sourceCode) {
     }
   return astBuilder(match).tree()
 }
-
