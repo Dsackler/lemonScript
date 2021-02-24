@@ -28,7 +28,7 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
                             | Exp
     ClassDec					    = classType id (extends id)? ClassBeginToEnd
     ClassBeginToEnd 	    = openBrace Constructor Statement* closeBrace
-    Constructor				    = "plant" "(" Parameters ")" BeginToEnd
+    Constructor				    = plant "(" Parameters ")" BeginToEnd
     FunctionDec 			    = functionBeginning static? (Type | void | id) id "(" Parameters ")" BeginToEnd
     FunctionCall          = Var "(" Arguments ")"
     IfStatement  			    = ifBeginning "(" Exp ")" BeginToEnd ElseifStatement* ElseStatement?
@@ -91,6 +91,7 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
     whileBeginning        = "Drink the lemonade while" ~alnum
     forBeginning 		      = "forEachLemon" ~alnum
     classType				      = "Limon" ~alnum
+    plant				          = "plant" 
     extends				        = "branches" ~alnum
     case					        = "lemonCase" ~alnum
     print					        = "pour"
@@ -295,6 +296,6 @@ export default function parse(sourceCode) {
   const match = lemonScriptGrammar.match(sourceCode)
   if (!match.succeeded()) {
       throw new Error(match.message)
-    }
+  }
   return astBuilder(match).tree()
 }
