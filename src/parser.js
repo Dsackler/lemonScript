@@ -66,9 +66,9 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
                             | stringlit
                             | boollit
                             | Var
-    numlit       		      = digit+ ("." digit+)?                                                          --literal
-    boollit 		          = "sweet" | "sour"                                                              --boolLit
-    stringlit 		        = "\"" char* "\""                                                               --strLit
+    numlit       		      = digit+ ("." digit+)?
+    boollit 		          = "sweet" | "sour"
+    stringlit 		        = "\"" char* "\""
     char 				          = "\\n"
                             | "\\'"
                             | "\\\""
@@ -272,13 +272,13 @@ const astBuilder = lemonScriptGrammar.createSemantics().addOperation("tree", {
   id(_first, _rest) {
     return new ast.IdentifierExpression(this.sourceString)
   },
-  numlit_literal(digits, dot, decimals) {
-    return new Number(this.sourceString)
+  numlit(digits, dot, decimals) {
+    return Number(this.sourceString)
   },
-  stringlit_strLit(_left, chars, _right) {
+  stringlit(_left, chars, _right) {
     return chars.sourceString
   },
-  boollit_boolLit(bool) {
+  boollit(bool) {
     return bool.sourceString
   },
   Property_dotMemberExp(var1, _dot, var2){

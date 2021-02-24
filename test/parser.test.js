@@ -1,4 +1,5 @@
 import assert from "assert"
+import util from "util"
 import parse, { syntaxIsOkay } from "../src/parser.js"
 import fs from "fs"
 
@@ -7,7 +8,10 @@ import fs from "fs"
 const GOOD_TESTS = `test/cases/goodPrograms`;
 const BAD_TESTS = `test/cases/badPrograms`;
 
+const extraExample = `pour(0)`
 
+const expectedAst = `   1 | Program imps=[] statements=[#2]
+   2 | PrintStatement argument=0`
 
 describe("The syntax", () => {
   fs.readdirSync(GOOD_TESTS).forEach((name) => {
@@ -50,4 +54,9 @@ describe("The Parser", () => {
         });
       });
   });
+})
+describe("The ast printer", () => {
+  it("produces the expected AST for all node types", () => {
+    assert.deepStrictEqual(util.format(parse(extraExample)), expectedAst)
+  })
 })
