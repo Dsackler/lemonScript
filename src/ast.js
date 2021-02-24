@@ -171,11 +171,6 @@ export class PropertyExpression {
     }
 }
 
-export class Parameters {
-    constructor(type, name) {
-        Object.assign(this, {type, name})
-    }
-}
 
 export class Continue {}
 

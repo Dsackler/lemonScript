@@ -59,7 +59,7 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
                             | Factor
     Factor 		            = FunctionCall
                             | ("-") Factor                                                                --prefix
-                            | "(" BoolOp ")"                                                              --templateLit
+                            | "(" BoolOp ")"                                                              --parens
                             | "[" Arguments "]"					                                                  --arrayLit
                             | "{" DictValues "}"				                                                  --objLit
                             | numlit
@@ -144,7 +144,7 @@ const astBuilder = lemonScriptGrammar.createSemantics().addOperation("tree", {
       con.tree().length !== 0,
       stat.tree().length !== 0,
       type.tree(),
-      identifiers.tree()
+      identifier.tree()
     )
   },
   Statement_assignExp(variable, _eq, exp) {
@@ -186,7 +186,7 @@ const astBuilder = lemonScriptGrammar.createSemantics().addOperation("tree", {
     return new ast.IfStatement(condition.tree(), ifBlock.tree(), alternates.tree(), elseBlock.tree())
   },
   ElseifStatement(_elifBeginning, _left, condition, _right, elifBlock) {
-    return new ast.IfStatement(condition.tree(), elifBlock.tree())
+    return new ast.ElseIfStatement(condition.tree(), elifBlock.tree())
   },
   ElseStatement(_elseBeginning, elseBlock) {
     return elseBlock.tree()
@@ -251,7 +251,7 @@ const astBuilder = lemonScriptGrammar.createSemantics().addOperation("tree", {
   Factor_prefix(op, operand){
     return new ast.UnaryExpression(op.sourceString, operand.tree(), true)
   },
-  Factor_templateLit(_left, exp, _right){
+  Factor_parens(_left, exp, _right){
     return exp.tree()
   },
   Factor_arrayLit(_open, elements, _close){
@@ -284,8 +284,8 @@ const astBuilder = lemonScriptGrammar.createSemantics().addOperation("tree", {
   Property_dotMemberExp(var1, _dot, var2){
     return new ast.PropertyExpression(var1.tree(), var2.tree())
   },
-  Property_memberExp(var1, _open, index, _close){
-    return new ast.PropertyExpression(vari.tree(), index.sourceString)
+  Property_memberExp(variable, _open, index, _close){
+    return new ast.MemberExpression(variable.tree(), index.sourceString)
   },
   ArrayType(type, _brac){
     return new ast.ArrayType(type.tree())
