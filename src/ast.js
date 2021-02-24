@@ -43,8 +43,14 @@ export class Parameters {
 }
 
 export class ForStatement {
-    constructor(iterator, condition, body) {
-        Object.assign(this, {iterator, condition, body})
+    constructor(forArgs, body) {
+        Object.assign(this, {forArgs, body})
+    }
+}
+
+export class ForArgs {
+    constructor(variable, exp, condition, sliceCrement) {
+        Object.assign(this, {variable, exp, condition, sliceCrement})
     }
 }
 
@@ -117,9 +123,14 @@ export class Call {
 }
 
 export class IfStatement {
-    constructor(condition, body, alternate) {
-        Object.assign(this, {condition, body, alternate})
-      }
+    constructor(condition, body, alternates, elseBlock) {
+        Object.assign(this, {condition, body, alternates, elseBlock})
+    }
+}
+export class ElseIfStatement {
+    constructor(condition, body) {
+        Object.assign(this, {condition, body})
+    }
 }
 
 export class VariableDec {
@@ -131,6 +142,12 @@ export class VariableDec {
 export class SwitchStatement {
     constructor(expression, cases, defaultCase) {
       Object.assign(this, { expression, cases, defaultCase});
+    }
+}
+
+export class LemonCase {
+    constructor(caseExp, statements) {
+      Object.assign(this, { caseExp, statements });
     }
 }
 

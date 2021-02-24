@@ -39,8 +39,7 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
     ForArgs          		  = "slice" id "=" Exp ";" Exp ";" SliceCrement
     SliceCrement   		    = (id "+=" AddOp | id "-=" AddOp )                                              --binary
                             | (id"++" | id"--" )							                                            --postfix
-    SwitchStatement 		  = switch "("Var")" SwitchBeginToEnd
-    SwitchBeginToEnd 		  = openBrace Lemoncase+ Defaultcase? closeBrace
+    SwitchStatement 		  = switch "("Var")" openBrace Lemoncase+ Defaultcase? closeBrace
     Lemoncase 			      = case Exp Statement*
     Defaultcase					  = default Statement*
     Print								  = print "("Exp")"
@@ -182,38 +181,44 @@ const astBuilder = lemonScriptGrammar.createSemantics().addOperation("tree", {
   FunctionCall(callee, _left, args, _right) {
     return new ast.Call(callee.tree(), args.tree())
   },
-  // IfStatement(_ifBeginning, _left, condition, _right, ifBlock, alternates) {
-  //   return new ast.IfStatement(callee.tree(), args.tree())
-  // },
-  WhileStatement(_whileBeginning, _left, test, _right, body) {
-    return new ast.WhileLoop(test.tree(), body.tree())
+  IfStatement(_ifBeginning, _left, condition, _right, ifBlock, alternates, elseBlock) {
+    return new ast.IfStatement(condition.tree(), ifBlock.tree(), alternates.tree(), elseBlock.tree())
   },
-  // ForStatement(_whileBeginning, _left, test, _right, body) {
-  //   return new ast.WhileLoop(test.tree(), body.tree())
-  // },
+  ElseifStatement(_elifBeginning, _left, condition, _right, elifBlock) {
+    return new ast.IfStatement(condition.tree(), elifBlock.tree())
+  },
+  ElseStatement(_elseBeginning, elseBlock) {
+    return elseBlock.tree()
+  },
+  WhileStatement(_whileBeginning, _left, test, _right, body) {
+    return new ast.WhileStatement(test.tree(), body.tree())
+  },
+  ForStatement(_forBeginning, _left, forArgs, _right, body) {
+    return new ast.ForStatement(forArgs.tree(), body.tree())
+  },
+  ForArgs(_slice, name, _eq, exp, _semi1, condition, _semi2, sliceCrement) {
+    return new ast.ForArgs(name.tree(), exp.tree(), condition.tree(), sliceCrement.tree())
+  },
   SliceCrement_binary(variable, op, exp){
     return new ast.BinaryExp(variable.tree(), op.sourceString, exp.tree())
   },
   SliceCrement_postfix(variable, op){
     return new ast.UnaryExpression(op.sourceString, variable.tree(), false)
   },
-  // SwitchStatement(_switch, _left, exp, _right, _open, cases, defaultCase, _close){
-  //   return new ast.SwitchStatement(exp.tree(), cases.tree(), defaultCase.tree())
-  // },
-  // Lemoncase(_switch, _left, exp, _right, _open, cases, defaultCase, _close){
-  //   return new ast.SwitchStatement(exp.tree(), cases.tree(), defaultCase.tree())
-  // },
-  // Defaultcase(_switch, _left, exp, _right, _open, cases, defaultCase, _close){
-  //   return new ast.SwitchStatement(exp.tree(), cases.tree(), defaultCase.tree())
-  // },
+  SwitchStatement(_switch, _left, exp, _right, _open, cases, defaultCase, _close){
+    return new ast.SwitchStatement(exp.tree(), cases.tree(), defaultCase.tree())
+  },
+  Lemoncase(_caseKeyword, exp, statements){
+    return new ast.LemonCase(exp.tree(), statements.tree())
+  },
+  Defaultcase(_defaultKeyword, statements){
+    return statements.tree()
+  },
   Parameters(values) {
     return values.asIteration().tree()
   },
   BeginToEnd(_left, statements, _right) {
     return statements.tree()
-  },
-  ForStatement(_forBeginning, _left, iterator, _right, body) {
-    return new ast.ForLoop(iterator.tree(), body.tree())
   },
   Print(_pour, _left, argument, _right) {
     return new ast.PrintStatement(argument.tree())
