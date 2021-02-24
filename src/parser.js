@@ -81,8 +81,8 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
                             | Var "["digit+"]"                                                            --memberExp
     Type       			      = ArrayType | types | DictType
     types                 = ("pulp"|"slice"|"taste"|"dontUseMeForEyeDrops") ~alnum
-    ArrayType			        = Type "[]"                                                                     --arrayDec
-    DictType			        = "<" Type "," Type ">"                                                         --objDec
+    ArrayType			        = Type "[]"
+    DictType			        = "<" Type "," Type ">"
     void					        = "noLemon" ~alnum
     functionBeginning     = "When life gives you lemons try" ~alnum
     ifBeginning       	  = "Squeeze the lemon if" ~alnum
@@ -91,7 +91,7 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
     whileBeginning        = "Drink the lemonade while" ~alnum
     forBeginning 		      = "forEachLemon" ~alnum
     classType				      = "Limon" ~alnum
-    plant				          = "plant" 
+    plant				          = "plant"
     extends				        = "branches" ~alnum
     case					        = "lemonCase" ~alnum
     print					        = "pour"
@@ -107,7 +107,7 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
     static			  	      = "trunk" ~alnum
     import			  	      = "receive" ~alnum
     from				          = "from" ~alnum
-    keyword   			      = types | void | print | openBrace | closeBrace | switch | break | case | default | classType | const | forBeginning | continue | boollit | typeof
+    keyword   			      = types | void | print | openBrace | closeBrace | switch | break | case | default | classType | plant | const | forBeginning | continue | boollit | typeof
     id        			      = ~keyword letter (alnum | "_")*
     Arguments 			      = ListOf<Exp, ",">
     Parameters			      = ListOf<Binding, ",">
@@ -248,12 +248,12 @@ const astBuilder = lemonScriptGrammar.createSemantics().addOperation("tree", {
   Factor_templateLit(_left, exp, _right){
     return exp.tree()
   },
-  // Factor_arrayLit(op, operand){
-  //   return new ast.UnaryExpression(op.sourceString, operand.tree(), true)
-  // },
-  // Factor_objLit(op, operand){
-  //   return new ast.UnaryExpression(op.sourceString, operand.tree(), true)
-  // },
+  Factor_arrayLit(_open, elements, _close){
+    return new ast.ArrayLit(elements.tree())
+  },
+  Factor_objLit(_open, pairs, _close){
+    return new ast.ObjLit(pairs.tree())
+  },
   break(_) {
     return new ast.Break()
   },
@@ -280,6 +280,15 @@ const astBuilder = lemonScriptGrammar.createSemantics().addOperation("tree", {
   },
   Property_memberExp(var1, _open, index, _close){
     return new ast.PropertyExpression(vari.tree(), index.sourceString)
+  },
+  ArrayType(type, _brac){
+    return new ast.ArrayType(type.tree())
+  },
+  DictType(_arrOpen, keyType, _comma, valueType, _arrClose){
+    return new ast.ObjType(keyType.tree(), valueType.tree())
+  },
+  Binding(type, name){
+    return new ast.VariableDec(type.tree(), name.tree())
   },
   _terminal() {
     return this.sourceString

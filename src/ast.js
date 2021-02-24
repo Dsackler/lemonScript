@@ -1,5 +1,3 @@
-
-
 export class Program {
     constructor(imps, statements) {
         Object.assign(this, {imps, statements})
@@ -9,6 +7,24 @@ export class Program {
 export class Import {
     constructor(imp, location) {
         Object.assign(this, {imp, location})
+    }
+}
+
+export class VariableDecInit {
+    constructor(type, variable, init ) {
+        Object.assign(this, {type, variable, init})
+    }
+}
+
+export class VariableDec {
+    constructor(type, variable) {
+        Object.assign(this, {type, variable})
+    }
+}
+
+export class Assignment {
+    constructor(target, source) {
+        Object.assign(this, {target, source})
     }
 }
 
@@ -36,9 +52,26 @@ export class FunctionDec {
     }
 }
 
-export class Parameters {
-    constructor(type, name) {
-        Object.assign(this, {type, name})
+export class Call {
+    constructor(callee, args) {
+      Object.assign(this, { callee, args })
+    }
+}
+
+export class IfStatement {
+    constructor(condition, body, alternates, elseBlock) {
+        Object.assign(this, {condition, body, alternates, elseBlock})
+    }
+}
+export class ElseIfStatement {
+    constructor(condition, body) {
+        Object.assign(this, {condition, body})
+    }
+}
+
+export class WhileStatement {
+    constructor(condition, body) {
+        Object.assign(this, {condition, body})
     }
 }
 
@@ -54,47 +87,15 @@ export class ForArgs {
     }
 }
 
-export class Continue {}
-
-export class Assignment {
-    constructor(target, source) {
-        Object.assign(this, {target, source})
+export class SwitchStatement {
+    constructor(expression, cases, defaultCase) {
+      Object.assign(this, { expression, cases, defaultCase});
     }
 }
 
-export class WhileStatement {
-    constructor(condition, body) {
-        Object.assign(this, {condition, body})
-    }
-}
-
-export class BinaryExp {
-    constructor(left, op, right) {
-        Object.assign(this, {left, op, right})
-    }
-}
-
-export class ArrayType {
-    constructor(memberType) {
-      Object.assign(this, {memberType})
-    }
-}
-
-export class ObjType {
-    constructor(keyType, valueType) {
-      Object.assign(this, {keyType, valueType})
-    }
-}
-
-export class MemberExpression {
-    constructor(vari, index) {
-        Object.assign(this, {vari, index})
-    }
-}
-
-export class PropertyExpression {
-    constructor(var1, var2) {
-        Object.assign(this, {var1, var2})
+export class LemonCase {
+    constructor(caseExp, statements) {
+      Object.assign(this, { caseExp, statements });
     }
 }
 
@@ -116,54 +117,63 @@ export class ReturnStatement {
     }
 }
 
-export class Call {
-    constructor(callee, args) {
-      Object.assign(this, { callee, args })
+export class BinaryExp {
+    constructor(left, op, right) {
+        Object.assign(this, {left, op, right})
     }
 }
-
-export class IfStatement {
-    constructor(condition, body, alternates, elseBlock) {
-        Object.assign(this, {condition, body, alternates, elseBlock})
-    }
-}
-export class ElseIfStatement {
-    constructor(condition, body) {
-        Object.assign(this, {condition, body})
-    }
-}
-
-export class VariableDec {
-    constructor(type, variable) {
-        Object.assign(this, {type, variable})
-    }
-}
-
-export class SwitchStatement {
-    constructor(expression, cases, defaultCase) {
-      Object.assign(this, { expression, cases, defaultCase});
-    }
-}
-
-export class LemonCase {
-    constructor(caseExp, statements) {
-      Object.assign(this, { caseExp, statements });
-    }
-}
-
-export class VariableDecInit {
-    constructor(type, variable, init ) {
-        Object.assign(this, {type, variable, init})
-    }
-}
-
-export class Break {}
 
 export class UnaryExpression {
     constructor(op, operand, isprefix) {
       Object.assign(this, { op, operand, isprefix })
     }
 }
+
+export class ArrayType {
+    constructor(memberType) {
+      Object.assign(this, {memberType})
+    }
+}
+
+export class ObjType {
+    constructor(keyType, valueType) {
+      Object.assign(this, {keyType, valueType})
+    }
+}
+
+export class ArrayLit {
+    constructor(elements) {
+      Object.assign(this, {elements})
+    }
+}
+
+export class ObjLit {
+    constructor(keyValuePairs) {
+      Object.assign(this, {keyValuePairs})
+    }
+}
+
+export class MemberExpression {
+    constructor(vari, index) {
+        Object.assign(this, {vari, index})
+    }
+}
+
+export class PropertyExpression {
+    constructor(var1, var2) {
+        Object.assign(this, {var1, var2})
+    }
+}
+
+export class Parameters {
+    constructor(type, name) {
+        Object.assign(this, {type, name})
+    }
+}
+
+export class Continue {}
+
+export class Break {}
 
 export class IdentifierExpression{
     constructor(name) {
