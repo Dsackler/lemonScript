@@ -1,10 +1,9 @@
-
 // Parser
 //
 // Exports a default function mapping the source code as a string to the AST.
 
-import ohm from "ohm-js"
-import * as ast from "./ast.js"
+import ohm from 'ohm-js'
+import * as ast from './ast.js'
 
 const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
     Program   	          = Import* Statement*                                                            --program
@@ -122,94 +121,109 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
     mulop				          = "*"| "/"| "%"
   }`)
 
-const astBuilder = lemonScriptGrammar.createSemantics().addOperation("tree", {
-  /*
+const astBuilder = lemonScriptGrammar.createSemantics().addOperation('tree', {
+	/*
   Stringlit                               --Expects 1 but got 3 I donno
-  */ 
+  */
 
-  Program(statements) {
-    return new ast.Program(statements.tree())
-  },
-  Statement_varDec(con, stat, type, identifier) {
-    return new ast.VariableDec(con.sourceString, stat.sourceString, type.tree(), identifier.tree())
-  },
-  Statement_varDecInit(con, stat, type, identifiers, _eq, exp) {
-    return new ast.VariableDecInit(con.sourceString, stat.sourceString, type.tree(), identifiers.tree(), exp.tree())
-  },
-  Statement_assignExp(identifier, _eq, exp) {
-    return new ast.Assignment(identifier.tree(), exp.tree())
-  },
-  FunctionDec(_functionBeginning, stat, returnType, name, _left, parameters, _right, body) {
-    return new ast.FunctionDec(
-      name.tree(),
-      stat.sourceString,
-      returnType.sourceString,
-      parameters.asIteration().tree(),
-      body.tree()
-    )
-  },
-  FunctionCall(callee, _left, args, _right) {
-    return new ast.Call(callee.tree(), args.tree())
-  },
-  Parameters(values) {
-    return values.asIteration().tree()
-  },
-  BeginToEnd(_left, statements, _right) {
-    return statements.tree()
-  },
-  ForStatement(_forBeginning, _left, iterator, _right, body) {
-    return new ast.ForLoop(iterator.tree(), body.tree())
-  },
-  WhileStatement(_whileBeginning, _left, test, _right, body) {
-    return new ast.WhileLoop(test.tree(), body.tree())
-  },
-  Print(_pour, _left, argument, _right) { //left and right are parens
-    return new ast.PrintStatement(argument.tree())
-  },
-  break(_) {
-    return new ast.Break()
-  },
-  ReturnStatement(_return, returnValue) {
-    return new ast.ReturnStatement(returnValue.tree())
-  },
-  // Exp_add(left, addOp, right) {
-  //   return new ast.BinaryExpression(left.tree(), addOp.sourceString, right.tree())
-  // },
-  // Exp_sub(left, subOp, right) {
-  //   return new ast.BinaryExpression(left.tree(), subOp.sourceString, right.tree())
-  // },
-  id(_first, _rest) {
-    return new ast.IdentifierExpression(this.sourceString)
-  },
-  // num(digits) {
-  //   return Number(digits.sourceString)
-  // },
-  stringlit_strLit(_left, chars, _right) {
-    return chars.sourceString
-  },
-  _terminal() {
-    return this.sourceString
-  },
+	Program(statements) {
+		return new ast.Program(statements.tree())
+	},
+	Statement_varDec(con, stat, type, identifier) {
+		return new ast.VariableDec(
+			con.sourceString,
+			stat.sourceString,
+			type.tree(),
+			identifier.tree()
+		)
+	},
+	Statement_varDecInit(con, stat, type, identifiers, _eq, exp) {
+		return new ast.VariableDecInit(
+			con.sourceString,
+			stat.sourceString,
+			type.tree(),
+			identifiers.tree(),
+			exp.tree()
+		)
+	},
+	Statement_assignExp(identifier, _eq, exp) {
+		return new ast.Assignment(identifier.tree(), exp.tree())
+	},
+	FunctionDec(
+		_functionBeginning,
+		stat,
+		returnType,
+		name,
+		_left,
+		parameters,
+		_right,
+		body
+	) {
+		return new ast.FunctionDec(
+			name.tree(),
+			stat.sourceString,
+			returnType.sourceString,
+			parameters.asIteration().tree(),
+			body.tree()
+		)
+	},
+	FunctionCall(callee, _left, args, _right) {
+		return new ast.Call(callee.tree(), args.tree())
+	},
+	Parameters(values) {
+		return values.asIteration().tree()
+	},
+	BeginToEnd(_left, statements, _right) {
+		return statements.tree()
+	},
+	ForStatement(_forBeginning, _left, iterator, _right, body) {
+		return new ast.ForLoop(iterator.tree(), body.tree())
+	},
+	WhileStatement(_whileBeginning, _left, test, _right, body) {
+		return new ast.WhileLoop(test.tree(), body.tree())
+	},
+	Print(_pour, _left, argument, _right) {
+		//left and right are parens
+		return new ast.PrintStatement(argument.tree())
+	},
+	break(_) {
+		return new ast.Break()
+	},
+	ReturnStatement(_return, returnValue) {
+		return new ast.ReturnStatement(returnValue.tree())
+	},
+	// Exp_add(left, addOp, right) {
+	//   return new ast.BinaryExpression(left.tree(), addOp.sourceString, right.tree())
+	// },
+	// Exp_sub(left, subOp, right) {
+	//   return new ast.BinaryExpression(left.tree(), subOp.sourceString, right.tree())
+	// },
+	id(_first, _rest) {
+		return new ast.IdentifierExpression(this.sourceString)
+	},
+	num() {
+		return Number(digits.sourceString)
+	},
+	stringlit_strLit(_left, chars, _right) {
+		return chars.sourceString
+	},
+	_terminal() {
+		return this.sourceString
+	},
 })
-  
 
 export function syntaxIsOkay(sourceCode) {
-  const match = lemonScriptGrammar.match(sourceCode)
-  return match.succeeded()
+	const match = lemonScriptGrammar.match(sourceCode)
+	return match.succeeded()
 }
-
 
 export default function parse(sourceCode) {
-  const match = lemonScriptGrammar.match(sourceCode)
-  if (!match.succeeded()) {
-      throw new Error(match.message)
-    }
-  return astBuilder(match).tree()
+	const match = lemonScriptGrammar.match(sourceCode)
+	if (!match.succeeded()) {
+		throw new Error(match.message)
+	}
+	return astBuilder(match).tree()
 }
-
-
-
-
 
 // export function syntaxIsOkay(sourceCode) {
 //   const match = astroGrammar.match(sourceCode)
