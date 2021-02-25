@@ -34,8 +34,8 @@ export class Assignment {
 }
 
 export class ClassDec {
-    constructor(name, isExt, ext, classBody) {
-        Object.assign(this, {name, isExt, ext, classBody})
+    constructor(name, ext, classBody) {
+        Object.assign(this, {name, ext, classBody})
     }
 }
 
@@ -64,11 +64,11 @@ export class Call {
 }
 
 export class IfStatement {
-    constructor(condition, body, alternates, elseBlock) {
-        Object.assign(this, {condition, body, alternates, elseBlock})
+    constructor(cases, elseBlock) {
+        Object.assign(this, {cases, elseBlock})
     }
 }
-export class ElseIfStatement {
+export class IfCase {
     constructor(condition, body) {
         Object.assign(this, {condition, body})
     }
@@ -110,6 +110,7 @@ export class PrintStatement {
     }
 }
 
+// move to exp
 export class typeOfStatement {
     constructor(argument) {
         this.argument = argument
