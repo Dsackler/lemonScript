@@ -33,18 +33,6 @@ export class Assignment {
     }
 }
 
-export class ClassDec {
-    constructor(name, ext, classBody) {
-        Object.assign(this, {name, ext, classBody})
-    }
-}
-
-export class ClassBody {
-    constructor(constructor, statements) {
-        Object.assign(this, {constructor, statements})
-    }
-}
-
 export class Constructor {
     constructor(parameters, body) {
         Object.assign(this, {parameters, body})
@@ -135,15 +123,59 @@ export class UnaryExpression {
     }
 }
 
-export class ArrayType {
-    constructor(memberType) {
-      Object.assign(this, {memberType})
+export class Type {
+    constructor(name) {
+      this.name = name
+    }
+    static BOOLEAN = new Type("taste")
+    static INT = new Type("slice")
+    static FLOAT = new Type("dontUseMeForEyeDrops")
+    static STRING = new Type("pulp")
+    static VOID = new Type("noLemon")
+    static TYPE = new Type("type")
+    // Equivalence: when are two types the same
+    isEquivalentTo(target) {
+      return this == target
+    }
+    // T1 assignable to T2 is when x:T1 can be assigned to y:T2. By default
+    // this is only when two types are equivalent; however, for other kinds
+    // of types there may be special rules.
+    isAssignableTo(target) {
+      return this.isEquivalentTo(target)
     }
 }
 
-export class ObjType {
+export class ClassDec extends Type {
+    constructor(name, ext, classBody) {
+        super(name)
+        Object.assign(this, {name, ext, classBody})
+    }
+}
+
+export class ClassBody {
+    constructor(constructor, statements) {
+        Object.assign(this, {constructor, statements})
+    }
+}
+
+export class ArrayType extends Type {
+    constructor(memberType) {
+      super(`[${memberType.name}]`)
+      Object.assign(this, {memberType})
+    }
+
+    isEquivalentTo(target) {
+        return target.constructor === ArrayType && this.memberType === target.memberType
+    }
+}
+
+export class ObjType extends Type {
     constructor(keyType, valueType) {
+      super(`<${keyType.name}, ${valueType.name}>`)
       Object.assign(this, {keyType, valueType})
+    }
+    isEquivalentTo(target) {
+        return target.constructor === ObjType && this.keyType === target.keyType && this.valueType === target.valueType
     }
 }
 
