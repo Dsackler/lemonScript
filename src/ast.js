@@ -133,6 +133,7 @@ export class Type {
     static STRING = new Type("pulp")
     static VOID = new Type("noLemon")
     static TYPE = new Type("type")
+    static ANY = new Type("any")
     // Equivalence: when are two types the same
     isEquivalentTo(target) {
       return this == target
