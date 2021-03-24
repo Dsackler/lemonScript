@@ -59,6 +59,28 @@ export class FunctionDec {
     }
 }
 
+// Created during semantic analysis only!
+export class Function {
+  constructor(name) {
+    this.name = name
+  }
+}
+
+// Created during semantic analysis only!
+export class FunctionType {
+  constructor(paramTypes, returnTypes) {
+    Object.assign(this, { paramTypes, returnTypes })
+  }
+  isAssignableTo(target) {
+    return (
+      target.constructor === FunctionType &&
+      this.returnType.isAssignableTo(target.returnType) &&
+      this.parameterTypes.length === target.parameterTypes.length &&
+      this.parameterTypes.every((t, i) => target.parameterTypes[i].isAssignableTo(t))
+    )
+  }
+}
+
 export class Call {
     constructor(callee, args) {
       Object.assign(this, { callee, args })
@@ -89,11 +111,13 @@ export class ForStatement {
 }
 
 export class ForArgs {
-    constructor(variable, exp, condition, sliceCrement) {
-        Object.assign(this, {variable, exp, condition, sliceCrement})
+    constructor(name, exp, condition, sliceCrement) {
+        Object.assign(this, {name, exp, condition, sliceCrement})
     }
 }
 
+// our version of switch forces the first right case to end the statement,
+// so no need for break
 export class SwitchStatement {
     constructor(expression, cases, defaultCase) {
       Object.assign(this, { expression, cases, defaultCase});
@@ -162,17 +186,11 @@ export class Type {
 
 // Created during semantic analysis only!
 export class Variable {
-  constructor(name, con) {
-    Object.assign(this, { name, con })
+  constructor(name, con, type) {
+    Object.assign(this, { name, con, type })
   }
 }
 
-// Created during semantic analysis only!
-export class Function {
-  constructor(name) {
-    this.name = name
-  }
-}
 
 export class ArrayType extends Type {
     constructor(memberType) {
@@ -181,7 +199,7 @@ export class ArrayType extends Type {
     }
 
     isEquivalentTo(target) {
-        return target.constructor === ArrayType && this.memberType === target.memberType
+        return target.constructor === ArrayType && this.memberType.isEquivalentTo(target.memberType)
     }
 }
 
@@ -191,7 +209,9 @@ export class ObjType extends Type {
       Object.assign(this, {keyType, valueType})
     }
     isEquivalentTo(target) {
-        return target.constructor === ObjType && this.keyType === target.keyType && this.valueType === target.valueType
+        return target.constructor === ObjType
+        && this.keyType.isEquivalentTo(target.keyType)
+        && this.valueType.isEquivalentTo(target.valueType)
     }
 }
 

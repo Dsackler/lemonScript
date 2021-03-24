@@ -4,8 +4,6 @@ import {
   FunctionType,
   Function,
   ArrayType,
-  OptionalType,
-  StructDeclaration,
 } from "./ast.js"
 import * as stdlib from "./stdlib.js"
 
@@ -34,12 +32,12 @@ const check = self => ({
   isInteger() {
     must(self.type === Type.INT, `Expected an integer, found ${self.type.name}`)
   },
-  isAType() {
-    must([Type, StructDeclaration].includes(self.constructor), "Type expected")
-  },
-  isAnOptional() {
-    must(self.type.constructor === OptionalType, "Optional expected")
-  },
+  // isAType() {
+  //   must([Type, StructDeclaration].includes(self.constructor), "Type expected")
+  // },
+  // isAnOptional() {
+  //   must(self.type.constructor === OptionalType, "Optional expected")
+  // },
   isAnArray() {
     must(self.type.constructor === ArrayType, "Array expected")
   },
@@ -52,20 +50,26 @@ const check = self => ({
       "Not all elements have the same type"
     )
   },
+  allCasesHaveSameType(cases) {
+    must(
+      cases.every(case => case.caseExp.type === this.type),
+      "Not all cases have the same type as the expression passed in"
+    )
+  },
   isAssignableTo(type) {
     must(
       type === Type.ANY || self.type.isAssignableTo(type),
       `Cannot assign a ${self.type.name} to a ${type.name}`
     )
   },
-  isNotReadOnly() {
-    must(!self.readOnly, `Cannot assign to constant ${self.name}`)
+  isNotAConstant() {
+    must(!self.con, `Cannot assign to constant ${self.name}`)
   },
   areAllDistinct() {
-    must(new Set(self.map(f => f.name)).size === self.length, "Fields must be distinct")
+    must(new Set(self.map(f => f.name)).size === self.length, "Keys must be distinct")
   },
-  isInTheObject(object) {
-    must(object.type.fields.map(f => f.name).includes(self), "No such field")
+  isInTheDictionary(dict) {
+    must(dict.type.fields.map(f => f.name).includes(self), "No such key exists")
   },
   isInsideALoop() {
     must(self.inLoop, "Break can only appear in a loop")
@@ -75,8 +79,8 @@ const check = self => ({
   },
   isCallable() {
     must(
-      self.constructor === StructDeclaration || self.type.constructor == FunctionType,
-      "Call of non-function or non-constructor"
+      self.type.constructor == FunctionType,
+      "Call of non-function"
     )
   },
   returnsNothing() {
@@ -99,9 +103,6 @@ const check = self => ({
   matchParametersOf(calleeType) {
     check(self).match(calleeType.parameterTypes)
   },
-  matchFieldsOf(structType) {
-    check(self).match(structType.fields.map(f => f.type))
-  },
 })
 
 class Context {
@@ -116,15 +117,19 @@ class Context {
     this.inLoop = configuration.inLoop ?? parent?.inLoop ?? false
     // Whether we are in a function, so that we know whether a return
     // statement can appear here, and if so, how we typecheck it
-    this.function = configuration.forFunction ?? parent?.function ?? null
+    this.function = configuration.function ?? parent?.function ?? null
   }
   sees(name) {
     // Search "outward" through enclosing scopes
     return this.locals.has(name) || this.parent?.sees(name)
   }
+  isWithinScope(name) {
+    // Search "outward" through enclosing scopes
+    return this.locals.has(name)
+  }
   add(name, entity) {
     // No shadowing! Prevent addition if id anywhere in scope chain!
-    if (this.sees(name)) {
+    if (this.isWithinScope(name)) {
       throw new Error(`Identifier ${name} already declared`)
     }
     this.locals.set(name, entity)
@@ -146,41 +151,31 @@ class Context {
   analyze(node) {
     return this[node.constructor.name](node)
   }
+  // maybe remove imports...
   Program(p) {
     p.statements = this.analyze(p.statements)
     return p
   }
-  ArrayType(t) {
-    t.baseType = this.analyze(t.baseType)
-    return t
-  }
-  FunctionType(t) {
-    t.parameterTypes = this.analyze(t.parameterTypes)
-    t.returnType = this.analyze(t.returnType)
-    return t
-  }
-  OptionalType(t) {
-    t.baseType = this.analyze(t.baseType)
-    return t
-  }
-  VariableDeclaration(d) {
+  VariableDecInit(d) {
     // Declarations generate brand new variable objects
-    d.initializer = this.analyze(d.initializer)
-    d.variable = new Variable(d.name, d.readOnly)
-    d.variable.type = d.initializer.type
+    d.init = this.analyze(d.init)
+    d.variable = new Variable(d.name, d.con, d.type)
+    check(d.variable).hasSameTypeAs(d.init)
     this.add(d.variable.name, d.variable)
     return d
   }
-  StructDeclaration(d) {
-    // Add early to allow recursion
-    this.add(d.name, d) // TODO is this ok?
-    d.fields = this.analyze(d.fields)
-    check(d.fields).areAllDistinct()
+  VariableDec(d) {
+    // Declarations generate brand new variable objects
+    d.variable = new Variable(d.identifier, d.con, d.type)
+    this.add(d.variable.name, d.variable)
     return d
   }
-  Field(f) {
-    f.type = this.analyze(f.type)
-    return f
+  Assignment(s) {
+    s.source = this.analyze(s.source)
+    s.target = this.analyze(s.target)
+    check(s.source).isAssignableTo(s.target.type)
+    check(s.target).isNotAConstant()
+    return s
   }
   FunctionDeclaration(d) {
     d.returnType = d.returnType ? this.analyze(d.returnType) : Type.VOID
@@ -188,16 +183,72 @@ class Context {
     const f = (d.function = new Function(d.name))
     // When entering a function body, we must reset the inLoop setting,
     // because it is possible to declare a function inside a loop!
-    const childContext = this.newChild({ inLoop: false, forFunction: f })
-    d.parameters = childContext.analyze(d.parameters)
+    const childContext = this.newChild({ inLoop: false, function: f })
+    d.params = childContext.analyze(d.params)
     f.type = new FunctionType(
-      d.parameters.map(p => p.type),
+      d.params.map(p => p.type),
       d.returnType
     )
     // Add before analyzing the body to allow recursion
     this.add(f.name, f)
     d.body = childContext.analyze(d.body)
     return d
+  }
+  Call(c) {
+    c.callee = this.analyze(c.callee)
+    check(c.callee).isCallable()
+    c.args = this.analyze(c.args)
+    check(c.args).matchParametersOf(c.callee.type)
+    c.type = c.callee.type.returnType
+    return c
+  }
+  IfStatement(s) {
+    s.cases.map(case => this.analyze(case))
+    s.elseBlock = this.newChild().analyze(s.elseBlock)
+    return s
+  }
+  IfCase(s) {
+    s.condition = this.analyze(s.condition)
+    check(s.condition).isBoolean()
+    s.body = this.newChild().analyze(s.body)
+    return s
+  }
+  WhileStatement(s) {
+    s.condition = this.analyze(s.condition)
+    check(s.condition).isBoolean()
+    s.body = this.newChild({ inLoop: true }).analyze(s.body)
+    return s
+  }
+  ForStatement(s) {
+    s.forArgs = this.analyze(s.forArgs)
+    s.body = this.newChild({ inLoop: true }).analyze(s.body)
+    return s
+  }
+  forArgs(s) {
+    s.exp = this.analyze(s.exp)
+    s.variable = new Variable(s.name, false, Type.INT)
+    check(s.variable).hasSameTypeAs(s.init)
+
+    s.condition = this.analyze(s.condition)
+    check(s.condition).isBoolean()
+    this.add(s.variable.name, s.variable)
+
+    // maybe wrong?
+    s.sliceCrement = this.analyze(s.sliceCrement)
+
+    return s
+  }
+  SwitchStatement(s){
+    s.expression = this.analyze(s.expression)
+    s.cases.map(case => this.analyze(case))
+    check(s.expression).allCasesHaveSameType(s.cases)
+    s.defaultCase = this.analyze(s.defaultCase)
+    return s
+  }
+  LemonCase(s){
+    s.caseExp = this.analyze(s.caseExp)
+    s.statements = this.newChild().analyze(s.statements)
+    return s
   }
   Parameter(p) {
     p.type = this.analyze(p.type)
@@ -212,13 +263,6 @@ class Context {
   Decrement(s) {
     s.variable = this.analyze(s.variable)
     check(s.variable).isInteger()
-    return s
-  }
-  Assignment(s) {
-    s.source = this.analyze(s.source)
-    s.target = this.analyze(s.target)
-    check(s.source).isAssignableTo(s.target.type)
-    check(s.target).isNotReadOnly()
     return s
   }
   BreakStatement(s) {
@@ -237,31 +281,6 @@ class Context {
     check(this.function).returnsNothing()
     return s
   }
-  IfStatement(s) {
-    s.test = this.analyze(s.test)
-    check(s.test).isBoolean()
-    s.consequent = this.newChild().analyze(s.consequent)
-    if (s.alternate.constructor === Array) {
-      // It's a block of statements, make a new context
-      s.alternate = this.newChild().analyze(s.alternate)
-    } else if (s.alternate) {
-      // It's a trailing if-statement, so same context
-      s.alternate = this.analyze(s.alternate)
-    }
-    return s
-  }
-  ShortIfStatement(s) {
-    s.test = this.analyze(s.test)
-    check(s.test).isBoolean()
-    s.consequent = this.newChild().analyze(s.consequent)
-    return s
-  }
-  WhileStatement(s) {
-    s.test = this.analyze(s.test)
-    check(s.test).isBoolean()
-    s.body = this.newChild({ inLoop: true }).analyze(s.body)
-    return s
-  }
   RepeatStatement(s) {
     s.count = this.analyze(s.count)
     check(s.count).isInteger()
@@ -275,14 +294,6 @@ class Context {
     check(s.high).isInteger()
     s.iterator = new Variable(s.iterator, true)
     s.iterator.type = Type.INT
-    s.body = this.newChild({ inLoop: true }).analyze(s.body)
-    return s
-  }
-  ForStatement(s) {
-    s.collection = this.analyze(s.collection)
-    check(s.collection).isAnArray()
-    s.iterator = new Variable(s.iterator, true)
-    s.iterator.type = s.collection.type.baseType
     s.body = this.newChild({ inLoop: true }).analyze(s.body)
     return s
   }
@@ -357,6 +368,15 @@ class Context {
     }
     return e
   }
+  ArrayType(t) {
+    t.baseType = this.analyze(t.baseType)
+    return t
+  }
+  FunctionType(t) {
+    t.parameterTypes = this.analyze(t.parameterTypes)
+    t.returnType = this.analyze(t.returnType)
+    return t
+  }
   EmptyOptional(e) {
     e.baseType = this.analyze(e.baseType)
     e.type = new OptionalType(e.baseType)
@@ -385,19 +405,6 @@ class Context {
     check(e.field).isInTheObject(e.object)
     e.type = e.object.type.fields.find(f => f.name === e.field).type
     return e
-  }
-  Call(c) {
-    c.callee = this.analyze(c.callee)
-    check(c.callee).isCallable()
-    c.args = this.analyze(c.args)
-    if (c.callee.constructor === StructDeclaration) {
-      check(c.args).matchFieldsOf(c.callee)
-      c.type = c.callee // weird but seems ok for now
-    } else {
-      check(c.args).matchParametersOf(c.callee.type)
-      c.type = c.callee.type.returnType
-    }
-    return c
   }
   IdentifierExpression(e) {
     // Id expressions get "replaced" with the variables they refer to

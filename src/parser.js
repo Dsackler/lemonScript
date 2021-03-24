@@ -35,7 +35,7 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
     ElseStatement         = elseBeginning BeginToEnd
     WhileStatement        = whileBeginning "(" Exp ")" BeginToEnd
     ForStatement          = forBeginning "(" ForArgs ")" BeginToEnd
-    ForArgs               = "slice" id "=" Exp ";" Exp ";" SliceCrement
+    ForArgs               = iteratorType id "=" Exp ";" Exp ";" SliceCrement
     SliceCrement          = (id "+=" AddOp | id "-=" AddOp )                                             --binary
                             | (id"++" | id"--" )                                                         --postfix
     SwitchStatement       = switch "("Var")" openBrace Lemoncase+ Defaultcase? closeBrace
@@ -90,6 +90,7 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
     whileBeginning        = "Drink the lemonade while" ~alnum
     forBeginning          = "forEachLemon" ~alnum
     classType             = "Limon" ~alnum
+    iteratorType          = "slice" ~alnum
     plant                 = "plant"
     extends               = "branches" ~alnum
     case                  = "lemonCase" ~alnum
@@ -110,6 +111,7 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
                             | closeBrace | switch | break | case
                             | default | classType | plant | const
                             | forBeginning | continue | boollit | typeof
+                            | iteratorType
     id                    = ~keyword letter (alnum | "_")*
     Arguments             = ListOf<Exp, ",">
     Parameters            = ListOf<Binding, ",">
