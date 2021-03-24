@@ -36,9 +36,6 @@ const check = self => ({
   // isAType() {
   //   must([Type, StructDeclaration].includes(self.constructor), "Type expected")
   // },
-  // isAnOptional() {
-  //   must(self.type.constructor === OptionalType, "Optional expected")
-  // },
   isAnArray() {
     must(self.type.constructor === ArrayType, "Array expected")
   },
@@ -173,7 +170,9 @@ class Context {
   VariableDecInit(d) {
     // Declarations generate brand new variable objects
     d.init = this.analyze(d.init)
+    console.log(d.init.type)
     d.variable = new Variable(d.name, d.con, d.type)
+    console.log(d.variable.type)
     check(d.variable).hasSameTypeAs(d.init)
     this.add(d.variable.name, d.variable)
     return d
@@ -381,7 +380,7 @@ class Context {
     check(this).isInsideALoop()
     return s
   }
-  
+
   IdentifierExpression(e) {
     // Id expressions get "replaced" with the variables they refer to
     return this.lookup(e.name)
@@ -425,7 +424,7 @@ export default function analyze(node) {
   const initialContext = new Context()
 
   // Add in all the predefined identifiers from the stdlib module
-  const library = { ...stdlib.types, ...stdlib.constants, ...stdlib.functions }
+  const library = { ...stdlib.types, ...stdlib.functions }
   for (const [name, type] of Object.entries(library)) {
     initialContext.add(name, type)
   }
