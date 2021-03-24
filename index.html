@@ -2,27 +2,250 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Document</title>
+		<!-- CSS only -->
+		<link
+			rel="stylesheet"
+			href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+			integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
+			crossorigin="anonymous"
+		/>
+		<link
+			rel="stylesheet"
+			href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+			integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+			crossorigin="anonymous"
+		/>
+		<link
+			href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css"
+			rel="stylesheet"
+			type="text/css"
+		/>
+		<title>lemonScript</title>
 	</head>
-	<body>
-		<h1>lemonScript</h1>
-		<p>
-			Lorem ipsum dolor sit amet, consectetur adipisicing elit. Impedit
-			vero ad consequatur, provident illo excepturi. Autem ducimus
-			distinctio enim, quibusdam laborum eaque modi, nihil maiores quia,
-			praesentium sapiente ad recusandae.
-		</p>
-		<p>
-			Lorem ipsum dolor sit amet, consectetur adipisicing elit. Impedit
-			vero ad consequatur, provident illo excepturi. Autem ducimus
-			distinctio enim, quibusdam laborum eaque modi, nihil maiores quia,
-			praesentium sapiente ad recusandae.
-		</p>
-		<p>
-			Lorem ipsum dolor sit amet, consectetur adipisicing elit. Impedit
-			vero ad consequatur, provident illo excepturi. Autem ducimus
-			distinctio enim, quibusdam laborum eaque modi, nihil maiores quia,
-			praesentium sapiente ad recusandae.
-		</p>
+
+	<body class="page-top">
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			<a class="navbar-brand" href="#">lemonScript</a>
+			<button
+				class="navbar-toggler"
+				type="button"
+				data-toggle="collapse"
+				data-target="#navbarSupportedContent"
+				aria-controls="navbarSupportedContent"
+				aria-expanded="false"
+				aria-label="Toggle navigation"
+			>
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<nav
+				class="navbar navbar-expand-lg bg-primary fixed-top"
+				id="mainNav"
+			>
+				<div class="container">
+					<a
+						class="navbar-brand js-scroll-trigger text-white"
+						href="#page-top"
+						>lemonScript</a
+					>
+					<button
+						class="navbar-toggler navbar-toggler-right text-uppercase bg-primary text-white rounded"
+						type="button"
+						data-toggle="collapse"
+						data-target="#navbarResponsive"
+						aria-controls="navbarResponsive"
+						aria-expanded="false"
+						aria-label="Toggle navigation"
+					>
+						Menu
+						<i class="fas fa-bars"></i>
+					</button>
+					<div class="collapse navbar-collapse" id="navbarResponsive">
+						<ul class="navbar-nav ml-auto">
+							<li class="nav-item mx-0 mx-lg-1">
+								<a
+									class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger text-white"
+									href="#about"
+									>About</a
+								>
+							</li>
+							<li class="nav-item mx-0 mx-lg-1">
+								<a
+									class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger text-white"
+									href="#codeExamples"
+									>Code Examples</a
+								>
+							</li>
+							<li class="nav-item mx-0 mx-lg-1">
+								<a
+									class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger text-white"
+									href="#developers"
+									>Developers</a
+								>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</nav>
+		</nav>
+		<header class="masthead text-primary text-center mb-5 pb-5">
+			<div class="container" id="home">
+				<img
+					class="img-fluid mb-0 d-block mx-auto px-auto"
+					src="lemon.jpeg"
+					alt=""
+					style="margin: -100px 0 0 -400px; overflow: hidden"
+				/>
+				<h1 class="mb-0">lemonScript</h1>
+				<hr class="star-light" />
+				<h3 class="font-weight-light mb-0 text-center">
+					When life gives you lemons ... code in lemonScript
+				</h3>
+			</div>
+		</header>
+		<section class="text-primary mt-5 pt-5" id="about">
+			<div class="container">
+				<h2 class="text-center text-uppercase text-primary mt-10">
+					About
+				</h2>
+				<hr class="star-dark mb-5" />
+				<div class="row">
+					<div class="col-lg-6 mx-auto text-center">
+						<p class="lead">
+							One morning, a young Khalid awoke and decided to
+							finish his A.I assignment. “Gosh, I just hate python
+							more than life itself” he muttered as he typed with
+							a sour face. At that moment, he looked at the lemon
+							pulp he has been collecting for the past 5 years due
+							to his midnight lemon snack addiction. At that
+							moment, he decided to call his much smarter and
+							superior friend David to write him a language that
+							everyone could enjoy. So, David formed a team with
+							Brent, Julian, Justin, Raul, and Khalid with the
+							intent to create a language for all lemon
+							enthusiasts. The stage has been set. lemonScript was
+							to be a self-explanatory, statically-typed, esoteric
+							language with the sole purpose of saving people who
+							had a sour taste in their mouth from using popular
+							languages.
+						</p>
+					</div>
+				</div>
+				<div class="text-center mt-4">
+					<a
+						class="btn btn-xl btn-outline-dark"
+						href="https://github.com/Dsackler/lemonScript"
+						target="_blank"
+					>
+						<i class="fas fa-download mr-2"></i>
+						Visit Our Github!
+					</a>
+					<a
+						class="btn btn-xl btn-outline-dark"
+						href="https://github.com/Dsackler/lemonScript/blob/main/src/parser.js"
+						target="_blank"
+					>
+						<i class="fas fa-file-signature mr-2"></i>
+						See Our Grammar!
+					</a>
+				</div>
+			</div>
+		</section>
+
+		<section class="text-primary mt-5 pt-5" id="about">
+			<div class="container">
+				<h2 class="text-center text-uppercase text-primary mt-10">
+					Examples
+				</h2>
+				<hr class="star-dark mb-5" />
+				<div class="row">
+					<div class="col-lg-6 mx-auto text-center">
+						<p class="lead">
+							One morning, a young Khalid awoke and decided to
+							finish his A.I assignment. “Gosh, I just hate python
+							more than life itself” he muttered as he typed with
+							a sour face. At that moment, he looked at the lemon
+							pulp he has been collecting for the past 5 years due
+							to his midnight lemon snack addiction. At that
+							moment, he decided to call his much smarter and
+							superior friend David to write him a language that
+							everyone could enjoy. So, David formed a team with
+							Brent, Julian, Justin, Raul, and Khalid with the
+							intent to create a language for all lemon
+							enthusiasts. The stage has been set. lemonScript was
+							to be a self-explanatory, statically-typed, esoteric
+							language with the sole purpose of saving people who
+							had a sour taste in their mouth from using popular
+							languages.
+						</p>
+					</div>
+				</div>
+				<div class="text-center mt-4">
+					<a
+						class="btn btn-xl btn-outline-dark"
+						href="https://github.com/Dsackler/lemonScript"
+						target="_blank"
+					>
+						<i class="fas fa-download mr-2"></i>
+						Visit Our Github!
+					</a>
+					<a
+						class="btn btn-xl btn-outline-dark"
+						href="https://github.com/Dsackler/lemonScript/blob/main/src/parser.js"
+						target="_blank"
+					>
+						<i class="fas fa-file-signature mr-2"></i>
+						See Our Grammar!
+					</a>
+				</div>
+			</div>
+		</section>
+		<section class="text-primary mt-5 pt-5" id="about">
+			<div class="container">
+				<h2 class="text-center text-uppercase text-primary mt-10">
+					Developer
+				</h2>
+				<hr class="star-dark mb-5" />
+				<div class="row">
+					<div class="col-lg-6 mx-auto text-center">
+						<p class="lead">
+							One morning, a young Khalid awoke and decided to
+							finish his A.I assignment. “Gosh, I just hate python
+							more than life itself” he muttered as he typed with
+							a sour face. At that moment, he looked at the lemon
+							pulp he has been collecting for the past 5 years due
+							to his midnight lemon snack addiction. At that
+							moment, he decided to call his much smarter and
+							superior friend David to write him a language that
+							everyone could enjoy. So, David formed a team with
+							Brent, Julian, Justin, Raul, and Khalid with the
+							intent to create a language for all lemon
+							enthusiasts. The stage has been set. lemonScript was
+							to be a self-explanatory, statically-typed, esoteric
+							language with the sole purpose of saving people who
+							had a sour taste in their mouth from using popular
+							languages.
+						</p>
+					</div>
+				</div>
+				<div class="text-center mt-4">
+					<a
+						class="btn btn-xl btn-outline-dark"
+						href="https://github.com/Dsackler/lemonScript"
+						target="_blank"
+					>
+						<i class="fas fa-download mr-2"></i>
+						Visit Our Github!
+					</a>
+					<a
+						class="btn btn-xl btn-outline-dark"
+						href="https://github.com/Dsackler/lemonScript/blob/main/src/parser.js"
+						target="_blank"
+					>
+						<i class="fas fa-file-signature mr-2"></i>
+						See Our Grammar!
+					</a>
+				</div>
+			</div>
+		</section>
 	</body>
 </html>
