@@ -1,6 +1,11 @@
+import util from "util"
+
 export class Program {
     constructor(imps, statements) {
         Object.assign(this, {imps, statements})
+    }
+    [util.inspect.custom]() {
+      return prettied(this)
     }
 }
 
@@ -11,32 +16,20 @@ export class Import {
 }
 
 export class VariableDecInit {
-    constructor(type, variable, init ) {
-        Object.assign(this, {type, variable, init})
+    constructor(con, stat, type, variable, init ) {
+        Object.assign(this, {con, stat, type, variable, init})
     }
 }
 
 export class VariableDec {
-    constructor(type, variable) {
-        Object.assign(this, {type, variable})
+    constructor(con, stat, type, identifier) {
+        Object.assign(this, {con, stat, type, identifier})
     }
 }
 
 export class Assignment {
     constructor(target, source) {
         Object.assign(this, {target, source})
-    }
-}
-
-export class ClassDec {
-    constructor(name, isExt, ext, classBody) {
-        Object.assign(this, {name, isExt, ext, classBody})
-    }
-}
-
-export class ClassBody {
-    constructor(constructor, statements) {
-        Object.assign(this, {constructor, statements})
     }
 }
 
@@ -59,11 +52,11 @@ export class Call {
 }
 
 export class IfStatement {
-    constructor(condition, body, alternates, elseBlock) {
-        Object.assign(this, {condition, body, alternates, elseBlock})
+    constructor(cases, elseBlock) {
+        Object.assign(this, {cases, elseBlock})
     }
 }
-export class ElseIfStatement {
+export class IfCase {
     constructor(condition, body) {
         Object.assign(this, {condition, body})
     }
@@ -105,6 +98,7 @@ export class PrintStatement {
     }
 }
 
+// move to exp
 export class typeOfStatement {
     constructor(argument) {
         this.argument = argument
@@ -129,15 +123,60 @@ export class UnaryExpression {
     }
 }
 
-export class ArrayType {
-    constructor(memberType) {
-      Object.assign(this, {memberType})
+export class Type {
+    constructor(name) {
+      this.name = name
+    }
+    static BOOLEAN = new Type("taste")
+    static INT = new Type("slice")
+    static FLOAT = new Type("dontUseMeForEyeDrops")
+    static STRING = new Type("pulp")
+    static VOID = new Type("noLemon")
+    static TYPE = new Type("type")
+    static ANY = new Type("any")
+    // Equivalence: when are two types the same
+    isEquivalentTo(target) {
+      return this == target
+    }
+    // T1 assignable to T2 is when x:T1 can be assigned to y:T2. By default
+    // this is only when two types are equivalent; however, for other kinds
+    // of types there may be special rules.
+    isAssignableTo(target) {
+      return this.isEquivalentTo(target)
     }
 }
 
-export class ObjType {
+export class ClassDec extends Type {
+    constructor(name, ext, classBody) {
+        super(name)
+        Object.assign(this, {name, ext, classBody})
+    }
+}
+
+export class ClassBody {
+    constructor(constructor, statements) {
+        Object.assign(this, {constructor, statements})
+    }
+}
+
+export class ArrayType extends Type {
+    constructor(memberType) {
+      super(`[${memberType.name}]`)
+      Object.assign(this, {memberType})
+    }
+
+    isEquivalentTo(target) {
+        return target.constructor === ArrayType && this.memberType === target.memberType
+    }
+}
+
+export class ObjType extends Type {
     constructor(keyType, valueType) {
+      super(`<${keyType.name}, ${valueType.name}>`)
       Object.assign(this, {keyType, valueType})
+    }
+    isEquivalentTo(target) {
+        return target.constructor === ObjType && this.keyType === target.keyType && this.valueType === target.valueType
     }
 }
 
@@ -180,4 +219,36 @@ export class IdentifierExpression{
     constructor(name) {
         this.name = name
     }
+}
+
+// Stolen from Dr Toal, thanks!
+function prettied(node) {
+  // Return a compact and pretty string representation of the node graph,
+  // taking care of cycles. Written here from scratch because the built-in
+  // inspect function, while nice, isn't nice enough.
+  const tags = new Map()
+
+  function tag(node) {
+    if (tags.has(node) || typeof node !== "object" || node === null) return
+    tags.set(node, tags.size + 1)
+    for (const child of Object.values(node)) {
+      Array.isArray(child) ? child.forEach(tag) : tag(child)
+    }
+  }
+
+  function* lines() {
+    function view(e) {
+      if (tags.has(e)) return `#${tags.get(e)}`
+      if (Array.isArray(e)) return `[${e.map(view)}]`
+      return util.inspect(e)
+    }
+    for (let [node, id] of [...tags.entries()].sort((a, b) => a[1] - b[1])) {
+      let [type, props] = [node.constructor.name, ""]
+      Object.entries(node).forEach(([k, v]) => (props += ` ${k}=${view(v)}`))
+      yield `${String(id).padStart(4, " ")} | ${type}${props}`
+    }
+  }
+
+  tag(node)
+  return [...lines()].join("\n")
 }

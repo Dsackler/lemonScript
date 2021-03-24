@@ -6,11 +6,11 @@ import ohm from 'ohm-js'
 import * as ast from './ast.js'
 
 const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
-    Program   	          = Import* Statement*
-    Import 		            = import id from id
-    Statement 	          = const? static? Type id "=" Exp                                                --varDecInit
-                            | const? static? Type id							                                        --varDec
-                            | Var "=" Exp                      		                                        --assignExp
+    Program               = Import* Statement*
+    Import                = import id from id
+    Statement             = const? static? Type id "=" Exp                                                --varDecInit
+                            | const? static? Type id                                                      --varDec
+                            | Var "=" Exp                                                                 --assignExp
                             | SwitchStatement
                             | FunctionCall
                             | FunctionDec
@@ -19,106 +19,108 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
                             | ForStatement
                             | ClassDec
                             | Print
-                            | TypeOf
                             | ReturnStatement
                             | SliceCrement
                             | continue
                             | break
                             | Exp
-    ClassDec					    = classType id (extends id)? ClassBeginToEnd
-    ClassBeginToEnd 	    = openBrace Constructor Statement* closeBrace
-    Constructor				    = plant "(" Parameters ")" BeginToEnd
-    FunctionDec 			    = functionBeginning static? (Type | void | id) id "(" Parameters ")" BeginToEnd
+    ClassDec              = classType id (extends id)? ClassBeginToEnd
+    ClassBeginToEnd       = openBrace Constructor Statement* closeBrace
+    Constructor           = plant "(" Parameters ")" BeginToEnd
+    FunctionDec           = functionBeginning static? (Type | void | id) id "(" Parameters ")" BeginToEnd
     FunctionCall          = Var "(" Arguments ")"
-    IfStatement  			    = ifBeginning "(" Exp ")" BeginToEnd ElseifStatement* ElseStatement?
-    ElseifStatement  		  = elifBeginning "(" Exp ")" BeginToEnd
-    ElseStatement  		    = elseBeginning BeginToEnd
-    WhileStatement 		    = whileBeginning "(" Exp ")" BeginToEnd
-    ForStatement 			    = forBeginning "(" ForArgs ")" BeginToEnd
-    ForArgs          		  = "slice" id "=" Exp ";" Exp ";" SliceCrement
-    SliceCrement   		    = (id "+=" AddOp | id "-=" AddOp )                                              --binary
-                            | (id"++" | id"--" )							                                            --postfix
-    SwitchStatement 		  = switch "("Var")" openBrace Lemoncase+ Defaultcase? closeBrace
-    Lemoncase 			      = case Exp Statement*
-    Defaultcase					  = default Statement*
-    Print								  = print "("Exp")"
-    TypeOf						    = typeof "("Exp")"
-    ReturnStatement		    = return Exp?
-    BeginToEnd 	          = openBrace Statement+ closeBrace
-    Exp                   = BoolOp
-    BoolOp 			          = BoolOp logop Bool                                                             --binary
-                            | Bool
-    Bool      	          = Bool relop AddOp                                                              --binary
+    IfStatement           = ifBeginning "(" Exp ")" BeginToEnd ElseifStatement* ElseStatement?
+    ElseifStatement       = elifBeginning "(" Exp ")" BeginToEnd
+    ElseStatement         = elseBeginning BeginToEnd
+    WhileStatement        = whileBeginning "(" Exp ")" BeginToEnd
+    ForStatement          = forBeginning "(" ForArgs ")" BeginToEnd
+    ForArgs               = "slice" id "=" Exp ";" Exp ";" SliceCrement
+    SliceCrement          = (id "+=" AddOp | id "-=" AddOp )                                             --binary
+                            | (id"++" | id"--" )                                                         --postfix
+    SwitchStatement       = switch "("Var")" openBrace Lemoncase+ Defaultcase? closeBrace
+    Lemoncase             = case Exp Statement*
+    Defaultcase           = default Statement*
+    Print                 = print "("Exp")"
+    TypeOf                = typeof "("Exp")"
+    ReturnStatement       = return Exp?
+    BeginToEnd            = openBrace Statement+ closeBrace
+    Exp                   = Exp logop Joint                                                             --binary
+                            | Joint
+    Joint                 = Joint relop AddOp                                                           --binary
                             | AddOp
-    AddOp                 = AddOp addop Term                                                              --binary
+    AddOp                 = AddOp addop Term                                                            --binary
                             | Term
-    Term      	          = Term mulop Exponential                                                        --binary
+    Term                  = Term mulop Exponential                                                      --binary
                             | Exponential
-    Exponential           = Factor "^" Exponential                                                        --binary
+    Exponential           = Factor "^" Exponential                                                      --binary
                             | Factor
-    Factor 		            = FunctionCall
-                            | ("-") Factor                                                                --prefix
-                            | "(" BoolOp ")"                                                              --parens
-                            | "[" Arguments "]"					                                                  --arrayLit
-                            | "{" DictValues "}"				                                                  --objLit
+    Factor                = TypeOf
+                            | FunctionCall
+                            | ("-") Factor                                                              --prefix
+                            | "(" Exp ")"                                                               --parens
+                            | "[" Arguments "]"                                                         --arrayLit
+                            | "{" DictValues "}"                                                        --objLit
                             | numlit
                             | stringlit
                             | boollit
                             | Var
-    numlit       		      = digit+ ("." digit+)?                                                          --literal
-    boollit 		          = "sweet" | "sour"                                                              --boolLit
-    stringlit 		        = "\"" char* "\""                                                               --strLit
-    char 				          = "\\n"
+    numlit                = digit+ ("." digit+)?
+    boollit               = "sweet" | "sour"
+    stringlit             = "\"" char* "\""
+    char                  = "\\n"
                             | "\\'"
                             | "\\\""
                             | "\\\\"
-                            | "\\u{" hexDigit hexDigit? hexDigit? hexDigit? hexDigit? hexDigit?  "}" 			--hex
+                            | "\\u{" hexDigit hexDigit? hexDigit? hexDigit? hexDigit? hexDigit?  "}"       --hex
                             | ~"\"" ~"\\" any
-    Var					          = Property
+    Var                   = Property
                             | id
-    Property              = Var "." Var		                                                                --dotMemberExp
-                            | Var "["digit+"]"                                                            --memberExp
-    Type       			      = ArrayType | types | DictType
+    Property              = Var "." Var                                                                    --dotMemberExp
+                            | Var "["digit+"]"                                                             --memberExp
+    Type                  = ArrayType | types | DictType
     types                 = ("pulp"|"slice"|"taste"|"dontUseMeForEyeDrops") ~alnum
-    ArrayType			        = Type "[]"
-    DictType			        = "<" Type "," Type ">"
-    void					        = "noLemon" ~alnum
+    ArrayType             = Type "[]"
+    DictType              = "<" Type "," Type ">"
+    void                  = "noLemon" ~alnum
     functionBeginning     = "When life gives you lemons try" ~alnum
-    ifBeginning       	  = "Squeeze the lemon if" ~alnum
-    elifBeginning       	= "Keep juicing if" ~alnum
-    elseBeginning       	= "Toss the lemon and do" ~alnum
+    ifBeginning           = "Squeeze the lemon if" ~alnum
+    elifBeginning         = "Keep juicing if" ~alnum
+    elseBeginning         = "Toss the lemon and do" ~alnum
     whileBeginning        = "Drink the lemonade while" ~alnum
-    forBeginning 		      = "forEachLemon" ~alnum
-    classType				      = "Limon" ~alnum
-    plant				          = "plant"
-    extends				        = "branches" ~alnum
-    case					        = "lemonCase" ~alnum
-    print					        = "pour"
-    typeof					      = "species"
-    openBrace 			      = "BEGIN JUICING" ~alnum
-    closeBrace			      = "END JUICING" ~alnum
-    switch 					      = "Pick" ~alnum
-    break					        = "chop" ~alnum
-    continue 			        = "nextLemon" ~alnum
-    return				        = "you get lemonade and" ~alnum
-    default				        = "citrusLimon" ~alnum
-    const					        = "lemonStain" ~alnum
-    static			  	      = "trunk" ~alnum
-    import			  	      = "receive" ~alnum
-    from				          = "from" ~alnum
-    keyword   			      = types | void | print | openBrace | closeBrace | switch | break | case | default | classType | plant | const | forBeginning | continue | boollit | typeof
-    id        			      = ~keyword letter (alnum | "_")*
-    Arguments 			      = ListOf<Exp, ",">
-    Parameters			      = ListOf<Binding, ",">
-    Binding 			        = (Type | id) id
-    DictValues			      = ListOf<KeyValue, ",">
-    KeyValue		          = Exp ":" Exp
-    space    				      += "( *)" (~"(* )" any)* "(* )"  				                                        --longComment
-                            | "( *)" (~"\n" any)* ("\n" | end) 		 	                                      --comment
-    logop				          = "&&" | "||"
-    relop   			        = "<=" | "<" | "==" | "!=" | ">=" | ">"
-    addop 			          = "+" | "-"
-    mulop				          = "*"| "/"| "%"
+    forBeginning          = "forEachLemon" ~alnum
+    classType             = "Limon" ~alnum
+    plant                 = "plant"
+    extends               = "branches" ~alnum
+    case                  = "lemonCase" ~alnum
+    print                 = "pour"
+    typeof                = "species"
+    openBrace             = "BEGIN JUICING" ~alnum
+    closeBrace            = "END JUICING" ~alnum
+    switch                = "Pick" ~alnum
+    break                 = "chop" ~alnum
+    continue              = "nextLemon" ~alnum
+    return                = "you get lemonade and" ~alnum
+    default               = "citrusLimon" ~alnum
+    const                 = "lemonStain" ~alnum
+    static                = "trunk" ~alnum
+    import                = "receive" ~alnum
+    from                  = "from" ~alnum
+    keyword               = types | void | print | openBrace
+                            | closeBrace | switch | break | case
+                            | default | classType | plant | const
+                            | forBeginning | continue | boollit | typeof
+    id                    = ~keyword letter (alnum | "_")*
+    Arguments             = ListOf<Exp, ",">
+    Parameters            = ListOf<Binding, ",">
+    Binding               = (Type | id) id
+    DictValues            = ListOf<KeyValue, ",">
+    KeyValue              = Exp ":" Exp
+    space                 += "( *)" (~"(* )" any)* "(* )"                                                  --longComment
+                          | "( *)" (~"\n" any)* ("\n" | end)                                               --comment
+    logop                 = "&&" | "||"
+    relop                 = "<=" | "<" | "==" | "!=" | ">=" | ">"
+    addop                 = "+" | "-"
+    mulop                 = "*"| "/"| "%"
   }`)
 
 const astBuilder = lemonScriptGrammar.createSemantics().addOperation('tree', {
@@ -149,12 +151,7 @@ const astBuilder = lemonScriptGrammar.createSemantics().addOperation('tree', {
 		return new ast.Assignment(variable.tree(), exp.tree())
 	},
 	ClassDec(_classtype, name, _extKeyword, ext, classBody) {
-		return new ast.ClassDec(
-			name.tree(),
-			_extKeyword.length !== 0,
-			ext.sourceString,
-			classBody.tree()
-		)
+		return new ast.ClassDec(name.tree(), ext.sourceString, classBody.tree())
 	},
 	ClassBeginToEnd(_classOpen, constructor, statements, _classClose) {
 		return new ast.ClassBody(constructor.tree(), statements.tree())
@@ -189,18 +186,16 @@ const astBuilder = lemonScriptGrammar.createSemantics().addOperation('tree', {
 		condition,
 		_right,
 		ifBlock,
-		alternates,
+		cases,
 		elseBlock
 	) {
 		return new ast.IfStatement(
-			condition.tree(),
-			ifBlock.tree(),
-			alternates.tree(),
+			[new ast.IfCase(condition.tree(), ifBlock.tree()), ...cases.tree()],
 			elseBlock.tree()
 		)
 	},
 	ElseifStatement(_elifBeginning, _left, condition, _right, elifBlock) {
-		return new ast.ElseIfStatement(condition.tree(), elifBlock.tree())
+		return new ast.IfCase(condition.tree(), elifBlock.tree())
 	},
 	ElseStatement(_elseBeginning, elseBlock) {
 		return elseBlock.tree()
@@ -265,10 +260,10 @@ const astBuilder = lemonScriptGrammar.createSemantics().addOperation('tree', {
 	TypeOf(_typeof, _left, argument, _right) {
 		return new ast.typeOfStatement(argument.tree())
 	},
-	BoolOp_binary(left, op, right) {
+	Exp_binary(left, op, right) {
 		return new ast.BinaryExp(left.tree(), op.sourceString, right.tree())
 	},
-	Bool_binary(left, op, right) {
+	Joint_binary(left, op, right) {
 		return new ast.BinaryExp(left.tree(), op.sourceString, right.tree())
 	},
 	AddOp_binary(left, op, right) {
@@ -304,13 +299,13 @@ const astBuilder = lemonScriptGrammar.createSemantics().addOperation('tree', {
 	id(_first, _rest) {
 		return new ast.IdentifierExpression(this.sourceString)
 	},
-	numlit_literal(digits, dot, decimals) {
-		return new Number(this.sourceString)
+	numlit(digits, dot, decimals) {
+		return Number(this.sourceString)
 	},
-	stringlit_strLit(_left, chars, _right) {
+	stringlit(_left, chars, _right) {
 		return chars.sourceString
 	},
-	boollit_boolLit(bool) {
+	boollit(bool) {
 		return bool.sourceString
 	},
 	Property_dotMemberExp(var1, _dot, var2) {
