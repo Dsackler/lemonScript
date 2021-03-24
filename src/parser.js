@@ -6,8 +6,8 @@ import ohm from 'ohm-js'
 import * as ast from './ast.js'
 
 const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
-    Program   	          = Import* Statement*                                                            --program
-    Import 		            = import id from id                                                             --importDec
+    Program   	          = Import* Statement*
+    Import 		            = import id from id
     Statement 	          = const? static? Type id "=" Exp                                                --varDecInit
                             | const? static? Type id							                                        --varDec
                             | Var "=" Exp                      		                                        --assignExp
@@ -27,7 +27,7 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
                             | Exp
     ClassDec					    = classType id (extends id)? ClassBeginToEnd
     ClassBeginToEnd 	    = openBrace Constructor Statement* closeBrace
-    Constructor				    = "plant" "(" Parameters ")" BeginToEnd
+    Constructor				    = plant "(" Parameters ")" BeginToEnd
     FunctionDec 			    = functionBeginning static? (Type | void | id) id "(" Parameters ")" BeginToEnd
     FunctionCall          = Var "(" Arguments ")"
     IfStatement  			    = ifBeginning "(" Exp ")" BeginToEnd ElseifStatement* ElseStatement?
@@ -38,8 +38,7 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
     ForArgs          		  = "slice" id "=" Exp ";" Exp ";" SliceCrement
     SliceCrement   		    = (id "+=" AddOp | id "-=" AddOp )                                              --binary
                             | (id"++" | id"--" )							                                            --postfix
-    SwitchStatement 		  = switch "("Var")" SwitchBeginToEnd
-    SwitchBeginToEnd 		  = openBrace Lemoncase+ Defaultcase? closeBrace
+    SwitchStatement 		  = switch "("Var")" openBrace Lemoncase+ Defaultcase? closeBrace
     Lemoncase 			      = case Exp Statement*
     Defaultcase					  = default Statement*
     Print								  = print "("Exp")"
@@ -58,8 +57,8 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
     Exponential           = Factor "^" Exponential                                                        --binary
                             | Factor
     Factor 		            = FunctionCall
-                            | ("-" ) Factor                                                               --prefix
-                            | "(" BoolOp ")"                                                              --templateLit
+                            | ("-") Factor                                                                --prefix
+                            | "(" BoolOp ")"                                                              --parens
                             | "[" Arguments "]"					                                                  --arrayLit
                             | "{" DictValues "}"				                                                  --objLit
                             | numlit
@@ -81,8 +80,8 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
                             | Var "["digit+"]"                                                            --memberExp
     Type       			      = ArrayType | types | DictType
     types                 = ("pulp"|"slice"|"taste"|"dontUseMeForEyeDrops") ~alnum
-    ArrayType			        = Type "[]"                                                                     --arrayDec
-    DictType			        = "<" Type "," Type ">"                                                         --objDec
+    ArrayType			        = Type "[]"
+    DictType			        = "<" Type "," Type ">"
     void					        = "noLemon" ~alnum
     functionBeginning     = "When life gives you lemons try" ~alnum
     ifBeginning       	  = "Squeeze the lemon if" ~alnum
@@ -91,6 +90,7 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
     whileBeginning        = "Drink the lemonade while" ~alnum
     forBeginning 		      = "forEachLemon" ~alnum
     classType				      = "Limon" ~alnum
+    plant				          = "plant"
     extends				        = "branches" ~alnum
     case					        = "lemonCase" ~alnum
     print					        = "pour"
@@ -106,7 +106,7 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
     static			  	      = "trunk" ~alnum
     import			  	      = "receive" ~alnum
     from				          = "from" ~alnum
-    keyword   			      = types | void | print | openBrace | closeBrace | switch | break | case | default | classType | const | forBeginning | continue | boollit | typeof
+    keyword   			      = types | void | print | openBrace | closeBrace | switch | break | case | default | classType | plant | const | forBeginning | continue | boollit | typeof
     id        			      = ~keyword letter (alnum | "_")*
     Arguments 			      = ListOf<Exp, ",">
     Parameters			      = ListOf<Binding, ",">
@@ -122,32 +122,45 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
   }`)
 
 const astBuilder = lemonScriptGrammar.createSemantics().addOperation('tree', {
-	/*
-  Stringlit                               --Expects 1 but got 3 I donno
-  */
-
-	Program(statements) {
-		return new ast.Program(statements.tree())
+	Program(imports, statements) {
+		return new ast.Program(imports.tree(), statements.tree())
 	},
-	Statement_varDec(con, stat, type, identifier) {
-		return new ast.VariableDec(
-			con.sourceString,
-			stat.sourceString,
-			type.tree(),
-			identifier.tree()
-		)
+	Import(_import, imp, _from, location) {
+		return new ast.Import(imp.tree(), location.tree())
 	},
 	Statement_varDecInit(con, stat, type, identifiers, _eq, exp) {
 		return new ast.VariableDecInit(
-			con.sourceString,
-			stat.sourceString,
+			con.tree().length !== 0,
+			stat.tree().length !== 0,
 			type.tree(),
 			identifiers.tree(),
 			exp.tree()
 		)
 	},
-	Statement_assignExp(identifier, _eq, exp) {
-		return new ast.Assignment(identifier.tree(), exp.tree())
+	Statement_varDec(con, stat, type, identifier) {
+		return new ast.VariableDec(
+			con.tree().length !== 0,
+			stat.tree().length !== 0,
+			type.tree(),
+			identifier.tree()
+		)
+	},
+	Statement_assignExp(variable, _eq, exp) {
+		return new ast.Assignment(variable.tree(), exp.tree())
+	},
+	ClassDec(_classtype, name, _extKeyword, ext, classBody) {
+		return new ast.ClassDec(
+			name.tree(),
+			_extKeyword.length !== 0,
+			ext.sourceString,
+			classBody.tree()
+		)
+	},
+	ClassBeginToEnd(_classOpen, constructor, statements, _classClose) {
+		return new ast.ClassBody(constructor.tree(), statements.tree())
+	},
+	Constructor(_plant, _open, parameters, _close, body) {
+		return new ast.Constructor(parameters.tree(), body.tree())
 	},
 	FunctionDec(
 		_functionBeginning,
@@ -161,51 +174,162 @@ const astBuilder = lemonScriptGrammar.createSemantics().addOperation('tree', {
 	) {
 		return new ast.FunctionDec(
 			name.tree(),
-			stat.sourceString,
-			returnType.sourceString,
-			parameters.asIteration().tree(),
+			stat.tree().length !== 0,
+			returnType.tree(),
+			parameters.tree(),
 			body.tree()
 		)
 	},
 	FunctionCall(callee, _left, args, _right) {
 		return new ast.Call(callee.tree(), args.tree())
 	},
+	IfStatement(
+		_ifBeginning,
+		_left,
+		condition,
+		_right,
+		ifBlock,
+		alternates,
+		elseBlock
+	) {
+		return new ast.IfStatement(
+			condition.tree(),
+			ifBlock.tree(),
+			alternates.tree(),
+			elseBlock.tree()
+		)
+	},
+	ElseifStatement(_elifBeginning, _left, condition, _right, elifBlock) {
+		return new ast.ElseIfStatement(condition.tree(), elifBlock.tree())
+	},
+	ElseStatement(_elseBeginning, elseBlock) {
+		return elseBlock.tree()
+	},
+	WhileStatement(_whileBeginning, _left, test, _right, body) {
+		return new ast.WhileStatement(test.tree(), body.tree())
+	},
+	ForStatement(_forBeginning, _left, forArgs, _right, body) {
+		return new ast.ForStatement(forArgs.tree(), body.tree())
+	},
+	ForArgs(_slice, name, _eq, exp, _semi1, condition, _semi2, sliceCrement) {
+		return new ast.ForArgs(
+			name.tree(),
+			exp.tree(),
+			condition.tree(),
+			sliceCrement.tree()
+		)
+	},
+	SliceCrement_binary(variable, op, exp) {
+		return new ast.BinaryExp(variable.tree(), op.sourceString, exp.tree())
+	},
+	SliceCrement_postfix(variable, op) {
+		return new ast.UnaryExpression(op.sourceString, variable.tree(), false)
+	},
+	SwitchStatement(
+		_switch,
+		_left,
+		exp,
+		_right,
+		_open,
+		cases,
+		defaultCase,
+		_close
+	) {
+		return new ast.SwitchStatement(
+			exp.tree(),
+			cases.tree(),
+			defaultCase.tree()
+		)
+	},
+	Lemoncase(_caseKeyword, exp, statements) {
+		return new ast.LemonCase(exp.tree(), statements.tree())
+	},
+	Defaultcase(_defaultKeyword, statements) {
+		return statements.tree()
+	},
+	Arguments(exps) {
+		return exps.asIteration().tree()
+	},
 	Parameters(values) {
 		return values.asIteration().tree()
+	},
+	DictValues(pairs) {
+		return pairs.asIteration().tree()
 	},
 	BeginToEnd(_left, statements, _right) {
 		return statements.tree()
 	},
-	ForStatement(_forBeginning, _left, iterator, _right, body) {
-		return new ast.ForLoop(iterator.tree(), body.tree())
-	},
-	WhileStatement(_whileBeginning, _left, test, _right, body) {
-		return new ast.WhileLoop(test.tree(), body.tree())
-	},
 	Print(_pour, _left, argument, _right) {
-		//left and right are parens
 		return new ast.PrintStatement(argument.tree())
+	},
+	TypeOf(_typeof, _left, argument, _right) {
+		return new ast.typeOfStatement(argument.tree())
+	},
+	BoolOp_binary(left, op, right) {
+		return new ast.BinaryExp(left.tree(), op.sourceString, right.tree())
+	},
+	Bool_binary(left, op, right) {
+		return new ast.BinaryExp(left.tree(), op.sourceString, right.tree())
+	},
+	AddOp_binary(left, op, right) {
+		return new ast.BinaryExp(left.tree(), op.sourceString, right.tree())
+	},
+	Term_binary(left, op, right) {
+		return new ast.BinaryExp(left.tree(), op.sourceString, right.tree())
+	},
+	Exponential_binary(left, op, right) {
+		return new ast.BinaryExp(left.tree(), op.sourceString, right.tree())
+	},
+	Factor_prefix(op, operand) {
+		return new ast.UnaryExpression(op.sourceString, operand.tree(), true)
+	},
+	Factor_parens(_left, exp, _right) {
+		return exp.tree()
+	},
+	Factor_arrayLit(_open, elements, _close) {
+		return new ast.ArrayLit(elements.tree())
+	},
+	Factor_objLit(_open, pairs, _close) {
+		return new ast.ObjLit(pairs.tree())
 	},
 	break(_) {
 		return new ast.Break()
 	},
+	continue(_) {
+		return new ast.Continue()
+	},
 	ReturnStatement(_return, returnValue) {
 		return new ast.ReturnStatement(returnValue.tree())
 	},
-	// Exp_add(left, addOp, right) {
-	//   return new ast.BinaryExpression(left.tree(), addOp.sourceString, right.tree())
-	// },
-	// Exp_sub(left, subOp, right) {
-	//   return new ast.BinaryExpression(left.tree(), subOp.sourceString, right.tree())
-	// },
 	id(_first, _rest) {
 		return new ast.IdentifierExpression(this.sourceString)
 	},
-	num() {
-		return Number(digits.sourceString)
+	numlit_literal(digits, dot, decimals) {
+		return new Number(this.sourceString)
 	},
 	stringlit_strLit(_left, chars, _right) {
 		return chars.sourceString
+	},
+	boollit_boolLit(bool) {
+		return bool.sourceString
+	},
+	Property_dotMemberExp(var1, _dot, var2) {
+		return new ast.PropertyExpression(var1.tree(), var2.tree())
+	},
+	Property_memberExp(variable, _open, index, _close) {
+		return new ast.MemberExpression(variable.tree(), index.sourceString)
+	},
+	ArrayType(type, _brac) {
+		return new ast.ArrayType(type.tree())
+	},
+	DictType(_arrOpen, keyType, _comma, valueType, _arrClose) {
+		return new ast.ObjType(keyType.tree(), valueType.tree())
+	},
+	KeyValue(key, _sep, value) {
+		return new ast.ObjPair(key.tree(), value.tree())
+	},
+	Binding(type, name) {
+		return new ast.VariableDec(type.tree(), name.tree())
 	},
 	_terminal() {
 		return this.sourceString
@@ -224,16 +348,3 @@ export default function parse(sourceCode) {
 	}
 	return astBuilder(match).tree()
 }
-
-// export function syntaxIsOkay(sourceCode) {
-//   const match = astroGrammar.match(sourceCode)
-//   return match.succeeded()
-// }
-
-// export default function parse(sourceCode) {
-//   const match = astroGrammar.match(sourceCode)
-//   if (!match.succeeded()) {
-//     throw new Error(match.message)
-//   }
-//   return astBuilder(match).tree()
-// }
