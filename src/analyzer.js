@@ -4,6 +4,7 @@ import {
   FunctionType,
   Function,
   ArrayType,
+  ObjType,
 } from "./ast.js"
 import * as stdlib from "./stdlib.js"
 
@@ -207,6 +208,12 @@ class Context {
     d.body = childContext.analyze(d.body)
     return d
   }
+  FunctionType(t) {
+    t.paramTypes = this.analyze(t.paramTypes)
+    t.returnTypes = this.analyze(t.returnTypes)
+    return t
+  }
+
   Call(c) {
     c.callee = this.analyze(c.callee)
     check(c.callee).isCallable()
@@ -363,95 +370,16 @@ class Context {
     e.var1 = this.analyze(e.var1)
     check(e.var1).isDict()
     e.var2 = this.analyze(e.var2)
-    check(e.var1.type.keyType)
-
+    e.var1.type.keyType.isEquivalentTo(e.var2.type)
     return e
   }
-
-  Parameter(p) {
-    p.type = this.analyze(p.type)
-    this.add(p.name, p)
-    return p
-  }
-  Increment(s) {
-    s.variable = this.analyze(s.variable)
-    check(s.variable).isInteger()
-    return s
-  }
-  Decrement(s) {
-    s.variable = this.analyze(s.variable)
-    check(s.variable).isInteger()
-    return s
-  }
-  BreakStatement(s) {
+  Continue(s) {
     check(this).isInsideALoop()
     return s
   }
-  
-  
-  RepeatStatement(s) {
-    s.count = this.analyze(s.count)
-    check(s.count).isInteger()
-    s.body = this.newChild({ inLoop: true }).analyze(s.body)
+  Break(s) {
+    check(this).isInsideALoop()
     return s
-  }
-  ForRangeStatement(s) {
-    s.low = this.analyze(s.low)
-    check(s.low).isInteger()
-    s.high = this.analyze(s.high)
-    check(s.high).isInteger()
-    s.iterator = new Variable(s.iterator, true)
-    s.iterator.type = Type.INT
-    s.body = this.newChild({ inLoop: true }).analyze(s.body)
-    return s
-  }
-  Conditional(e) {
-    e.test = this.analyze(e.test)
-    check(e.test).isBoolean()
-    e.consequent = this.analyze(e.consequent)
-    e.alternate = this.analyze(e.alternate)
-    check(e.consequent).hasSameTypeAs(e.alternate)
-    e.type = e.consequent.type
-    return e
-  }
-  UnwrapElse(e) {
-    e.optional = this.analyze(e.optional)
-    e.alternate = this.analyze(e.alternate)
-    check(e.optional).isAnOptional()
-    check(e.alternate).isAssignableTo(e.optional.type.baseType)
-    e.type = e.optional.type
-    return e
-  }
-  OrExpression(e) {
-    e.disjuncts = this.analyze(e.disjuncts)
-    e.disjuncts.forEach(disjunct => check(disjunct).isBoolean())
-    e.type = Type.BOOLEAN
-    return e
-  }
-  AndExpression(e) {
-    e.conjuncts = this.analyze(e.conjuncts)
-    e.conjuncts.forEach(conjunct => check(conjunct).isBoolean())
-    e.type = Type.BOOLEAN
-    return e
-  }
-  
-  
-  FunctionType(t) {
-    t.parameterTypes = this.analyze(t.parameterTypes)
-    t.returnType = this.analyze(t.returnType)
-    return t
-  }
-  EmptyOptional(e) {
-    e.baseType = this.analyze(e.baseType)
-    e.type = new OptionalType(e.baseType)
-    return e
-  }
-  
-  
-  EmptyArray(e) {
-    e.baseType = this.analyze(e.baseType)
-    e.type = new ArrayType(e.baseType)
-    return e
   }
   
   IdentifierExpression(e) {
