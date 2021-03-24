@@ -406,6 +406,13 @@ class Context {
   Array(a) {
     return a.map(item => this.analyze(item))
   }
+  Object(a) {
+    let newObj = {}
+    for(const [key,value] of Object.entries(a)) {
+      newObj[this.analyze(key)] = this.analyze(value)
+    }
+   return newObj
+  }
 }
 
 export default function analyze(node) {
