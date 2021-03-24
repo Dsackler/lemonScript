@@ -15,6 +15,29 @@ export class Import {
     }
 }
 
+export class Type {
+    constructor(name) {
+      this.name = name
+    }
+    static BOOLEAN = new Type("taste")
+    static INT = new Type("slice")
+    static FLOAT = new Type("dontUseMeForEyeDrops")
+    static STRING = new Type("pulp")
+    static VOID = new Type("noLemon")
+    static TYPE = new Type("type")
+    static ANY = new Type("any")
+    // Equivalence: when are two types the same
+    isEquivalentTo(target) {
+      return this == target
+    }
+    // T1 assignable to T2 is when x:T1 can be assigned to y:T2. By default
+    // this is only when two types are equivalent; however, for other kinds
+    // of types there may be special rules.
+    isAssignableTo(target) {
+      return this.isEquivalentTo(target)
+    }
+}
+
 export class VariableDecInit {
     constructor(con, stat, type, variable, init ) {
         Object.assign(this, {con, stat, type, variable, init})
@@ -160,29 +183,6 @@ export class BinaryExp {
 export class UnaryExpression {
     constructor(op, operand, isprefix) {
       Object.assign(this, { op, operand, isprefix })
-    }
-}
-
-export class Type {
-    constructor(name) {
-      this.name = name
-    }
-    static BOOLEAN = new Type("taste")
-    static INT = new Type("slice")
-    static FLOAT = new Type("dontUseMeForEyeDrops")
-    static STRING = new Type("pulp")
-    static VOID = new Type("noLemon")
-    static TYPE = new Type("type")
-    static ANY = new Type("any")
-    // Equivalence: when are two types the same
-    isEquivalentTo(target) {
-      return this == target
-    }
-    // T1 assignable to T2 is when x:T1 can be assigned to y:T2. By default
-    // this is only when two types are equivalent; however, for other kinds
-    // of types there may be special rules.
-    isAssignableTo(target) {
-      return this.isEquivalentTo(target)
     }
 }
 

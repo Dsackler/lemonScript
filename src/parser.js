@@ -287,7 +287,7 @@ const astBuilder = lemonScriptGrammar.createSemantics().addOperation("tree", {
   boollit(bool) {
     return bool.sourceString
   },
-  Property_dotMemberExp(var1, _dot, var2){
+  Property_dotMemberExp(var1, _dot, var2, _close){
     return new ast.PropertyExpression(var1.tree(), var2.tree())
   },
   Property_memberExp(variable, _open, index, _close){

@@ -5,12 +5,11 @@ BEGIN JUICING
     plant(pulp name ,slice year)
         BEGIN JUICING
         pulp thisLemon = name
-        thisLemon.year = year
         END JUICING
 
     When life gives you lemons try slice getYear()
         BEGIN JUICING
-        you get lemonade and thisLemon.year
+        you get lemonade and thisLemon.getKey(year)
         END JUICING
 
 END JUICING
@@ -20,7 +19,6 @@ Limon Ferrari branches Car
 BEGIN JUICING
         plant(slice year)
         BEGIN JUICING
-        thisLemon.name = "F8 Spider"
-        thisLemon.year = year
+        thisLemon.getKey(name) = "F8 Spider"
         END JUICING
 END JUICING
