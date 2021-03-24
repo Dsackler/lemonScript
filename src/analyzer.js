@@ -41,18 +41,21 @@ const check = self => ({
   isAnArray() {
     must(self.type.constructor === ArrayType, "Array expected")
   },
+  isDict() {
+    must(self.type.constructor === ObjType, "Dictionary expected")
+  },
   hasSameTypeAs(other) {
     must(self.type.isEquivalentTo(other.type), "Operands do not have the same type")
   },
   allHaveSameType() {
     must(
-      self.slice(1).every(e => e.type === self[0].type),
+      self.slice(1).every(e => e.type.isEquivalentTo(self[0].type)),
       "Not all elements have the same type"
     )
   },
   allCasesHaveSameType(cases) {
     must(
-      cases.every(case => case.caseExp.type === this.type),
+      cases.every(c => c.caseExp.type.isEquivalentTo(this.type)),
       "Not all cases have the same type as the expression passed in"
     )
   },
@@ -68,9 +71,9 @@ const check = self => ({
   areAllDistinct() {
     must(new Set(self.map(f => f.name)).size === self.length, "Keys must be distinct")
   },
-  isInTheDictionary(dict) {
-    must(dict.type.fields.map(f => f.name).includes(self), "No such key exists")
-  },
+  // isInTheDictionary(dict) {
+  //   must(dict.type.fields.map(f => f.name).includes(self), "No such key exists")
+  // },
   isInsideALoop() {
     must(self.inLoop, "Break can only appear in a loop")
   },
@@ -102,6 +105,16 @@ const check = self => ({
   },
   matchParametersOf(calleeType) {
     check(self).match(calleeType.parameterTypes)
+  },
+  allSameKeyTypes() {
+    must(
+      self.slice(1).every(pair => pair.key.type.isEquivalentTo(self[0].key.type)),
+    )
+  },
+  allSameValueTypes() {
+    must(
+      self.slice(1).every(pair => pair.value.type.isEquivalentTo(self[0].value.type)),
+    )
   },
 })
 
@@ -203,7 +216,7 @@ class Context {
     return c
   }
   IfStatement(s) {
-    s.cases.map(case => this.analyze(case))
+    s.cases.map(c => this.analyze(c))
     s.elseBlock = this.newChild().analyze(s.elseBlock)
     return s
   }
@@ -240,7 +253,7 @@ class Context {
   }
   SwitchStatement(s){
     s.expression = this.analyze(s.expression)
-    s.cases.map(case => this.analyze(case))
+    s.cases.map(c => this.analyze(c))
     check(s.expression).allCasesHaveSameType(s.cases)
     s.defaultCase = this.analyze(s.defaultCase)
     return s
@@ -250,6 +263,111 @@ class Context {
     s.statements = this.newChild().analyze(s.statements)
     return s
   }
+
+  PrintStatement(p) {
+    p.argument = this.analyze(p.argument)
+    return p
+  }
+
+  typeOfStatement(p) {
+    p.argument = this.analyze(p.argument)
+    return p
+  }
+
+  ReturnStatement(s) {
+    check(this).isInsideAFunction()
+    check(this.function).returnsSomething()
+    s.returnValue = this.analyze(s.returnValue)
+    check(s.returnValue).isReturnableFrom(this.function)
+    return s
+  }
+
+  ShortReturnStatement(s) {
+    check(this).isInsideAFunction()
+    check(this.function).returnsNothing()
+    return s
+  }
+
+  BinaryExpression(e) {
+    e.left = this.analyze(e.left)
+    e.right = this.analyze(e.right)
+    if (["&&", "||"].includes(e.op)) {
+      check(e.left).isBoolean()
+      check(e.right).isBoolean()
+      e.type = Type.BOOLEAN
+    } else if (["+", "+=", "-="].includes(e.op)) {
+      check(e.left).isNumericOrString()
+      check(e.left).hasSameTypeAs(e.right)
+      e.type = e.left.type
+    } else if (["-", "*", "/", "%", "^"].includes(e.op)) {
+      check(e.left).isNumeric()
+      check(e.left).hasSameTypeAs(e.right)
+      e.type = e.left.type
+    } else if (["<", "<=", ">", ">="].includes(e.op)) {
+      check(e.left).isNumericOrString()
+      check(e.left).hasSameTypeAs(e.right)
+      e.type = Type.BOOLEAN
+    } else if (["==", "!="].includes(e.op)) {
+      check(e.left).hasSameTypeAs(e.right)
+      e.type = Type.BOOLEAN
+    }
+    return e
+  }
+  UnaryExpression(e) {
+    e.operand = this.analyze(e.operand)
+    check(e.operand).isNumeric()
+    e.type = e.operand.type
+    return e
+  }
+
+  ArrayType(t) {
+    t.memberType = this.analyze(t.memberType)
+    return t
+  }
+
+  ObjType(t) {
+    t.keyType = this.analyze(t.keyType)
+    t.valueType = this.analyze(t.valueType)
+    return t
+  }
+
+  ArrayLit(a) {
+    a.elements = this.analyze(a.elements)
+    check(a.elements).allHaveSameType()
+    a.type = new ArrayType(a.elements[0].type)
+    return a
+  }
+
+  ObjLit(a) {
+    a.keyValuePairs = this.analyze(a.keyValuePairs)
+    check(a.keyValuePairs).allSameKeyTypes()
+    check(a.keyValuePairs).allSameValueTypes()
+    a.type = new ObjType(a.keyValuePairs[0].key.type, a.keyValuePairs[0].value.type)
+    return a
+  }
+
+  ObjPair(p) {
+    p.key = this.analyze(p.key)
+    p.value = this.analyze(p.value)
+  }
+
+  MemberExpression(e) {
+    e.vari = this.analyze(e.vari)
+    e.type = e.vari.type.memberType
+    e.index = this.analyze(e.index)
+    check(e.index).isInteger()
+    return e
+  }
+
+  PropertyExpression(e) {
+    e.var1 = this.analyze(e.var1)
+    check(e.var1).isDict()
+    e.var2 = this.analyze(e.var2)
+    check(e.var1.type.keyType)
+
+    return e
+  }
+
   Parameter(p) {
     p.type = this.analyze(p.type)
     this.add(p.name, p)
@@ -269,18 +387,8 @@ class Context {
     check(this).isInsideALoop()
     return s
   }
-  ReturnStatement(s) {
-    check(this).isInsideAFunction()
-    check(this.function).returnsSomething()
-    s.expression = this.analyze(s.expression)
-    check(s.expression).isReturnableFrom(this.function)
-    return s
-  }
-  ShortReturnStatement(s) {
-    check(this).isInsideAFunction()
-    check(this.function).returnsNothing()
-    return s
-  }
+  
+  
   RepeatStatement(s) {
     s.count = this.analyze(s.count)
     check(s.count).isInteger()
@@ -326,52 +434,8 @@ class Context {
     e.type = Type.BOOLEAN
     return e
   }
-  BinaryExpression(e) {
-    e.left = this.analyze(e.left)
-    e.right = this.analyze(e.right)
-    if (["&", "|", "^", "<<", ">>"].includes(e.op)) {
-      check(e.left).isInteger()
-      check(e.right).isInteger()
-      e.type = Type.INT
-    } else if (["+"].includes(e.op)) {
-      check(e.left).isNumericOrString()
-      check(e.left).hasSameTypeAs(e.right)
-      e.type = e.left.type
-    } else if (["-", "*", "/", "%", "**"].includes(e.op)) {
-      check(e.left).isNumeric()
-      check(e.left).hasSameTypeAs(e.right)
-      e.type = e.left.type
-    } else if (["<", "<=", ">", ">="].includes(e.op)) {
-      check(e.left).isNumericOrString()
-      check(e.left).hasSameTypeAs(e.right)
-      e.type = Type.BOOLEAN
-    } else if (["==", "!="].includes(e.op)) {
-      check(e.left).hasSameTypeAs(e.right)
-      e.type = Type.BOOLEAN
-    }
-    return e
-  }
-  UnaryExpression(e) {
-    e.operand = this.analyze(e.operand)
-    if (e.op === "#") {
-      check(e.operand).isAnArray()
-      e.type = Type.INT
-    } else if (e.op === "-") {
-      check(e.operand).isNumeric()
-      e.type = e.operand.type
-    } else if (e.op === "!") {
-      check(e.operand).isBoolean()
-      e.type = Type.BOOLEAN
-    } else {
-      // Operator is "some"
-      e.type = new OptionalType(e.operand.type)
-    }
-    return e
-  }
-  ArrayType(t) {
-    t.baseType = this.analyze(t.baseType)
-    return t
-  }
+  
+  
   FunctionType(t) {
     t.parameterTypes = this.analyze(t.parameterTypes)
     t.returnType = this.analyze(t.returnType)
@@ -382,39 +446,23 @@ class Context {
     e.type = new OptionalType(e.baseType)
     return e
   }
-  SubscriptExpression(e) {
-    e.array = this.analyze(e.array)
-    e.type = e.array.type.baseType
-    e.index = this.analyze(e.index)
-    check(e.index).isInteger()
-    return e
-  }
-  ArrayExpression(a) {
-    a.elements = this.analyze(a.elements)
-    check(a.elements).allHaveSameType()
-    a.type = new ArrayType(a.elements[0].type)
-    return a
-  }
+  
+  
   EmptyArray(e) {
     e.baseType = this.analyze(e.baseType)
     e.type = new ArrayType(e.baseType)
     return e
   }
-  MemberExpression(e) {
-    e.object = this.analyze(e.object)
-    check(e.field).isInTheObject(e.object)
-    e.type = e.object.type.fields.find(f => f.name === e.field).type
-    return e
-  }
+  
   IdentifierExpression(e) {
     // Id expressions get "replaced" with the variables they refer to
     return this.lookup(e.name)
   }
-  TypeId(t) {
-    t = this.lookup(t.name)
-    check(t).isAType()
-    return t
-  }
+  // TypeId(t) {
+  //   t = this.lookup(t.name)
+  //   check(t).isAType()
+  //   return t
+  // }
   Number(e) {
     return e
   }

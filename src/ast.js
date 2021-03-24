@@ -149,6 +149,8 @@ export class ReturnStatement {
     }
 }
 
+export class ShortReturnStatement {}
+
 export class BinaryExp {
     constructor(left, op, right) {
         Object.assign(this, {left, op, right})

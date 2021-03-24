@@ -76,7 +76,7 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
                             | ~"\"" ~"\\" any
     Var                   = Property
                             | id
-    Property              = Var "." Var                                                                    --dotMemberExp
+    Property              = Var ".getKey(" Var ")"                                                                    --dotMemberExp
                             | Var "["digit+"]"                                                             --memberExp
     Type                  = ArrayType | types | DictType
     types                 = ("pulp"|"slice"|"taste"|"dontUseMeForEyeDrops") ~alnum
@@ -270,6 +270,9 @@ const astBuilder = lemonScriptGrammar.createSemantics().addOperation("tree", {
     return new ast.Continue()
   },
   ReturnStatement(_return, returnValue) {
+    if(returnValue.tree().length === 0) {
+      return new ast.ShortReturnStatement()
+    }
     return new ast.ReturnStatement(returnValue.tree())
   },
   id(_first, _rest) {
