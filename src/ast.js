@@ -27,9 +27,23 @@ export class VariableDec {
     }
 }
 
+
 export class Assignment {
     constructor(target, source) {
         Object.assign(this, {target, source})
+    }
+}
+
+export class ClassDec extends Type {
+    constructor(name, ext, classBody) {
+        super(name)
+        Object.assign(this, {name, ext, classBody})
+    }
+}
+
+export class ClassBody {
+    constructor(constructor, statements) {
+        Object.assign(this, {constructor, statements})
     }
 }
 
@@ -146,17 +160,18 @@ export class Type {
     }
 }
 
-export class ClassDec extends Type {
-    constructor(name, ext, classBody) {
-        super(name)
-        Object.assign(this, {name, ext, classBody})
-    }
+// Created during semantic analysis only!
+export class Variable {
+  constructor(name, con) {
+    Object.assign(this, { name, con })
+  }
 }
 
-export class ClassBody {
-    constructor(constructor, statements) {
-        Object.assign(this, {constructor, statements})
-    }
+// Created during semantic analysis only!
+export class Function {
+  constructor(name) {
+    this.name = name
+  }
 }
 
 export class ArrayType extends Type {
