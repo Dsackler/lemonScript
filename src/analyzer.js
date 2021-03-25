@@ -147,6 +147,7 @@ class Context {
   }
   lookup(name) {
     const entity = this.locals.get(name)
+    console.log(this.locals)
     if (entity) {
       return entity
     } else if (this.parent) {
@@ -171,7 +172,7 @@ class Context {
     // Declarations generate brand new variable objects
     d.init = this.analyze(d.init)
     console.log(d.init.type)
-    d.variable = new Variable(d.name, d.con, d.type)
+    d.variable = new Variable(d.variable.name, d.con, this.locals.get(d.type))
     console.log(d.variable.type)
     check(d.variable).hasSameTypeAs(d.init)
     this.add(d.variable.name, d.variable)
@@ -179,7 +180,7 @@ class Context {
   }
   VariableDec(d) {
     // Declarations generate brand new variable objects
-    d.variable = new Variable(d.identifier, d.con, d.type)
+    d.variable = new Variable(d.identifier, d.con, this.locals.get(d.type))
     this.add(d.variable.name, d.variable)
     return d
   }
@@ -384,6 +385,10 @@ class Context {
   IdentifierExpression(e) {
     // Id expressions get "replaced" with the variables they refer to
     return this.lookup(e.name)
+  }
+  Bool(b){
+    b.type = this.locals.get(b.type)
+    return b
   }
   // TypeId(t) {
   //   t = this.lookup(t.name)

@@ -6,9 +6,9 @@ import * as ast from "../src/ast.js"
 // Programs that are semantically correct
 const semanticChecks = [
   ["variable declarations",
-  'slice x = 1'],
-  // ["variable declarations 2",
-  // 'lemonStain trunk slice x = 1 pulp y'],
+  'dontUseMeForEyeDrops x = 1.0 dontUseMeForEyeDrops y = x'],
+  ["variable declarations 2",
+  'lemonStain trunk slice x = 1 taste y = sour'],
   // ["complex parameters",
   // "When life gives you lemons try noLemon f(<slice[], <pulp,taste>> x) BEGIN JUICING slice x END JUICING"],
   // ["increment and decrement", "slice x = 10 x-- x++ x+=2"],

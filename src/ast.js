@@ -38,6 +38,13 @@ export class Type {
     }
 }
 
+export class Bool extends Type {
+    constructor(name, value, type) {
+        super(name)
+        Object.assign(this, {name, value, type})
+    }
+}
+
 export class VariableDecInit {
     constructor(con, stat, type, variable, init ) {
         Object.assign(this, {con, stat, type, variable, init})
