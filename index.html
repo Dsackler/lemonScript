@@ -1,4 +1,4 @@
-<html lang="en">
+<html lang="en" style="scroll-behavior: smooth">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -20,74 +20,62 @@
 			rel="stylesheet"
 			type="text/css"
 		/>
+		<link rel="stylesheet" href="styles.css" />
 		<title>lemonScript</title>
+		<link rel="icon" href="favicon.ico" type="image/x-icon"/ >
 	</head>
 
 	<body class="page-top">
-		<nav class="navbar navbar-expand-lg navbar-light bg-light">
-			<a class="navbar-brand" href="#">lemonScript</a>
-			<button
-				class="navbar-toggler"
-				type="button"
-				data-toggle="collapse"
-				data-target="#navbarSupportedContent"
-				aria-controls="navbarSupportedContent"
-				aria-expanded="false"
-				aria-label="Toggle navigation"
-			>
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<nav
-				class="navbar navbar-expand-lg bg-primary fixed-top"
-				id="mainNav"
-			>
-				<div class="container">
-					<a
-						class="navbar-brand js-scroll-trigger text-white"
-						href="#page-top"
-						>lemonScript</a
-					>
-					<button
-						class="navbar-toggler navbar-toggler-right text-uppercase bg-primary text-white rounded"
-						type="button"
-						data-toggle="collapse"
-						data-target="#navbarResponsive"
-						aria-controls="navbarResponsive"
-						aria-expanded="false"
-						aria-label="Toggle navigation"
-					>
-						Menu
-						<i class="fas fa-bars"></i>
-					</button>
-					<div class="collapse navbar-collapse" id="navbarResponsive">
-						<ul class="navbar-nav ml-auto">
-							<li class="nav-item mx-0 mx-lg-1">
-								<a
-									class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger text-white"
-									href="#about"
-									>About</a
-								>
-							</li>
-							<li class="nav-item mx-0 mx-lg-1">
-								<a
-									class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger text-white"
-									href="#codeExamples"
-									>Code Examples</a
-								>
-							</li>
-							<li class="nav-item mx-0 mx-lg-1">
-								<a
-									class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger text-white"
-									href="#developers"
-									>Developers</a
-								>
-							</li>
-						</ul>
-					</div>
+		<nav class="navbar navbar-expand-lg bg-primary fixed-top" id="mainNav">
+			<div class="container">
+				<a
+					class="navbar-brand js-scroll-trigger text-white"
+					href="#home"
+					>lemonScript</a
+				>
+				<button
+					class="navbar-toggler navbar-toggler-right text-uppercase bg-primary text-white rounded"
+					type="button"
+					data-toggle="collapse"
+					data-target="#navbarResponsive"
+					aria-controls="navbarResponsive"
+					aria-expanded="false"
+					aria-label="Toggle navigation"
+				>
+					Menu
+					<i class="fas fa-bars"></i>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarResponsive">
+					<ul class="navbar-nav ml-auto">
+						<li class="nav-item mx-0 mx-lg-1">
+							<a
+								class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger text-white"
+								href="#about"
+								>About</a
+							>
+						</li>
+						<li class="nav-item mx-0 mx-lg-1">
+							<a
+								class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger text-white"
+								href="#codeExamples"
+								>Code Examples</a
+							>
+						</li>
+						<li class="nav-item mx-0 mx-lg-1">
+							<a
+								class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger text-white"
+								href="#developers"
+								>Developers</a
+							>
+						</li>
+					</ul>
 				</div>
-			</nav>
+			</div>
 		</nav>
-		<header class="masthead text-primary text-center mb-5 pb-5">
+		<header
+			class="masthead text-primary text-center bg-white"
+			style="padding: 100px"
+		>
 			<div class="container" id="home">
 				<img
 					class="img-fluid mb-0 d-block mx-auto px-auto"
@@ -102,12 +90,14 @@
 				</h3>
 			</div>
 		</header>
-		<section class="text-primary mt-5 pt-5" id="about">
+		<section
+			class="text-white bg-primary"
+			id="about"
+			style="padding: 100px"
+		>
 			<div class="container">
-				<h2 class="text-center text-uppercase text-primary mt-10">
-					About
-				</h2>
-				<hr class="star-dark mb-5" />
+				<h2 class="text-center text-uppercase mt-10">About</h2>
+				<hr class="star-dark" />
 				<div class="row">
 					<div class="col-lg-6 mx-auto text-center">
 						<p class="lead">
@@ -147,83 +137,174 @@
 						<i class="fas fa-file-signature mr-2"></i>
 						See Our Grammar!
 					</a>
+				</div>
+			</div>
+		</section>
+		<section class="portfolio" id="codeExamples" style="padding: 100px">
+			<div class="container">
+				<h2 class="text-center text-uppercase text-primary mb-0">
+					Examples
+				</h2>
+				<hr class="star-light mb-5" />
+				<div class="row">
+					<div class="col-sm-12 col-lg-6">
+						<h3 class="text-center text-uppercase text-primary">
+							Hello World
+						</h3>
+						<div class="row">
+							<div class="col-lg-12">
+								<pre><code class="text-black">
+    When life gives you lemons try noLemon helloWorld()
+        BEGIN JUICING
+        pour(“Hello World”)
+        END JUICING
+                        </code></pre>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<h3 class="text-center text-uppercase text-primary">
+							Adding Two
+						</h3>
+						<div class="row">
+							<div class="col-lg-12">
+								<pre><code class="text-black">
+    When life gives you lemons try slice add(slice a, slice b)
+        BEGIN JUICING
+        you get lemonade and a + b
+        END JUICING
+                        </code></pre>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-6">
+						<h3 class="text-center text-uppercase text-primary">
+							Five Numbers
+						</h3>
+						<div class="row">
+							<div class="col-sm-6 col-lg-8 offset-lg-2">
+								<pre><code class="text-black">
+    forEachLemon (slice i = 0; i < 5; i++)
+        BEGIN JUICING
+        pour(“Number: ” + i)
+        END JUICING
+                            </code></pre>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<h3 class="text-center text-uppercase text-primary">
+							Nth Fibonacci
+						</h3>
+						<div class="row">
+							<div class="col-lg-12">
+								<pre><code class="text-black">
+    When life gives you lemons try slice fibonacci(slice num)
+        BEGIN JUICING
+        Squeeze the lemon if(num == 0)
+            BEGIN JUICING
+            you get lemonade and 0
+            END JUICING
+        Squeeze the lemon if(num == 1 || num == 2)
+            BEGIN JUICING
+            you get lemonade and 1
+            END JUICING
+        you get lemonade and fibonacci(num - 2) + fibonacci(num - 1)
+        END JUICING
+                            </code></pre>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-6">
+						<h3 class="text-center text-uppercase text-primary">
+							Car Class
+						</h3>
+						<div class="row">
+							<div class="offset-sm-1 col-sm-6 col-lg-9">
+								<pre><code class="text-black">
+    Limon Car
+        BEGIN JUICING
+        
+            plant(pulp name ,slice year)
+                BEGIN JUICING
+                thisLemon.name = name
+                thisLemon.year = year
+                END JUICING
+        
+        
+            When life gives you lemons try slice getYear()
+                BEGIN JUICING
+                you get lemonade and thisLemon.year
+                END JUICING
+        
+        END JUICING
+        
+        Car myCar = seed Car("Ford",2014)
+        
+        Limon Ferrari branches Car
+        BEGIN JUICING
+                plant(slice year)
+                BEGIN JUICING
+                thisLemon.name = "F8 Spider"
+                thisLemon.year = year
+                END JUICING
+        END JUICING
+                        </code></pre>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<h3 class="text-center text-uppercase text-primary">
+							2 4 6 8
+						</h3>
+						<div class="row">
+							<div class="offset-sm-3 col-lg-12">
+								<pre><code class="text-black ">
+    slice even = 4
+    pulp twofoursixeight
+    Pick (even)
+        BEGIN JUICING
+        lemonCase 2
+        twofoursix = "two"
+        chop
+        lemonCase 4
+        twofoursix = "four"
+        chop
+        lemonCase 6
+        twofoursix = "six"
+        chop
+        citrusLimon
+        twofoursix = "eight"
+        END JUICING
+    pour(“Our result is ” + twofoursix)
+        
+                        </code></pre>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</section>
 
-		<section class="text-primary mt-5 pt-5" id="about">
+		<section
+			class="text-white bg-primary"
+			id="developers"
+			style="padding: 100px"
+		>
 			<div class="container">
-				<h2 class="text-center text-uppercase text-primary mt-10">
-					Examples
-				</h2>
-				<hr class="star-dark mb-5" />
+				<h2 class="text-center text-uppercase">Developer</h2>
+				<hr class="star-dark" />
 				<div class="row">
 					<div class="col-lg-6 mx-auto text-center">
 						<p class="lead">
-							One morning, a young Khalid awoke and decided to
-							finish his A.I assignment. “Gosh, I just hate python
-							more than life itself” he muttered as he typed with
-							a sour face. At that moment, he looked at the lemon
-							pulp he has been collecting for the past 5 years due
-							to his midnight lemon snack addiction. At that
-							moment, he decided to call his much smarter and
-							superior friend David to write him a language that
-							everyone could enjoy. So, David formed a team with
-							Brent, Julian, Justin, Raul, and Khalid with the
-							intent to create a language for all lemon
-							enthusiasts. The stage has been set. lemonScript was
-							to be a self-explanatory, statically-typed, esoteric
-							language with the sole purpose of saving people who
-							had a sour taste in their mouth from using popular
-							languages.
-						</p>
-					</div>
-				</div>
-				<div class="text-center mt-4">
-					<a
-						class="btn btn-xl btn-outline-dark"
-						href="https://github.com/Dsackler/lemonScript"
-						target="_blank"
-					>
-						<i class="fas fa-download mr-2"></i>
-						Visit Our Github!
-					</a>
-					<a
-						class="btn btn-xl btn-outline-dark"
-						href="https://github.com/Dsackler/lemonScript/blob/main/src/parser.js"
-						target="_blank"
-					>
-						<i class="fas fa-file-signature mr-2"></i>
-						See Our Grammar!
-					</a>
-				</div>
-			</div>
-		</section>
-		<section class="text-primary mt-5 pt-5" id="about">
-			<div class="container">
-				<h2 class="text-center text-uppercase text-primary mt-10">
-					Developer
-				</h2>
-				<hr class="star-dark mb-5" />
-				<div class="row">
-					<div class="col-lg-6 mx-auto text-center">
-						<p class="lead">
-							One morning, a young Khalid awoke and decided to
-							finish his A.I assignment. “Gosh, I just hate python
-							more than life itself” he muttered as he typed with
-							a sour face. At that moment, he looked at the lemon
-							pulp he has been collecting for the past 5 years due
-							to his midnight lemon snack addiction. At that
-							moment, he decided to call his much smarter and
-							superior friend David to write him a language that
-							everyone could enjoy. So, David formed a team with
-							Brent, Julian, Justin, Raul, and Khalid with the
-							intent to create a language for all lemon
-							enthusiasts. The stage has been set. lemonScript was
-							to be a self-explanatory, statically-typed, esoteric
-							language with the sole purpose of saving people who
-							had a sour taste in their mouth from using popular
-							languages.
+							lemonScript is brought to you by Khalid Alghunaim,
+							Julian Arregoces, David Sackler, Justin Yee, Brent
+							Shafer, Raul Rodriguez. A group of Computer Science
+							students @ Loyola Marymount University.
 						</p>
 					</div>
 				</div>
@@ -248,4 +329,12 @@
 			</div>
 		</section>
 	</body>
+	<footer class="bg-white text-center text-lg-start">
+		<!-- Copyright -->
+		<div class="text-center text-primary p-3">
+			© 2020 Copyright:
+			<a href="https://mdbootstrap.com/">lemonScript LLC</a>
+		</div>
+		<!-- Copyright -->
+	</footer>
 </html>
