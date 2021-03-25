@@ -161,6 +161,7 @@ class Context {
     return new Context(this, configuration)
   }
   analyze(node) {
+    console.log(node.constructor.name)
     return this[node.constructor.name](node)
   }
   // maybe remove imports...
@@ -191,7 +192,7 @@ class Context {
     check(s.target).isNotAConstant()
     return s
   }
-  FunctionDeclaration(d) {
+  FunctionDec(d) {
     d.returnType = d.returnType ? this.analyze(d.returnType) : Type.VOID
     // Declarations generate brand new function objects
     const f = (d.function = new Function(d.name))
@@ -295,18 +296,18 @@ class Context {
     return s
   }
 
-  BinaryExpression(e) {
+  BinaryExp(e) {
     e.left = this.analyze(e.left)
     e.right = this.analyze(e.right)
     if (["&&", "||"].includes(e.op)) {
       check(e.left).isBoolean()
       check(e.right).isBoolean()
       e.type = Type.BOOLEAN
-    } else if (["+", "+=", "-="].includes(e.op)) {
+    } else if (["+", "+="].includes(e.op)) {
       check(e.left).isNumericOrString()
       check(e.left).hasSameTypeAs(e.right)
       e.type = e.left.type
-    } else if (["-", "*", "/", "%", "^"].includes(e.op)) {
+    } else if (["-", "*", "/", "%", "^", "-="].includes(e.op)) {
       check(e.left).isNumeric()
       check(e.left).hasSameTypeAs(e.right)
       e.type = e.left.type
