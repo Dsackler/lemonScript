@@ -182,6 +182,7 @@ class Context {
   VariableDec(d) {
     // Declarations generate brand new variable objects
     d.variable = new Variable(d.identifier, d.con, this.locals.get(d.type))
+    console.log(d)
     this.add(d.variable.name, d.variable)
     return d
   }
@@ -204,6 +205,7 @@ class Context {
       d.params.map(p => p.type),
       d.returnType
     )
+    console.log(f)
     // Add before analyzing the body to allow recursion
     this.add(f.name, f)
     d.body = childContext.analyze(d.body)

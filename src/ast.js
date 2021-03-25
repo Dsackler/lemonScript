@@ -203,7 +203,7 @@ export class Variable {
 
 export class ArrayType extends Type {
     constructor(memberType) {
-      super(`[${memberType.name}]`)
+      super(`[${memberType}]`)
       Object.assign(this, {memberType})
     }
 
@@ -214,7 +214,9 @@ export class ArrayType extends Type {
 
 export class ObjType extends Type {
     constructor(keyType, valueType) {
-      super(`<${keyType.name}, ${valueType.name}>`)
+      console.log(keyType)
+      console.log(valueType)
+      super(`<${keyType}, ${valueType}>`)
       Object.assign(this, {keyType, valueType})
     }
     isEquivalentTo(target) {
