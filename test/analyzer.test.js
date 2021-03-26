@@ -170,6 +170,8 @@ const semanticErrors = [
   ["bad types for length", "print(#false);", /Array expected/],
   ["bad types for not", 'print(!"hello");', /a boolean, found string/],
   ["non-integer index", "let a=[1];print(a[false]);", /integer, found boolean/],
+  ["Array index too large", "int[] arr = [1, 2, 3]; print(arr[4]);", /Array index out of range/],
+  ["Array index too small", "int[] arr = [1, 2, 3]; print(arr[-1]);", /Array index out of range/],
   ["no such field", "struct S{} let x=S(); print(x.y);", /No such field/],
   ["diff type array elements", "print([3,3.0]);", /Not all elements have the same type/],
   ["shadowing", "let x = 1;\nwhile true {let x = 1;}", /Identifier x already declared/],
