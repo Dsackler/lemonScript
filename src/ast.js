@@ -203,7 +203,8 @@ export class Variable {
 
 export class ArrayType extends Type {
     constructor(memberType) {
-      super(`[${memberType}]`)
+      let memberName = getObjName(memberType)
+      super(`${memberName}[]`)
       Object.assign(this, {memberType})
     }
 
@@ -214,9 +215,9 @@ export class ArrayType extends Type {
 
 export class ObjType extends Type {
     constructor(keyType, valueType) {
-      console.log(keyType)
-      console.log(valueType)
-      super(`<${keyType}, ${valueType}>`)
+      let keyName = getObjName(keyType)
+      let valueName = getObjName(valueType)
+      super(`<${keyName}, ${valueName}>`)
       Object.assign(this, {keyType, valueType})
     }
     isEquivalentTo(target) {
@@ -224,6 +225,20 @@ export class ObjType extends Type {
         && this.keyType.isEquivalentTo(target.keyType)
         && this.valueType.isEquivalentTo(target.valueType)
     }
+}
+
+function getObjName(type){
+  if(type.constructor === ObjType){
+    let keyName = getObjName(type.keyType)
+    let valueName = getObjName(type.valueType)
+    return `<${keyName}, ${valueName}>`
+  } else if(type.constructor === ArrayType){
+    return getObjName(type.memberType) + "[]"
+  } else if(type.constructor === Type){
+    return type.name
+  }else {
+    return type
+  }
 }
 
 export class ArrayLit {

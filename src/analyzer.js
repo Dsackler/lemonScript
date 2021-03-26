@@ -105,6 +105,7 @@ const check = self => ({
     check(self).match(calleeType.parameterTypes)
   },
   allSameKeyTypes() {
+    console.log(self)
     must(
       self.slice(1).every(pair => pair.key.type.isEquivalentTo(self[0].key.type)),
     )
@@ -147,7 +148,6 @@ class Context {
   }
   lookup(name) {
     const entity = this.locals.get(name)
-    console.log(this.locals)
     if (entity) {
       return entity
     } else if (this.parent) {
@@ -161,7 +161,7 @@ class Context {
     return new Context(this, configuration)
   }
   analyze(node) {
-    console.log(node.constructor.name)
+    console.log(this[node.constructor.name])
     return this[node.constructor.name](node)
   }
   // maybe remove imports...
@@ -171,18 +171,26 @@ class Context {
   }
   VariableDecInit(d) {
     // Declarations generate brand new variable objects
+    console.log(d.init)
     d.init = this.analyze(d.init)
-    console.log(d.init.type)
-    d.variable = new Variable(d.variable.name, d.con, this.locals.get(d.type))
-    console.log(d.variable.type)
+    console.log(d.init)
+    d.type = this.analyze(d.type)
+    let type = d.type.constructor === String ? d.type : d.type.name
+    if(this.locals.get(type) === undefined){
+      this.add(d.type.name, d.type)
+    }
+    d.variable = new Variable(d.variable.name, d.con, this.locals.get(type))
     check(d.variable).hasSameTypeAs(d.init)
     this.add(d.variable.name, d.variable)
     return d
   }
   VariableDec(d) {
     // Declarations generate brand new variable objects
-    d.variable = new Variable(d.identifier, d.con, this.locals.get(d.type))
-    console.log(d)
+    let type = d.type.constructor === String ? d.type : d.type.name
+    if(this.locals.get(d.type) === undefined){
+      this.add(d.type.name, d.type)
+    }
+    d.variable = new Variable(d.identifier, d.con, this.locals.get(type))
     this.add(d.variable.name, d.variable)
     return d
   }
@@ -332,17 +340,34 @@ class Context {
 
   ArrayType(t) {
     t.memberType = this.analyze(t.memberType)
+    let type = t.memberType.constructor === String ? t.memberType : t.memberType.name
+    if(this.locals.get(type) === undefined){
+      this.add(t.memberType.name, type.memberType)
+    }
+    t.memberType = this.locals.get(type)
     return t
   }
 
   ObjType(t) {
     t.keyType = this.analyze(t.keyType)
+    let keyType = t.keyType.constructor === String ? t.keyType : t.keyType.name
+    if(this.locals.get(keyType) === undefined){
+      this.add(t.keyType.name, t.keyType)
+    }
+    t.keyType = this.locals.get(keyType)
     t.valueType = this.analyze(t.valueType)
+    let valueType = t.valueType.constructor === String ? t.valueType : t.valueType.name
+    if(this.locals.get(valueType) === undefined){
+      this.add(t.valueType.name, t.valueType)
+    }
+    t.valueType = this.locals.get(valueType)
     return t
   }
 
   ArrayLit(a) {
+    console.log(a.elements)
     a.elements = this.analyze(a.elements)
+    console.log(a.elements)
     check(a.elements).allHaveSameType()
     a.type = new ArrayType(a.elements[0].type)
     return a
@@ -359,6 +384,7 @@ class Context {
   ObjPair(p) {
     p.key = this.analyze(p.key)
     p.value = this.analyze(p.value)
+    return p
   }
 
   MemberExpression(e) {

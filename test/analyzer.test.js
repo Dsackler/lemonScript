@@ -4,6 +4,36 @@ import analyze from "../src/analyzer.js"
 import * as ast from "../src/ast.js"
 
 // Programs that are semantically correct
+const lemonChecks = [
+  ["variable declarations",
+  'dontUseMeForEyeDrops x = 1.0 dontUseMeForEyeDrops y = x'],
+  ["variable declarations 2",
+  'lemonStain trunk slice x = 1 taste y = sour'],
+  ["complex declaration", "<slice[], <pulp,taste>> x"],
+  ["super complex declaration", "<<slice[], <taste, pulp>>, <pulp[][],taste>> x"],
+  ["double array declaration", "slice[][] x"],
+  ["array initialization", "slice[] x = [1,2,3]"],
+  ["Dictionary initialization", "<slice, pulp> x = {1: \"hi\",2: \"bye\"}"],
+  ["complex Dictionary initialization", "<slice[], <pulp,taste>> x = {[1,2]: {\"hi\": sour}, [3,4]: {\"bye\": sweet}}"],
+  // ["super complex initialization", "<<slice[], <taste, pulp>>, <pulp[][],taste>> x"],
+  // ["complex initialization",
+  // "<slice[], <pulp,taste>> x"],
+  // ["complex parameters", "When life gives you lemons try noLemon f(<slice[], <pulp,taste>> x) BEGIN JUICING slice x END JUICING"],
+  // ["increment and decrement", "slice x = 10 x-- x++ x+=2"],
+  // ["short return", "When life gives you lemons try noLemon helloWorld() BEGIN JUICING you get lemonade and END JUICING"],
+  // ["long return", "When life gives you lemons try taste tralse() BEGIN JUICING you get lemonade and sweet END JUICING"],
+  // ["return in nested if", "When life gives you lemons try slice return10(slice a) BEGIN JUICING Squeeze the lemon if(a == 10) BEGIN JUICING you get lemonade and a END JUICING END JUICING"],
+  // ["break in nested if", "slice x = 20 Drink the lemonade while (x > 0) BEGIN JUICING Squeeze the lemon if(x == 10) BEGIN JUICING chop END JUICING x-- END JUICING"],
+  // ["long if", "Squeeze the lemon if(x == 10) BEGIN JUICING pour(“Number is 10”) END JUICING Toss the lemon and do BEGIN JUICING pour(“Number is not 10 or 20”) END JUICING"],
+  // ["else if", "Squeeze the lemon if(x == 10) BEGIN JUICING pour(“Number is 10”) END JUICING Keep juicing if(x == 20) BEGIN JUICING pour(“Number is 10”) END JUICING Toss the lemon and do BEGIN JUICING pour(“Number is not 10 or 20”) END JUICING"],
+  // ["for with args", "forEachLemon (slice i = 0; i < 5; i++) BEGIN JUICING pour(“Number: ” + i) END JUICING"],
+  // ["||", "pour(sweet||1<2||sour||3>4)"],
+  // ["&&", "pour(sweet&&1<2&&sour&&!3>4)"],
+  // ["relations", 'pour(10 < 20)'],
+  // ["arithmetic", "slice x x = 4 slice y = 2 slice z = 1 pour(x + y - - z ^ y % x / y)"],
+  // ["subscript exp", "slice[] arr = [1,2,3] pour(arr[1])"],
+  // ["array parameters", "When life gives you lemons try slice sumOfArray( slice[] arr, slice arrLength ) BEGIN JUICING END JUICING"],
+]
 const semanticChecks = [
   // ["variable declarations",
   // 'dontUseMeForEyeDrops x = 1.0 dontUseMeForEyeDrops y = x'],
@@ -173,7 +203,7 @@ const semanticErrors = [
 
 
 describe("The analyzer", () => {
-  for (const [scenario, source] of semanticChecks) {
+  for (const [scenario, source] of lemonChecks) {
     it(`recognizes ${scenario}`, () => {
       assert.ok(analyze(parse(source)))
     })
