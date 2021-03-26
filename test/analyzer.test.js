@@ -121,6 +121,7 @@ const semanticErrors = [
   ["assign to const", "const x = 1;x = 2;", /Cannot assign to constant x/],
   ["assign bad type", "let x=1;x=true;", /Cannot assign a boolean to a int/],
   ["assign bad array type", "let x=1;x=[true];", /Cannot assign a \[boolean\] to a int/],
+  ["assign bad array type", "let x=1;x=[\"hello\"];", /Cannot assign a \[string\] to an int/],
   ["assign bad optional type", "let x=1;x=some 2;", /Cannot assign a int\? to a int/],
   ["break outside loop", "break;", /Break can only appear in a loop/],
   [
@@ -199,6 +200,14 @@ const semanticErrors = [
   ["Non-type in param", "let x=1;function f(y:x){}", /Type expected/],
   ["Non-type in return type", "let x=1;function f():x{return 1;}", /Type expected/],
   ["Non-type in field type", "let x=1;struct S {y:x}", /Type expected/],
+  [
+    "Unreachable code",
+     `function f(x: int): boolean {
+       return true;
+       let y = 1;
+     }`, 
+     /Unreachable code after return statement/,
+  ],
 ]
 
 
