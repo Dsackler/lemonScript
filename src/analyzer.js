@@ -85,13 +85,13 @@ const check = self => ({
     )
   },
   returnsNothing() {
-    must(self.type.returnType === Type.VOID, "Something should be returned here")
+    must(self.type.returnTypes.isEquivalentTo( Type.VOID), "Cannot return a value here")
   },
   returnsSomething() {
-    must(self.type.returnType !== Type.VOID, "Cannot return a value here")
+    must(!self.type.returnTypes.isEquivalentTo( Type.VOID), " Something should be returned here")
   },
   isReturnableFrom(f) {
-    check(self).isAssignableTo(f.type.returnType)
+    check(self).isAssignableTo(f.type.returnTypes)
   },
   match(targetTypes) {
     // self is the array of arguments
@@ -105,7 +105,6 @@ const check = self => ({
     check(self).match(calleeType.parameterTypes)
   },
   allSameKeyTypes() {
-    console.log(self)
     must(
       self.slice(1).every(pair => pair.key.type.isEquivalentTo(self[0].key.type)),
     )
@@ -161,7 +160,6 @@ class Context {
     return new Context(this, configuration)
   }
   analyze(node) {
-    console.log(this[node.constructor.name])
     return this[node.constructor.name](node)
   }
   // maybe remove imports...
@@ -171,9 +169,7 @@ class Context {
   }
   VariableDecInit(d) {
     // Declarations generate brand new variable objects
-    console.log(d.init)
     d.init = this.analyze(d.init)
-    console.log(d.init)
     d.type = this.analyze(d.type)
     let type = d.type.constructor === String ? d.type : d.type.name
     if(this.locals.get(type) === undefined){
@@ -197,12 +193,17 @@ class Context {
   Assignment(s) {
     s.source = this.analyze(s.source)
     s.target = this.analyze(s.target)
+
+    
     check(s.source).isAssignableTo(s.target.type)
     check(s.target).isNotAConstant()
     return s
   }
   FunctionDec(d) {
-    d.returnType = d.returnType ? this.analyze(d.returnType) : Type.VOID
+    d.returnTypes =  this.analyze(d.returnTypes) 
+    if(d.returnTypes.constructor === String){
+      d.returnTypes = this.locals.get(d.returnTypes)
+    }
     // Declarations generate brand new function objects
     const f = (d.function = new Function(d.name))
     // When entering a function body, we must reset the inLoop setting,
@@ -211,9 +212,9 @@ class Context {
     d.params = childContext.analyze(d.params)
     f.type = new FunctionType(
       d.params.map(p => p.type),
-      d.returnType
+      d.returnTypes
     )
-    console.log(f)
+
     // Add before analyzing the body to allow recursion
     this.add(f.name, f)
     d.body = childContext.analyze(d.body)
@@ -230,7 +231,7 @@ class Context {
     check(c.callee).isCallable()
     c.args = this.analyze(c.args)
     check(c.args).matchParametersOf(c.callee.type)
-    c.type = c.callee.type.returnType
+    c.type = c.callee.type.returnTypes
     return c
   }
   IfStatement(s) {
@@ -342,7 +343,7 @@ class Context {
     t.memberType = this.analyze(t.memberType)
     let type = t.memberType.constructor === String ? t.memberType : t.memberType.name
     if(this.locals.get(type) === undefined){
-      this.add(t.memberType.name, type.memberType)
+      this.add(t.memberType.name, t.memberType)
     }
     t.memberType = this.locals.get(type)
     return t
@@ -365,19 +366,33 @@ class Context {
   }
 
   ArrayLit(a) {
-    console.log(a.elements)
+
+    //Check if the literal is empty, then we keep the type it came with. 
+    // If a.type is undefined we could just assign it to TYPE.any
     a.elements = this.analyze(a.elements)
-    console.log(a.elements)
-    check(a.elements).allHaveSameType()
-    a.type = new ArrayType(a.elements[0].type)
+0
+    if(a.elements.length  > 0)
+    {
+      check(a.elements).allHaveSameType()
+      a.type = new ArrayType(a.elements[0].type)
+    }else{
+      a.type = Type.EMPTY_ARRAY
+    }
     return a
+  
   }
 
   ObjLit(a) {
-    a.keyValuePairs = this.analyze(a.keyValuePairs)
-    check(a.keyValuePairs).allSameKeyTypes()
-    check(a.keyValuePairs).allSameValueTypes()
-    a.type = new ObjType(a.keyValuePairs[0].key.type, a.keyValuePairs[0].value.type)
+
+    if(a.keyValuePairs.length > 0 ) {
+      a.keyValuePairs = this.analyze(a.keyValuePairs)
+      check(a.keyValuePairs).allSameKeyTypes()
+      check(a.keyValuePairs).allSameValueTypes()
+      a.type = new ObjType(a.keyValuePairs[0].key.type, a.keyValuePairs[0].value.type)
+    }else{
+      a.type = Type.EMPTY_OBJECT
+    }
+
     return a
   }
 
@@ -400,6 +415,7 @@ class Context {
     check(e.var1).isDict()
     e.var2 = this.analyze(e.var2)
     e.var1.type.keyType.isEquivalentTo(e.var2.type)
+    e.type = e.var1.type.valueType
     return e
   }
   Continue(s) {

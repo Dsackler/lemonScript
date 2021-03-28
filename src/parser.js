@@ -44,7 +44,7 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
     Print                 = print "("Exp")"
     TypeOf                = typeof "("Exp")"
     ReturnStatement       = return Exp?
-    BeginToEnd            = openBrace Statement+ closeBrace
+    BeginToEnd            = openBrace Statement* closeBrace
     Exp                   = Exp logop Joint                                                             --binary
                             | Joint
     Joint                 = Joint relop AddOp                                                           --binary
@@ -77,7 +77,7 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
                             | ~"\"" ~"\\" any
     Var                   = Property
                             | id
-    Property              = Var ".getKey(" Var ")"                                                                    --dotMemberExp
+    Property              = Var ".key(" (Var | numlit | stringlit | boollit) ")"                                                                    --dotMemberExp
                             | Var "["digit+"]"                                                             --memberExp
     Type                  = ArrayType | types | DictType
     types                 = ("pulp"|"slice"|"taste"|"dontUseMeForEyeDrops") ~alnum
@@ -137,19 +137,19 @@ const astBuilder = lemonScriptGrammar.createSemantics().addOperation("tree", {
   },
   Statement_varDecInit(con, stat, type, identifiers, _eq, exp) {
     return new ast.VariableDecInit(
-      con.tree().length !== 0,
-      stat.tree().length !== 0,
       type.tree(),
       identifiers.tree(),
-      exp.tree()
+      exp.tree(),
+      con.tree().length !== 0,
+      stat.tree().length !== 0
     )
   },
   Statement_varDec(con, stat, type, identifier) {
     return new ast.VariableDec(
-      con.tree().length !== 0,
-      stat.tree().length !== 0,
       type.tree(),
-      identifier.tree()
+      identifier.tree(),
+      con.tree().length !== 0,
+      stat.tree().length !== 0
     )
   },
   Statement_assignExp(variable, _eq, exp) {
@@ -298,7 +298,7 @@ const astBuilder = lemonScriptGrammar.createSemantics().addOperation("tree", {
     return new ast.PropertyExpression(var1.tree(), var2.tree())
   },
   Property_memberExp(variable, _open, index, _close){
-    return new ast.MemberExpression(variable.tree(), index.sourceString)
+    return new ast.MemberExpression(variable.tree(), BigInt(index.sourceString))
   },
   ArrayType(type, _brac){
     return new ast.ArrayType(type.tree())

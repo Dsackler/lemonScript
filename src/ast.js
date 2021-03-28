@@ -24,11 +24,12 @@ export class Type {
     static FLOAT = new Type("dontUseMeForEyeDrops")
     static STRING = new Type("pulp")
     static VOID = new Type("noLemon")
-    static TYPE = new Type("type")
+    static EMPTY_ARRAY = new Type("emptyArray")
+    static EMPTY_OBJECT = new Type("emptyObject")
     static ANY = new Type("any")
     // Equivalence: when are two types the same
     isEquivalentTo(target) {
-      return this == target
+      return this === target
     }
     // T1 assignable to T2 is when x:T1 can be assigned to y:T2. By default
     // this is only when two types are equivalent; however, for other kinds
@@ -46,17 +47,16 @@ export class Bool extends Type {
 }
 
 export class VariableDecInit {
-    constructor(con, stat, type, variable, init ) {
+    constructor( type, variable, init,con, stat, ) {
         Object.assign(this, {con, stat, type, variable, init})
     }
 }
 
 export class VariableDec {
-    constructor(con, stat, type, identifier) {
+    constructor( type, identifier,con, stat) {
         Object.assign(this, {con, stat, type, identifier})
     }
 }
-
 
 export class Assignment {
     constructor(target, source) {
@@ -84,8 +84,8 @@ export class Constructor {
 }
 
 export class FunctionDec {
-    constructor(name, stat, returnType, params, body) {
-        Object.assign(this, {name, stat, returnType, params, body})
+    constructor(name, stat, returnTypes, params, body) {
+        Object.assign(this, {name, stat, returnTypes, params, body})
     }
 }
 
@@ -104,7 +104,7 @@ export class FunctionType {
   isAssignableTo(target) {
     return (
       target.constructor === FunctionType &&
-      this.returnType.isAssignableTo(target.returnType) &&
+      this.returnTypes.isAssignableTo(target.returnTypes) &&
       this.parameterTypes.length === target.parameterTypes.length &&
       this.parameterTypes.every((t, i) => target.parameterTypes[i].isAssignableTo(t))
     )
@@ -179,7 +179,11 @@ export class ReturnStatement {
     }
 }
 
-export class ShortReturnStatement {}
+export class ShortReturnStatement {
+  constructor(returnValue) {
+    this.returnValue = Type.VOID
+  }
+}
 
 export class BinaryExp {
     constructor(left, op, right) {
@@ -209,6 +213,9 @@ export class ArrayType extends Type {
     }
 
     isEquivalentTo(target) {
+      if(target  === Type.EMPTY_ARRAY || this === Type.EMPTY_ARRAY  ){
+        return true
+      }
         return target.constructor === ArrayType && this.memberType.isEquivalentTo(target.memberType)
     }
 }
@@ -221,6 +228,9 @@ export class ObjType extends Type {
       Object.assign(this, {keyType, valueType})
     }
     isEquivalentTo(target) {
+      if(target  === Type.EMPTY_OBJECT || this === Type.EMPTY_OBJECT  ){
+        return true
+      }
         return target.constructor === ObjType
         && this.keyType.isEquivalentTo(target.keyType)
         && this.valueType.isEquivalentTo(target.valueType)

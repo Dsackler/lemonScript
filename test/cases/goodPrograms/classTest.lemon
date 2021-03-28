@@ -9,7 +9,7 @@ BEGIN JUICING
 
     When life gives you lemons try slice getYear()
         BEGIN JUICING
-        you get lemonade and thisLemon.getKey(year)
+        you get lemonade and thisLemon.key(year)
         END JUICING
 
 END JUICING
@@ -19,6 +19,6 @@ Limon Ferrari branches Car
 BEGIN JUICING
         plant(slice year)
         BEGIN JUICING
-        thisLemon.getKey(name) = "F8 Spider"
+        thisLemon.key(name) = "F8 Spider"
         END JUICING
 END JUICING
