@@ -58,6 +58,7 @@ const check = self => ({
     )
   },
   isAssignableTo(type) {
+
     must(
       type === Type.ANY || self.type.isAssignableTo(type),
       `Cannot assign a ${self.type.name} to a ${type.name}`
@@ -91,6 +92,7 @@ const check = self => ({
     must(!self.type.returnTypes.isEquivalentTo( Type.VOID), " Something should be returned here")
   },
   isReturnableFrom(f) {
+
     check(self).isAssignableTo(f.type.returnTypes)
   },
   match(targetTypes) {
@@ -172,10 +174,10 @@ class Context {
     d.init = this.analyze(d.init)
     d.type = this.analyze(d.type)
     let type = d.type.constructor === String ? d.type : d.type.name
-    if(this.locals.get(type) === undefined){
+    if(!this.sees(type)){
       this.add(d.type.name, d.type)
     }
-    d.variable = new Variable(d.variable.name, d.con, this.locals.get(type))
+    d.variable = new Variable(d.variable.name, d.con, this.lookup(type))
     check(d.variable).hasSameTypeAs(d.init)
     this.add(d.variable.name, d.variable)
     return d
@@ -183,10 +185,10 @@ class Context {
   VariableDec(d) {
     // Declarations generate brand new variable objects
     let type = d.type.constructor === String ? d.type : d.type.name
-    if(this.locals.get(d.type) === undefined){
+    if(!this.sees(type)){
       this.add(d.type.name, d.type)
     }
-    d.variable = new Variable(d.identifier, d.con, this.locals.get(type))
+    d.variable = new Variable(d.identifier, d.con, this.lookup(type))
     this.add(d.variable.name, d.variable)
     return d
   }
@@ -205,15 +207,19 @@ class Context {
       d.returnTypes = this.locals.get(d.returnTypes)
     }
     // Declarations generate brand new function objects
-    const f = (d.function = new Function(d.name))
+    const f = (d.function = new Function(d.name.name))
+    console.log(f)
     // When entering a function body, we must reset the inLoop setting,
     // because it is possible to declare a function inside a loop!
     const childContext = this.newChild({ inLoop: false, function: f })
     d.params = childContext.analyze(d.params)
+    console.log(d.params)
     f.type = new FunctionType(
       d.params.map(p => p.type),
       d.returnTypes
     )
+
+
 
     // Add before analyzing the body to allow recursion
     this.add(f.name, f)
@@ -296,6 +302,7 @@ class Context {
   ReturnStatement(s) {
     check(this).isInsideAFunction()
     check(this.function).returnsSomething()
+
     s.returnValue = this.analyze(s.returnValue)
     check(s.returnValue).isReturnableFrom(this.function)
     return s
@@ -342,26 +349,27 @@ class Context {
   ArrayType(t) {
     t.memberType = this.analyze(t.memberType)
     let type = t.memberType.constructor === String ? t.memberType : t.memberType.name
-    if(this.locals.get(type) === undefined){
+    if(!this.sees(type)){
       this.add(t.memberType.name, t.memberType)
     }
-    t.memberType = this.locals.get(type)
+    t.memberType = this.lookup(type)
     return t
   }
 
   ObjType(t) {
     t.keyType = this.analyze(t.keyType)
     let keyType = t.keyType.constructor === String ? t.keyType : t.keyType.name
-    if(this.locals.get(keyType) === undefined){
+    if(!this.sees(keyType)){
       this.add(t.keyType.name, t.keyType)
     }
-    t.keyType = this.locals.get(keyType)
+    t.keyType = this.lookup(keyType)
+
     t.valueType = this.analyze(t.valueType)
     let valueType = t.valueType.constructor === String ? t.valueType : t.valueType.name
-    if(this.locals.get(valueType) === undefined){
+    if(!this.sees(valueType)){
       this.add(t.valueType.name, t.valueType)
     }
-    t.valueType = this.locals.get(valueType)
+    t.valueType = this.lookup(valueType)
     return t
   }
 
@@ -370,7 +378,6 @@ class Context {
     //Check if the literal is empty, then we keep the type it came with. 
     // If a.type is undefined we could just assign it to TYPE.any
     a.elements = this.analyze(a.elements)
-0
     if(a.elements.length  > 0)
     {
       check(a.elements).allHaveSameType()
@@ -432,7 +439,9 @@ class Context {
     return this.lookup(e.name)
   }
   Bool(b){
-    b.type = this.locals.get(b.type)
+   // console.log(this.locals)
+    b.type = this.lookup(b.type)
+    //console.log(b)
     return b
   }
   // TypeId(t) {

@@ -274,7 +274,8 @@ const astBuilder = lemonScriptGrammar.createSemantics().addOperation("tree", {
     if(returnValue.tree().length === 0) {
       return new ast.ShortReturnStatement()
     }
-    return new ast.ReturnStatement(returnValue.tree())
+
+    return new ast.ReturnStatement(returnValue.tree()[0])
   },
   id(_first, _rest) {
     return new ast.IdentifierExpression(this.sourceString)
