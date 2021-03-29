@@ -58,8 +58,6 @@ const check = self => ({
     )
   },
   isAssignableTo(type) {
-    console.log(self)
-    console.log(type)
     must(
       type === Type.ANY || self.type.isAssignableTo(type),
       `Cannot assign a ${self.type.name} to a ${type.name}`
@@ -97,8 +95,6 @@ const check = self => ({
     check(self).isAssignableTo(f.type.returnTypes)
   },
   match(targetTypes) {
-    console.log(self)
-    console.log(targetTypes)
     // self is the array of arguments
     must(
       targetTypes.length === self.length,
@@ -174,7 +170,6 @@ class Context {
     return new Context(this, configuration)
   }
   analyze(node) {
-    console.log(node.constructor.name)
     return this[node.constructor.name](node)
   }
   // maybe remove imports...
@@ -222,7 +217,6 @@ class Context {
     }
     // Declarations generate brand new function objects
     const f = (d.function = new Function(d.identifier.name))
-    console.log(f)
     // When entering a function body, we must reset the inLoop setting,
     // because it is possible to declare a function inside a loop!
     const childContext = this.newChild({ inLoop: false, function: f })
@@ -250,13 +244,7 @@ class Context {
     c.callee = this.analyze(c.callee)
     check(c.callee).isCallable()
     c.args = this.analyze(c.args)
-    console.log("c.args")
-    console.log(c.args)
-    console.log("c.callee")
-    console.log(c.callee.type.paramTypes)
     check(c.args).matchParametersOf(c.callee.type.paramTypes.map(p => {
-      console.log("this.lookup(sumOfArray).type.paramTypes")
-      console.log(p)
       if(p.constructor === ArrayType){
         p.memberType = this.lookup(p.memberType)
         return p
@@ -384,8 +372,6 @@ class Context {
       this.add(t.memberType.name, t.memberType)
     }
     t.memberType = this.lookup(type)
-    console.log("t")
-    console.log(t)
     return t
   }
 
@@ -471,9 +457,7 @@ class Context {
     return this.lookup(e.name)
   }
   Bool(b){
-   // console.log(this.locals)
     b.type = this.lookup(b.type)
-    //console.log(b)
     return b
   }
   // TypeId(t) {
