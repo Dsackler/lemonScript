@@ -39,7 +39,7 @@ const lemonChecks = [
   ["array parameters", "When life gives you lemons try noLemon sumOfArray( slice[] arr, slice arrLength ) BEGIN JUICING END JUICING"],
 ["function call", "When life gives you lemons try slice nothing() BEGIN JUICING you get lemonade and 1 END JUICING nothing()"],
 ["function call 2", "When life gives you lemons try slice something(slice x) BEGIN JUICING you get lemonade and x END JUICING something(2)"],
-//["initialize var to function pass", "When life gives you lemons try slice sumOfArray() BEGIN JUICING you get lemonade and 1 END JUICING"],
+["initialize var to function pass", "When life gives you lemons try slice sumOfArray(slice[] a, slice x) BEGIN JUICING you get lemonade and 1 END JUICING slice x = sumOfArray([1,2,3], 2)"],
 ]
 const semanticChecks = [
   // ["variable declarations",

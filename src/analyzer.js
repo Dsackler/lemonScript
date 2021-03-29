@@ -58,7 +58,8 @@ const check = self => ({
     )
   },
   isAssignableTo(type) {
-
+    console.log(self)
+    console.log(type)
     must(
       type === Type.ANY || self.type.isAssignableTo(type),
       `Cannot assign a ${self.type.name} to a ${type.name}`
@@ -158,15 +159,11 @@ class Context {
     }
     throw new Error(`Identifier ${name} not declared`)
   }
-  getArgType(name){
-    console.log("name")
-    console.log(name.type)
+  getType(name){
     const isInLocals = this.sees(name)
     if(isInLocals) {
-      return this.locals.get(name).type
+      return this.locals.get(name)
     }
-    console.log("name")
-    console.log(name.type)
     // otherwise it is not a variable but a literal that
     // already has the type object store in .type
     return name.type
@@ -204,7 +201,8 @@ class Context {
     if(!this.sees(type)){
       this.add(d.type.name, d.type)
     }
-    d.variable = new Variable(d.identifier.name, d.con, this.lookup(type))
+    d.identifier = d.identifier.name
+    d.variable = new Variable(d.identifier, d.con, this.lookup(type))
     this.add(d.variable.name, d.variable)
     return d
   }
@@ -223,14 +221,12 @@ class Context {
       d.returnTypes = this.locals.get(d.returnTypes)
     }
     // Declarations generate brand new function objects
-    const f = (d.function = new Function(d.name.name))
+    const f = (d.function = new Function(d.identifier.name))
     console.log(f)
     // When entering a function body, we must reset the inLoop setting,
     // because it is possible to declare a function inside a loop!
     const childContext = this.newChild({ inLoop: false, function: f })
     d.params = childContext.analyze(d.params)
-    console.log("d.params")
-    console.log(d.params)
     f.type = new FunctionType(
       //d.params.map(p => this.lookup(p.type)),
       d.params.map(p => p.type),
@@ -254,9 +250,24 @@ class Context {
     c.callee = this.analyze(c.callee)
     check(c.callee).isCallable()
     c.args = this.analyze(c.args)
-    //c.args = c.args.map(arg => arg.type)
-    console.log(c.callee)
-    check(c.args).matchParametersOf(c.callee.type.paramTypes.map(p => this.lookup(p)))
+    console.log("c.args")
+    console.log(c.args)
+    console.log("c.callee")
+    console.log(c.callee.type.paramTypes)
+    check(c.args).matchParametersOf(c.callee.type.paramTypes.map(p => {
+      console.log("this.lookup(sumOfArray).type.paramTypes")
+      console.log(p)
+      if(p.constructor === ArrayType){
+        p.memberType = this.lookup(p.memberType)
+        return p
+      } else if(p.type.constructor === ObjType){
+        p.keyType = this.lookup(p.keyType)
+        p.valueType = this.lookup(p.valueType)
+        return p
+      } else {
+        return this.lookup(p)
+      }
+    }))
     c.type = c.callee.type.returnTypes
     return c
   }
@@ -373,6 +384,8 @@ class Context {
       this.add(t.memberType.name, t.memberType)
     }
     t.memberType = this.lookup(type)
+    console.log("t")
+    console.log(t)
     return t
   }
 
@@ -398,8 +411,7 @@ class Context {
     //Check if the literal is empty, then we keep the type it came with.
     // If a.type is undefined we could just assign it to TYPE.any
     a.elements = this.analyze(a.elements)
-    if(a.elements.length  > 0)
-    {
+    if(a.elements.length  > 0){
       check(a.elements).allHaveSameType()
       a.type = new ArrayType(a.elements[0].type)
     }else{

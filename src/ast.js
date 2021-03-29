@@ -84,8 +84,8 @@ export class Constructor {
 }
 
 export class FunctionDec {
-    constructor(name, stat, returnTypes, params, body) {
-        Object.assign(this, {name, stat, returnTypes, params, body})
+    constructor(identifier, stat, returnTypes, params, body) {
+        Object.assign(this, {identifier, stat, returnTypes, params, body})
     }
 }
 
