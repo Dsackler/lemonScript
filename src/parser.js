@@ -311,7 +311,7 @@ const astBuilder = lemonScriptGrammar.createSemantics().addOperation("tree", {
     return new ast.ObjPair(key.tree(), value.tree())
   },
   Binding(type, name){
-    return new ast.VariableDec(type.tree(), name.tree())
+    return new ast.VariableDec(type.tree(), name.tree(), false, false)
   },
   _terminal() {
     return this.sourceString

@@ -141,8 +141,8 @@ export class ForStatement {
 }
 
 export class ForArgs {
-    constructor(name, exp, condition, sliceCrement) {
-        Object.assign(this, {name, exp, condition, sliceCrement})
+    constructor(identifier, exp, condition, sliceCrement) {
+        Object.assign(this, {identifier, exp, condition, sliceCrement})
     }
 }
 

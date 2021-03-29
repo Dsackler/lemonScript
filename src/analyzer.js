@@ -96,6 +96,8 @@ const check = self => ({
     check(self).isAssignableTo(f.type.returnTypes)
   },
   match(targetTypes) {
+    console.log(self)
+    console.log(targetTypes)
     // self is the array of arguments
     must(
       targetTypes.length === self.length,
@@ -103,8 +105,8 @@ const check = self => ({
     )
     targetTypes.forEach((type, i) => check(self[i]).isAssignableTo(type))
   },
-  matchParametersOf(calleeType) {
-    check(self).match(calleeType.parameterTypes)
+  matchParametersOf(paramTypes) {
+    check(self).match(paramTypes)
   },
   allSameKeyTypes() {
     must(
@@ -156,12 +158,26 @@ class Context {
     }
     throw new Error(`Identifier ${name} not declared`)
   }
+  getArgType(name){
+    console.log("name")
+    console.log(name.type)
+    const isInLocals = this.sees(name)
+    if(isInLocals) {
+      return this.locals.get(name).type
+    }
+    console.log("name")
+    console.log(name.type)
+    // otherwise it is not a variable but a literal that
+    // already has the type object store in .type
+    return name.type
+  }
   newChild(configuration = {}) {
     // Create new (nested) context, which is just like the current context
     // except that certain fields can be overridden
     return new Context(this, configuration)
   }
   analyze(node) {
+    console.log(node.constructor.name)
     return this[node.constructor.name](node)
   }
   // maybe remove imports...
@@ -188,7 +204,7 @@ class Context {
     if(!this.sees(type)){
       this.add(d.type.name, d.type)
     }
-    d.variable = new Variable(d.identifier, d.con, this.lookup(type))
+    d.variable = new Variable(d.identifier.name, d.con, this.lookup(type))
     this.add(d.variable.name, d.variable)
     return d
   }
@@ -196,13 +212,13 @@ class Context {
     s.source = this.analyze(s.source)
     s.target = this.analyze(s.target)
 
-    
+
     check(s.source).isAssignableTo(s.target.type)
     check(s.target).isNotAConstant()
     return s
   }
   FunctionDec(d) {
-    d.returnTypes =  this.analyze(d.returnTypes) 
+    d.returnTypes =  this.analyze(d.returnTypes)
     if(d.returnTypes.constructor === String){
       d.returnTypes = this.locals.get(d.returnTypes)
     }
@@ -213,8 +229,10 @@ class Context {
     // because it is possible to declare a function inside a loop!
     const childContext = this.newChild({ inLoop: false, function: f })
     d.params = childContext.analyze(d.params)
+    console.log("d.params")
     console.log(d.params)
     f.type = new FunctionType(
+      //d.params.map(p => this.lookup(p.type)),
       d.params.map(p => p.type),
       d.returnTypes
     )
@@ -236,7 +254,9 @@ class Context {
     c.callee = this.analyze(c.callee)
     check(c.callee).isCallable()
     c.args = this.analyze(c.args)
-    check(c.args).matchParametersOf(c.callee.type)
+    //c.args = c.args.map(arg => arg.type)
+    console.log(c.callee)
+    check(c.args).matchParametersOf(c.callee.type.paramTypes.map(p => this.lookup(p)))
     c.type = c.callee.type.returnTypes
     return c
   }
@@ -258,20 +278,20 @@ class Context {
     return s
   }
   ForStatement(s) {
-    s.forArgs = this.analyze(s.forArgs)
-    s.body = this.newChild({ inLoop: true }).analyze(s.body)
+    let newContext = this.newChild({ inLoop: true })
+    s.forArgs = newContext.analyze(s.forArgs)
+    s.body = newContext.analyze(s.body)
     return s
   }
-  forArgs(s) {
+  ForArgs(s) {
+    s.variable = new Variable(s.identifier.name, false, Type.INT)
     s.exp = this.analyze(s.exp)
-    s.variable = new Variable(s.name, false, Type.INT)
-    check(s.variable).hasSameTypeAs(s.init)
+    check(s.variable).hasSameTypeAs(s.exp)
+    this.add(s.variable.name, s.variable)
 
     s.condition = this.analyze(s.condition)
     check(s.condition).isBoolean()
-    this.add(s.variable.name, s.variable)
 
-    // maybe wrong?
     s.sliceCrement = this.analyze(s.sliceCrement)
 
     return s
@@ -375,7 +395,7 @@ class Context {
 
   ArrayLit(a) {
 
-    //Check if the literal is empty, then we keep the type it came with. 
+    //Check if the literal is empty, then we keep the type it came with.
     // If a.type is undefined we could just assign it to TYPE.any
     a.elements = this.analyze(a.elements)
     if(a.elements.length  > 0)
@@ -386,7 +406,7 @@ class Context {
       a.type = Type.EMPTY_ARRAY
     }
     return a
-  
+
   }
 
   ObjLit(a) {
