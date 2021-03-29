@@ -1,17 +1,11 @@
 import util from "util"
 
 export class Program {
-    constructor(imps, statements) {
-        Object.assign(this, {imps, statements})
+    constructor(statements) {
+        Object.assign(this, {statements})
     }
     [util.inspect.custom]() {
       return prettied(this)
-    }
-}
-
-export class Import {
-    constructor(imp, location) {
-        Object.assign(this, {imp, location})
     }
 }
 
@@ -47,14 +41,14 @@ export class Bool extends Type {
 }
 
 export class VariableDecInit {
-    constructor( type, variable, init,con, stat, ) {
-        Object.assign(this, {con, stat, type, variable, init})
+    constructor( type, variable, init, con ) {
+        Object.assign(this, {con,  type, variable, init})
     }
 }
 
 export class VariableDec {
-    constructor( type, identifier,con, stat) {
-        Object.assign(this, {con, stat, type, identifier})
+    constructor( type, identifier, con) {
+        Object.assign(this, {con, type, identifier})
     }
 }
 
@@ -64,28 +58,9 @@ export class Assignment {
     }
 }
 
-export class ClassDec extends Type {
-    constructor(name, ext, classBody) {
-        super(name)
-        Object.assign(this, {name, ext, classBody})
-    }
-}
-
-export class ClassBody {
-    constructor(constructor, statements) {
-        Object.assign(this, {constructor, statements})
-    }
-}
-
-export class Constructor {
-    constructor(parameters, body) {
-        Object.assign(this, {parameters, body})
-    }
-}
-
 export class FunctionDec {
-    constructor(identifier, stat, returnTypes, params, body) {
-        Object.assign(this, {identifier, stat, returnTypes, params, body})
+    constructor(identifier, returnTypes, params, body) {
+        Object.assign(this, {identifier, returnTypes, params, body})
     }
 }
 
@@ -101,14 +76,14 @@ export class FunctionType {
   constructor(paramTypes, returnTypes) {
     Object.assign(this, { paramTypes, returnTypes })
   }
-  isAssignableTo(target) {
-    return (
-      target.constructor === FunctionType &&
-      this.returnTypes.isAssignableTo(target.returnTypes) &&
-      this.parameterTypes.length === target.parameterTypes.length &&
-      this.parameterTypes.every((t, i) => target.parameterTypes[i].isAssignableTo(t))
-    )
-  }
+  // isAssignableTo(target) {
+  //   return (
+  //     target.constructor === FunctionType &&
+  //     this.returnTypes.isAssignableTo(target.returnTypes) &&
+  //     this.parameterTypes.length === target.parameterTypes.length &&
+  //     this.parameterTypes.every((t, i) => target.parameterTypes[i].isAssignableTo(t))
+  //   )
+  // }
 }
 
 export class Call {

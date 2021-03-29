@@ -7,10 +7,9 @@ import ohm from "ohm-js"
 import * as ast from "./ast.js"
 
 const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
-    Program               = Import* Statement*
-    Import                = import id from id
-    Statement             = const? static? Type id "=" Exp                                                --varDecInit
-                            | const? static? Type id                                                      --varDec
+    Program               = Statement*
+    Statement             = const? Type id "=" Exp                                                --varDecInit
+                            | const? Type id                                                      --varDec
                             | Var "=" Exp                                                                 --assignExp
                             | SwitchStatement
                             | FunctionCall
@@ -18,17 +17,13 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
                             | IfStatement
                             | WhileStatement
                             | ForStatement
-                            | ClassDec
                             | Print
                             | ReturnStatement
                             | SliceCrement
                             | continue
                             | break
                             | Exp
-    ClassDec              = classType id (extends id)? ClassBeginToEnd
-    ClassBeginToEnd       = openBrace Constructor Statement* closeBrace
-    Constructor           = plant "(" Parameters ")" BeginToEnd
-    FunctionDec           = functionBeginning static? (Type | void | id) id "(" Parameters ")" BeginToEnd
+    FunctionDec           = functionBeginning (Type | void | id) id "(" Parameters ")" BeginToEnd
     FunctionCall          = Var "(" Arguments ")"
     IfStatement           = ifBeginning "(" Exp ")" BeginToEnd ElseifStatement* ElseStatement?
     ElseifStatement       = elifBeginning "(" Exp ")" BeginToEnd
@@ -129,55 +124,30 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
 
 const astBuilder = lemonScriptGrammar.createSemantics().addOperation("tree", {
 
-  Program(imports, statements) {
-    return new ast.Program(imports.tree(), statements.tree())
+  Program(statements) {
+    return new ast.Program(statements.tree())
   },
-  Import(_import, imp, _from, location) {
-    return new ast.Import(imp.tree(), location.tree())
-  },
-  Statement_varDecInit(con, stat, type, identifiers, _eq, exp) {
+  Statement_varDecInit(con, type, identifiers, _eq, exp) {
     return new ast.VariableDecInit(
       type.tree(),
       identifiers.tree(),
       exp.tree(),
       con.tree().length !== 0,
-      stat.tree().length !== 0
     )
   },
-  Statement_varDec(con, stat, type, identifier) {
+  Statement_varDec(con, type, identifier) {
     return new ast.VariableDec(
       type.tree(),
       identifier.tree(),
       con.tree().length !== 0,
-      stat.tree().length !== 0
     )
   },
   Statement_assignExp(variable, _eq, exp) {
     return new ast.Assignment(variable.tree(), exp.tree())
   },
-  ClassDec(_classtype, name, _extKeyword, ext, classBody) {
-    return new ast.ClassDec(
-      name.tree(),
-      ext.sourceString,
-      classBody.tree()
-    )
-  },
-  ClassBeginToEnd(_classOpen, constructor, statements, _classClose) {
-    return new ast.ClassBody(
-      constructor.tree(),
-      statements.tree()
-    )
-  },
-  Constructor(_plant, _open, parameters, _close, body) {
-    return new ast.Constructor(
-      parameters.tree(),
-      body.tree()
-    )
-  },
-  FunctionDec(_functionBeginning, stat, returnType, name, _left, parameters, _right, body) {
+  FunctionDec(_functionBeginning, returnType, name, _left, parameters, _right, body) {
     return new ast.FunctionDec(
       name.tree(),
-      stat.tree().length !== 0,
       returnType.tree(),
       parameters.tree(),
       body.tree()

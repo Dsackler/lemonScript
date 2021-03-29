@@ -33,9 +33,6 @@ const check = self => ({
   isInteger() {
     must(self.type === Type.INT, `Expected an integer, found ${self.type.name}`)
   },
-  // isAType() {
-  //   must([Type, StructDeclaration].includes(self.constructor), "Type expected")
-  // },
   isAnArray() {
     must(self.type.constructor === ArrayType, "Array expected")
   },
@@ -53,7 +50,7 @@ const check = self => ({
   },
   allCasesHaveSameType(cases) {
     must(
-      cases.every(c => c.caseExp.type.isEquivalentTo(this.type)),
+      cases.every(c => c.caseExp.type.isEquivalentTo(self.type)),
       "Not all cases have the same type as the expression passed in"
     )
   },
@@ -66,12 +63,6 @@ const check = self => ({
   isNotAConstant() {
     must(!self.con, `Cannot assign to constant ${self.name}`)
   },
-  areAllDistinct() {
-    must(new Set(self.map(f => f.name)).size === self.length, "Keys must be distinct")
-  },
-  // isInTheDictionary(dict) {
-  //   must(dict.type.fields.map(f => f.name).includes(self), "No such key exists")
-  // },
   isInsideALoop() {
     must(self.inLoop, "Break can only appear in a loop")
   },
@@ -91,7 +82,6 @@ const check = self => ({
     must(!self.type.returnTypes.isEquivalentTo( Type.VOID), " Something should be returned here")
   },
   isReturnableFrom(f) {
-
     check(self).isAssignableTo(f.type.returnTypes)
   },
   match(targetTypes) {
@@ -104,6 +94,9 @@ const check = self => ({
   },
   matchParametersOf(paramTypes) {
     check(self).match(paramTypes)
+  },
+  areAllDistinct() {
+    must(new Set(self.map(pair => pair.key)).size === self.length, "Keys must be distinct")
   },
   allSameKeyTypes() {
     must(
@@ -154,15 +147,6 @@ class Context {
       return this.parent.lookup(name)
     }
     throw new Error(`Identifier ${name} not declared`)
-  }
-  getType(name){
-    const isInLocals = this.sees(name)
-    if(isInLocals) {
-      return this.locals.get(name)
-    }
-    // otherwise it is not a variable but a literal that
-    // already has the type object store in .type
-    return name.type
   }
   newChild(configuration = {}) {
     // Create new (nested) context, which is just like the current context
@@ -227,17 +211,10 @@ class Context {
       d.returnTypes
     )
 
-
-
     // Add before analyzing the body to allow recursion
     this.add(f.name, f)
     d.body = childContext.analyze(d.body)
     return d
-  }
-  FunctionType(t) {
-    t.paramTypes = this.analyze(t.paramTypes)
-    t.returnTypes = this.analyze(t.returnTypes)
-    return t
   }
 
   Call(c) {
@@ -248,7 +225,7 @@ class Context {
       if(p.constructor === ArrayType){
         p.memberType = this.lookup(p.memberType)
         return p
-      } else if(p.type.constructor === ObjType){
+      } else if(p.constructor === ObjType){
         p.keyType = this.lookup(p.keyType)
         p.valueType = this.lookup(p.valueType)
         return p
@@ -412,6 +389,7 @@ class Context {
     if(a.keyValuePairs.length > 0 ) {
       a.keyValuePairs = this.analyze(a.keyValuePairs)
       check(a.keyValuePairs).allSameKeyTypes()
+      check(a.keyValuePairs).areAllDistinct()
       check(a.keyValuePairs).allSameValueTypes()
       a.type = new ObjType(a.keyValuePairs[0].key.type, a.keyValuePairs[0].value.type)
     }else{
@@ -429,6 +407,7 @@ class Context {
 
   MemberExpression(e) {
     e.vari = this.analyze(e.vari)
+    check(e.vari).isAnArray()
     e.type = e.vari.type.memberType
     e.index = this.analyze(e.index)
     check(e.index).isInteger()
@@ -471,21 +450,11 @@ class Context {
   BigInt(e) {
     return e
   }
-  Boolean(e) {
-    return e
-  }
   String(e) {
     return e
   }
   Array(a) {
     return a.map(item => this.analyze(item))
-  }
-  Object(a) {
-    let newObj = {}
-    for(const [key,value] of Object.entries(a)) {
-      newObj[this.analyze(key)] = this.analyze(value)
-    }
-   return newObj
   }
 }
 

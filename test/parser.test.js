@@ -10,7 +10,7 @@ const BAD_TESTS = `test/cases/badPrograms`;
 
 const extraExample = `pour(0)`
 
-const expectedAst = `   1 | Program imps=[] statements=[#2]
+const expectedAst = `   1 | Program statements=[#2]
    2 | PrintStatement argument=0n`
 
 describe("The syntax", () => {
