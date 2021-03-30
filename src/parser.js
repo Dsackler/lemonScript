@@ -52,7 +52,8 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
                             | Factor
     Factor                = TypeOf
                             | FunctionCall
-                            | ("-") Factor                                                              --prefix
+                            | ("-") Factor                                                              --negation
+                            | ("!") Factor                                                              --boolNegation
                             | "(" Exp ")"                                                               --parens
                             | "[" Arguments "]"                                                         --arrayLit
                             | "{" DictValues "}"                                                        --objLit
@@ -222,7 +223,10 @@ const astBuilder = lemonScriptGrammar.createSemantics().addOperation("tree", {
   Exponential_binary(left, op, right){
     return new ast.BinaryExp(left.tree(), op.sourceString, right.tree())
   },
-  Factor_prefix(op, operand){
+  Factor_negation(op, operand){
+    return new ast.UnaryExpression(op.sourceString, operand.tree(), true)
+  },
+  Factor_boolNegation(op, operand){
     return new ast.UnaryExpression(op.sourceString, operand.tree(), true)
   },
   Factor_parens(_left, exp, _right){

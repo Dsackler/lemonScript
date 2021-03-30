@@ -76,10 +76,10 @@ const check = self => ({
     )
   },
   returnsNothing() {
-    must(self.type.returnTypes.isEquivalentTo( Type.VOID), "Cannot return a value here")
+    must(self.type.returnTypes.isEquivalentTo(Type.VOID), "Something should be returned here")
   },
   returnsSomething() {
-    must(!self.type.returnTypes.isEquivalentTo( Type.VOID), " Something should be returned here")
+    must(!self.type.returnTypes.isEquivalentTo(Type.VOID), "Cannot return a value here")
   },
   isReturnableFrom(f) {
     check(self).isAssignableTo(f.type.returnTypes)
@@ -133,7 +133,6 @@ class Context {
     return this.locals.has(name)
   }
   add(name, entity) {
-    // No shadowing! Prevent addition if id anywhere in scope chain!
     if (this.isWithinScope(name)) {
       throw new Error(`Identifier ${name} already declared`)
     }
@@ -262,7 +261,7 @@ class Context {
   ForArgs(s) {
     s.variable = new Variable(s.identifier.name, false, Type.INT)
     s.exp = this.analyze(s.exp)
-    check(s.variable).hasSameTypeAs(s.exp)
+    check(s.exp).isInteger(s.exp)
     this.add(s.variable.name, s.variable)
 
     s.condition = this.analyze(s.condition)
@@ -318,10 +317,16 @@ class Context {
       check(e.right).isBoolean()
       e.type = Type.BOOLEAN
     } else if (["+", "+="].includes(e.op)) {
+      if(e.op === "+="){
+        check(e.left).isNotAConstant()
+      }
       check(e.left).isNumericOrString()
       check(e.left).hasSameTypeAs(e.right)
       e.type = e.left.type
     } else if (["-", "*", "/", "%", "^", "-="].includes(e.op)) {
+      if(e.op === "-="){
+        check(e.left).isNotAConstant()
+      }
       check(e.left).isNumeric()
       check(e.left).hasSameTypeAs(e.right)
       e.type = e.left.type
@@ -337,8 +342,17 @@ class Context {
   }
   UnaryExpression(e) {
     e.operand = this.analyze(e.operand)
-    check(e.operand).isNumeric()
-    e.type = e.operand.type
+    if(["++", "--"].includes(e.op)){
+      check(e.operand).isNotAConstant()
+      check(e.operand).isNumeric()
+      e.type = e.operand.type
+    } else if("-" === e.op){
+      check(e.operand).isNumeric()
+      e.type = e.operand.type
+    } else if("!" === e.op){
+      check(e.operand).isBoolean()
+      e.type = e.operand.type
+    }
     return e
   }
 
