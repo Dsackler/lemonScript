@@ -178,7 +178,8 @@
 									<pre><code class="text-black">
     forEachLemon (slice i = 0; i < 5; i++)
         BEGIN JUICING
-        pour(“Number: ” + i)
+        pour(“Number: ”)
+		pour(i)
         END JUICING
                             </code></pre>
 								</div>
@@ -211,38 +212,18 @@
 					<div class="row">
 						<div class="col-lg-6">
 							<h3 class="text-center text-uppercase text-primary">
-								Car Class
+								Objects
 							</h3>
 							<div class="row">
 								<div class="offset-sm-1 col-sm-6 col-lg-9">
-									<pre><code class="text-black">
-    Limon Car
-        BEGIN JUICING
-        
-            plant(pulp name ,slice year)
-                BEGIN JUICING
-                thisLemon.name = name
-                thisLemon.year = year
-                END JUICING
-        
-        
-            When life gives you lemons try slice getYear()
-                BEGIN JUICING
-                you get lemonade and thisLemon.year
-                END JUICING
-        
-        END JUICING
-        
-        Car myCar = seed Car("Ford",2014)
-        
-        Limon Ferrari branches Car
-        BEGIN JUICING
-                plant(slice year)
-                BEGIN JUICING
-                thisLemon.name = "F8 Spider"
-                thisLemon.year = year
-                END JUICING
-        END JUICING
+									<pre><code class="text-black">								
+		&#60;slice, taste&#62;  binary = {0: sour, 1: sweet}
+		forEachLemon(slice i = 0; i <= 1; i++)
+			BEGIN JUICING
+			pour(i)
+			pour("-->")
+			pour(binary.key(i))
+			END JUICING								
                         </code></pre>
 								</div>
 							</div>
@@ -274,6 +255,26 @@
         
                         </code></pre>
 								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-12">
+						<h3 class="text-center text-uppercase text-primary">
+							1, 2, 3,... infinity
+						</h3>
+						<div class="row">
+							<div class="offset-sm-5 col-lg-12">
+								<pre><code class="text-black">								
+		( *) prints forever from 1 to infinity
+		slice x = 0
+		Drink the lemonade while(sweet)
+			BEGIN JUICING
+			x++
+			pour(x)
+		END JUICING									
+						</code></pre>
 							</div>
 						</div>
 					</div>
