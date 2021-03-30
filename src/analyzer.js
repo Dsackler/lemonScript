@@ -280,7 +280,7 @@ class Context {
   }
   LemonCase(s){
     s.caseExp = this.analyze(s.caseExp)
-    s.statements = this.newChild().analyze(s.statements)
+    s.statements = this.newChild({ inLoop: true }).analyze(s.statements)
     return s
   }
 

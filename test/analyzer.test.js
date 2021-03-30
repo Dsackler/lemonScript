@@ -42,6 +42,7 @@ const semanticChecks = [
   ["initialize var to function pass", "When life gives you lemons try slice sumOfArray(slice[] a, <slice, slice>b, slice x) BEGIN JUICING you get lemonade and 1 END JUICING slice x = sumOfArray([1,2,3], {1:1, 2:2}, 2)"],
   ["while statement", "slice x = 0 Drink the lemonade while(x<2) BEGIN JUICING x+=1 END JUICING"],
   ["switch statement", "slice x = 0 Pick(x) BEGIN JUICING lemonCase 0 x=x*2 citrusLimon x=x^2 END JUICING"],
+  ["break in switch statement", "slice x = 0 Pick(x) BEGIN JUICING lemonCase 0 x=x*2 chop lemonCase 1 x=x/2 citrusLimon x=x^2 END JUICING"],
 ]
 
 // Programs that are syntactically correct but have semantic errors
