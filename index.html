@@ -22,7 +22,7 @@
 		/>
 		<link rel="stylesheet" href="styles.css" />
 		<title>lemonScript</title>
-		<link rel="icon" href="favicon.ico" type="image/x-icon"/ >
+		<link rel="icon" href="favicon.ico" type="image/x-icon" />
 	</head>
 
 	<body class="page-top">
@@ -33,18 +33,6 @@
 					href="#home"
 					>lemonScript</a
 				>
-				<button
-					class="navbar-toggler navbar-toggler-right text-uppercase bg-primary text-white rounded"
-					type="button"
-					data-toggle="collapse"
-					data-target="#navbarResponsive"
-					aria-controls="navbarResponsive"
-					aria-expanded="false"
-					aria-label="Toggle navigation"
-				>
-					Menu
-					<i class="fas fa-bars"></i>
-				</button>
 				<div class="collapse navbar-collapse" id="navbarResponsive">
 					<ul class="navbar-nav ml-auto">
 						<li class="nav-item mx-0 mx-lg-1">
@@ -90,117 +78,119 @@
 				</h3>
 			</div>
 		</header>
-		<section
-			class="text-white bg-primary"
-			id="about"
-			style="padding: 100px"
-		>
-			<div class="container">
-				<h2 class="text-center text-uppercase mt-10">About</h2>
-				<hr class="star-dark" />
-				<div class="row">
-					<div class="col-lg-6 mx-auto text-center">
-						<p class="lead">
-							One morning, a young Khalid awoke and decided to
-							finish his A.I assignment. “Gosh, I just hate python
-							more than life itself” he muttered as he typed with
-							a sour face. At that moment, he looked at the lemon
-							pulp he has been collecting for the past 5 years due
-							to his midnight lemon snack addiction. At that
-							moment, he decided to call his much smarter and
-							superior friend David to write him a language that
-							everyone could enjoy. So, David formed a team with
-							Brent, Julian, Justin, Raul, and Khalid with the
-							intent to create a language for all lemon
-							enthusiasts. The stage has been set. lemonScript was
-							to be a self-explanatory, statically-typed, esoteric
-							language with the sole purpose of saving people who
-							had a sour taste in their mouth from using popular
-							languages.
-						</p>
+		<div class="d-flex flex-column justify-content-center">
+			<section
+				class="text-white bg-primary"
+				id="about"
+				style="padding: 100px"
+			>
+				<div class="container">
+					<h2 class="text-center text-uppercase">About</h2>
+					<hr class="star-dark" />
+					<div class="row">
+						<div class="col-lg-6 mx-auto text-center">
+							<p class="lead">
+								One morning, a young Khalid awoke and decided to
+								finish his A.I assignment. “Gosh, I just hate
+								python more than life itself” he muttered as he
+								typed with a sour face. At that moment, he
+								looked at the lemon pulp he has been collecting
+								for the past 5 years due to his midnight lemon
+								snack addiction. At that moment, he decided to
+								call his much smarter and superior friend David
+								to write him a language that everyone could
+								enjoy. So, David formed a team with Brent,
+								Julian, Justin, Raul, and Khalid with the intent
+								to create a language for all lemon enthusiasts.
+								The stage has been set. lemonScript was to be a
+								self-explanatory, statically-typed, esoteric
+								language with the sole purpose of saving people
+								who had a sour taste in their mouth from using
+								popular languages.
+							</p>
+						</div>
+					</div>
+					<div class="text-center mt-4">
+						<a
+							class="btn btn-xl btn-outline-dark"
+							href="https://github.com/Dsackler/lemonScript"
+							target="_blank"
+						>
+							<i class="fas fa-download mr-2"></i>
+							Visit Our Github!
+						</a>
+						<a
+							class="btn btn-xl btn-outline-dark"
+							href="https://github.com/Dsackler/lemonScript/blob/main/src/parser.js"
+							target="_blank"
+						>
+							<i class="fas fa-file-signature mr-2"></i>
+							See Our Grammar!
+						</a>
 					</div>
 				</div>
-				<div class="text-center mt-4">
-					<a
-						class="btn btn-xl btn-outline-dark"
-						href="https://github.com/Dsackler/lemonScript"
-						target="_blank"
-					>
-						<i class="fas fa-download mr-2"></i>
-						Visit Our Github!
-					</a>
-					<a
-						class="btn btn-xl btn-outline-dark"
-						href="https://github.com/Dsackler/lemonScript/blob/main/src/parser.js"
-						target="_blank"
-					>
-						<i class="fas fa-file-signature mr-2"></i>
-						See Our Grammar!
-					</a>
-				</div>
-			</div>
-		</section>
-		<section class="portfolio" id="codeExamples" style="padding: 100px">
-			<div class="container">
-				<h2 class="text-center text-uppercase text-primary mb-0">
-					Examples
-				</h2>
-				<hr class="star-light mb-5" />
-				<div class="row">
-					<div class="col-sm-12 col-lg-6">
-						<h3 class="text-center text-uppercase text-primary">
-							Hello World
-						</h3>
-						<div class="row">
-							<div class="col-lg-12">
-								<pre><code class="text-black">
+			</section>
+			<section class="portfolio" id="codeExamples" style="padding: 100px">
+				<div class="container">
+					<h2 class="text-center text-uppercase text-primary mb-0">
+						Coding Examples
+					</h2>
+					<hr class="star-light mb-5" />
+					<div class="row">
+						<div class="col-sm-12 col-lg-6">
+							<h3 class="text-center text-uppercase text-primary">
+								Hello World
+							</h3>
+							<div class="row">
+								<div class="col-lg-12">
+									<pre><code class="text-black">
     When life gives you lemons try noLemon helloWorld()
         BEGIN JUICING
         pour(“Hello World”)
         END JUICING
                         </code></pre>
+								</div>
 							</div>
 						</div>
-					</div>
-					<div class="col-lg-6">
-						<h3 class="text-center text-uppercase text-primary">
-							Adding Two
-						</h3>
-						<div class="row">
-							<div class="col-lg-12">
-								<pre><code class="text-black">
+						<div class="col-lg-6">
+							<h3 class="text-center text-uppercase text-primary">
+								Adding Two
+							</h3>
+							<div class="row">
+								<div class="col-lg-12">
+									<pre><code class="text-black">
     When life gives you lemons try slice add(slice a, slice b)
         BEGIN JUICING
         you get lemonade and a + b
         END JUICING
                         </code></pre>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-				<div class="row">
-					<div class="col-lg-6">
-						<h3 class="text-center text-uppercase text-primary">
-							Five Numbers
-						</h3>
-						<div class="row">
-							<div class="col-sm-6 col-lg-8 offset-lg-2">
-								<pre><code class="text-black">
+					<div class="row">
+						<div class="col-lg-6">
+							<h3 class="text-center text-uppercase text-primary">
+								Five Numbers
+							</h3>
+							<div class="row">
+								<div class="col-sm-6 col-lg-8 offset-lg-2">
+									<pre><code class="text-black">
     forEachLemon (slice i = 0; i < 5; i++)
         BEGIN JUICING
         pour(“Number: ” + i)
         END JUICING
                             </code></pre>
+								</div>
 							</div>
 						</div>
-					</div>
-					<div class="col-lg-6">
-						<h3 class="text-center text-uppercase text-primary">
-							Nth Fibonacci
-						</h3>
-						<div class="row">
-							<div class="col-lg-12">
-								<pre><code class="text-black">
+						<div class="col-lg-6">
+							<h3 class="text-center text-uppercase text-primary">
+								Nth Fibonacci
+							</h3>
+							<div class="row">
+								<div class="col-lg-12">
+									<pre><code class="text-black">
     When life gives you lemons try slice fibonacci(slice num)
         BEGIN JUICING
         Squeeze the lemon if(num == 0)
@@ -214,18 +204,18 @@
         you get lemonade and fibonacci(num - 2) + fibonacci(num - 1)
         END JUICING
                             </code></pre>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-				<div class="row">
-					<div class="col-lg-6">
-						<h3 class="text-center text-uppercase text-primary">
-							Car Class
-						</h3>
-						<div class="row">
-							<div class="offset-sm-1 col-sm-6 col-lg-9">
-								<pre><code class="text-black">
+					<div class="row">
+						<div class="col-lg-6">
+							<h3 class="text-center text-uppercase text-primary">
+								Car Class
+							</h3>
+							<div class="row">
+								<div class="offset-sm-1 col-sm-6 col-lg-9">
+									<pre><code class="text-black">
     Limon Car
         BEGIN JUICING
         
@@ -254,16 +244,16 @@
                 END JUICING
         END JUICING
                         </code></pre>
+								</div>
 							</div>
 						</div>
-					</div>
-					<div class="col-lg-6">
-						<h3 class="text-center text-uppercase text-primary">
-							2 4 6 8
-						</h3>
-						<div class="row">
-							<div class="offset-sm-3 col-lg-12">
-								<pre><code class="text-black ">
+						<div class="col-lg-6">
+							<h3 class="text-center text-uppercase text-primary">
+								2 4 6 8
+							</h3>
+							<div class="row">
+								<div class="offset-sm-3 col-lg-12">
+									<pre><code class="text-black ">
     slice even = 4
     pulp twofoursixeight
     Pick (even)
@@ -283,51 +273,405 @@
     pour(“Our result is ” + twofoursix)
         
                         </code></pre>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-		</section>
+			</section>
 
-		<section
-			class="text-white bg-primary"
-			id="developers"
-			style="padding: 100px"
-		>
-			<div class="container">
-				<h2 class="text-center text-uppercase">Developer</h2>
-				<hr class="star-dark" />
-				<div class="row">
-					<div class="col-lg-6 mx-auto text-center">
-						<p class="lead">
-							lemonScript is brought to you by Khalid Alghunaim,
-							Julian Arregoces, David Sackler, Justin Yee, Brent
-							Shafer, Raul Rodriguez. A group of Computer Science
-							students @ Loyola Marymount University.
-						</p>
+			<section
+				class="text-white bg-primary"
+				id="developers"
+				style="padding: 100px"
+			>
+				<div class="container">
+					<h2 class="text-center text-uppercase">Developer</h2>
+					<hr class="star-dark" />
+					<div class="row">
+						<div class="col-lg-6 mx-auto text-center">
+							<p class="lead">
+								lemonScript is brought to you by Khalid
+								Alghunaim, Julian Arregoces, David Sackler,
+								Justin Yee, Brent Shafer, Raul Rodriguez. A
+								group of Computer Science students @ Loyola
+								Marymount University.
+							</p>
+						</div>
+					</div>
+					<div class="d-flex flex-column justify-content-around">
+						<div class="d-flex flex-row justify-content-around">
+							<div class="container">
+								<a
+									class=""
+									data-toggle="modal"
+									href="#portfolio-modal-1"
+								>
+									<div class="">
+										<div
+											class="w-100 text-center text-white"
+										>
+											<i
+												class="text-center text-white fa-3x"
+												style="
+													text-shadow: 2px 2px 4px
+														#3f3c3c;
+												"
+												><br />Justin Yee</i
+											>
+										</div>
+									</div>
+								</a>
+							</div>
+							<div class="container">
+								<a
+									class=""
+									data-toggle="modal"
+									href="#portfolio-modal-2"
+								>
+									<div class="">
+										<div
+											class="w-100 text-center text-white"
+										>
+											<i
+												class="text-center text-white fa-3x"
+												style="
+													text-shadow: 2px 2px 4px
+														#3f3c3c;
+												"
+												><br />David Sackler</i
+											>
+										</div>
+									</div>
+								</a>
+							</div>
+							<div class="container">
+								<a
+									class=""
+									data-toggle="modal"
+									href="#portfolio-modal-3"
+								>
+									<div class="">
+										<div
+											class="w-100 text-center text-white"
+										>
+											<i
+												class="text-center text-white fa-3x"
+												style="
+													text-shadow: 2px 2px 4px
+														#3f3c3c;
+												"
+												><br />Brent Shafer</i
+											>
+										</div>
+									</div>
+								</a>
+							</div>
+						</div>
+						<div class="d-flex flex-row justify-content-around">
+							<div class="container">
+								<a
+									class=""
+									data-toggle="modal"
+									href="#portfolio-modal-4"
+								>
+									<div class="">
+										<div
+											class="w-100 text-center text-white"
+										>
+											<i
+												class="text-center text-white fa-3x"
+												style="
+													text-shadow: 2px 2px 4px
+														#3f3c3c;
+												"
+												><br />Khalid Alghunaim</i
+											>
+										</div>
+									</div>
+								</a>
+							</div>
+							<div class="container">
+								<a
+									class=""
+									data-toggle="modal"
+									href="#portfolio-modal-5"
+								>
+									<div class="">
+										<div
+											class="w-100 text-center text-white"
+										>
+											<i
+												class="text-center text-white fa-3x"
+												style="
+													text-shadow: 2px 2px 4px
+														#3f3c3c;
+												"
+												><br />Julian Arregoces</i
+											>
+										</div>
+									</div>
+								</a>
+							</div>
+							<div class="container">
+								<a
+									class=""
+									data-toggle="modal"
+									href="#portfolio-modal-6"
+								>
+									<div class="">
+										<div
+											class="w-100 text-center text-white"
+										>
+											<i
+												class="text-center text-white fa-3x"
+												style="
+													text-shadow: 2px 2px 4px
+														#3f3c3c;
+												"
+												><br />Raul Rodriguez</i
+											>
+										</div>
+									</div>
+								</a>
+							</div>
+						</div>
 					</div>
 				</div>
-				<div class="text-center mt-4">
+			</section>
+		</div>
+		<div class="modal" id="portfolio-modal-1">
+			<div class="modal-dialog container bg-white">
+				<div class="modal-content text-center">
 					<a
-						class="btn btn-xl btn-outline-dark"
-						href="https://github.com/Dsackler/lemonScript"
-						target="_blank"
+						class="d-none d-md-block mt-5 text-left ml-3"
+						href="#"
+						data-dismiss="modal"
 					>
-						<i class="fas fa-download mr-2"></i>
-						Visit Our Github!
+						<i class="fa fa-2x fa-times"></i>
 					</a>
-					<a
-						class="btn btn-xl btn-outline-dark"
-						href="https://github.com/Dsackler/lemonScript/blob/main/src/parser.js"
-						target="_blank"
-					>
-						<i class="fas fa-file-signature mr-2"></i>
-						See Our Grammar!
-					</a>
+					<div class="modal-header justify-content-center">
+						<h2 class="text-secondary text-uppercase text-center">
+							Justin Yee
+						</h2>
+					</div>
+					<div class="modal-body justify-content-center">
+						<p class="mb-3">
+							Justin Yee is pursuing a Bachelor of Science in
+							Computer Science with a minor in Business
+							Administration. He is also a member of the Ultimate
+							Frsibee team at LMU and loves to watch chill and
+							watch movies.
+						</p>
+					</div>
+					<div class="modal-footer justify-content-center mb-5">
+						<a
+							class="btn btn-primary btn-lg rounded-pill mx-1"
+							href="https://github.com/jyee5"
+							><i class="fab fa-github"></i
+						></a>
+						<a
+							class="btn btn-primary btn-lg rounded-pill mx-1"
+							href="https://www.linkedin.com/in/justin-yee529/"
+							><i class="fab fa-linkedin-in"></i
+						></a>
+					</div>
 				</div>
 			</div>
-		</section>
+		</div>
+		<div class="modal" id="portfolio-modal-2">
+			<div class="modal-dialog container bg-white">
+				<div class="modal-content text-center">
+					<a
+						class="d-none d-md-block mt-5 text-left ml-3"
+						href="#"
+						data-dismiss="modal"
+					>
+						<i class="fa fa-2x fa-times"></i>
+					</a>
+					<div class="modal-header justify-content-center">
+						<h2 class="text-secondary text-uppercase text-center">
+							David Sackler
+						</h2>
+					</div>
+					<div class="modal-body justify-content-center">
+						<p class="mb-3">
+							David Sackler is pursuing a Bachelor of Science in
+							Computer Science. Driving his s2000 in local races
+							is what he loves to do during his free time.
+						</p>
+					</div>
+					<div class="modal-footer justify-content-center mb-5">
+						<a
+							class="btn btn-primary btn-lg rounded-pill mx-1"
+							href="https://github.com/Dsackler"
+							><i class="fab fa-github"></i
+						></a>
+						<a
+							class="btn btn-primary btn-lg rounded-pill mx-1"
+							href="https://www.linkedin.com/in/david-sackler-80b780194/"
+							><i class="fab fa-linkedin-in"></i
+						></a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal" id="portfolio-modal-3">
+			<div class="modal-dialog container bg-white">
+				<div class="modal-content text-center">
+					<a
+						class="d-none d-md-block mt-5 text-left ml-3"
+						href="#"
+						data-dismiss="modal"
+					>
+						<i class="fa fa-2x fa-times"></i>
+					</a>
+					<div class="modal-header justify-content-center">
+						<h2 class="text-secondary text-uppercase text-center">
+							Brent Shafer
+						</h2>
+					</div>
+					<div class="modal-body justify-content-center">
+						<p class="mb-3">
+							Brent Shafer is pursuing a Bachelor of Science in
+							Computer Science. He is a lover of hiking and
+							running during his free time.
+						</p>
+					</div>
+					<div class="modal-footer justify-content-center mb-5">
+						<a
+							class="btn btn-primary btn-lg rounded-pill mx-1"
+							href="https://github.com/bshafer93"
+							><i class="fab fa-github"></i
+						></a>
+						<a
+							class="btn btn-primary btn-lg rounded-pill mx-1"
+							href="https://www.linkedin.com/in/bshafer93/"
+							><i class="fab fa-linkedin-in"></i
+						></a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal" id="portfolio-modal-4">
+			<div class="modal-dialog container bg-white">
+				<div class="modal-content text-center">
+					<a
+						class="d-none d-md-block mt-5 text-left ml-3"
+						href="#"
+						data-dismiss="modal"
+					>
+						<i class="fa fa-2x fa-times"></i>
+					</a>
+					<div class="modal-header justify-content-center">
+						<h2 class="text-secondary text-uppercase text-center">
+							Khalid Alghunaim
+						</h2>
+					</div>
+					<div class="modal-body justify-content-center">
+						<p class="mb-3">
+							Khalid Alghunaim is pursuing a Bachelor of Science
+							in Computer Science.
+						</p>
+					</div>
+					<div class="modal-footer justify-content-center mb-5">
+						<a
+							class="btn btn-primary btn-lg rounded-pill mx-1"
+							href="https://github.com/kfg2000"
+							><i class="fab fa-github"></i
+						></a>
+						<a
+							class="btn btn-primary btn-lg rounded-pill mx-1"
+							href="https://www.linkedin.com/in/khalid-al-962747176/"
+							><i class="fab fa-linkedin-in"></i
+						></a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal" id="portfolio-modal-5">
+			<div class="modal-dialog container bg-white">
+				<div class="modal-content text-center">
+					<a
+						class="d-none d-md-block mt-5 text-left ml-3"
+						href="#"
+						data-dismiss="modal"
+					>
+						<i class="fa fa-2x fa-times"></i>
+					</a>
+					<div class="modal-header justify-content-center">
+						<h2 class="text-secondary text-uppercase text-center">
+							Julian Arregoces
+						</h2>
+					</div>
+					<div class="modal-body justify-content-center">
+						<p class="mb-3">
+							Julian Arregoces is pursuing a Bachelor of Science
+							in Computer Science.
+						</p>
+					</div>
+					<div class="modal-footer justify-content-center mb-5">
+						<a
+							class="btn btn-primary btn-lg rounded-pill mx-1"
+							href="https://github.com/Jarregoc"
+							><i class="fab fa-github"></i
+						></a>
+						<a
+							class="btn btn-primary btn-lg rounded-pill mx-1"
+							href="https://www.linkedin.com/in/julian-arregoces-615475208/"
+							><i class="fab fa-linkedin-in"></i
+						></a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal" id="portfolio-modal-6">
+			<div class="modal-dialog container bg-white">
+				<div class="modal-content text-center">
+					<a
+						class="d-none d-md-block mt-5 text-left ml-3"
+						href="#"
+						data-dismiss="modal"
+					>
+						<i class="fa fa-2x fa-times"></i>
+					</a>
+					<div class="modal-header justify-content-center">
+						<h2 class="text-secondary text-uppercase text-center">
+							Raul Rodriguez
+						</h2>
+					</div>
+					<div class="modal-body justify-content-center">
+						<p class="mb-3">
+							Raul Rodriguez is pursuing a Bachelor of Science in
+							Computer Science.
+						</p>
+					</div>
+					<div class="modal-footer justify-content-center mb-5">
+						<a
+							class="btn btn-primary btn-lg rounded-pill mx-1"
+							href="https://github.com/RaulRdz15"
+							><i class="fab fa-github"></i
+						></a>
+						<a
+							class="btn btn-primary btn-lg rounded-pill mx-1"
+							href="https://www.linkedin.com/in/raul-rodriguez115/"
+							><i class="fab fa-linkedin-in"></i
+						></a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Bootstrap core JavaScript -->
+		<script
+			src="https://code.jquery.com/jquery-3.3.1.min.js"
+			integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+			crossorigin="anonymous"
+		></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+		<!-- Plugin JavaScript -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script>
 	</body>
 	<footer class="bg-white text-center text-lg-start">
 		<!-- Copyright -->
