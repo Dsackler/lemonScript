@@ -152,8 +152,8 @@ export default function generate(program) {
       return targetName(v)
     },
     Bool(b){
-        return `${b.value)}`
-    }
+        return `${b.value}`
+    },
     Number(e) {
       return e
     },
