@@ -3,7 +3,7 @@
 // Invoke generate(program) with the program node to get back the JavaScript
 // translation as a string.
 
-import { IfStatement, Type, StructType } from "./ast.js"
+import { Type } from "./ast.js"
 import * as stdlib from "./stdlib.js"
 
 export default function generate(program) {
@@ -48,23 +48,10 @@ export default function generate(program) {
     Assignment(s) {
         output.push(`${gen(s.variable)} = ${gen(s.target)};`)
       },
-    // TypeDeclaration(d) {
-    //   output.push(`class ${gen(d.type)} {`)
-    //   output.push(`constructor(${gen(d.type.fields).join(",")}) {`)
-    //   for (let field of d.type.fields) {
-    //     output.push(`this[${JSON.stringify(gen(field))}] = ${gen(field)};`)
-    //   }
-    //   output.push("}")
-    //   output.push("}")
-    // },
-    // StructType(t) {
-    //   return targetName(t)
-    // },
-    // Field(f) {
-    //   return targetName(f)
-    // },
+
     FunctionDeclaration(f) {
-      output.push(`function ${gen(f.identifier.name)}(${gen(f.params).join(", ")}) {`)
+      const funcName = targetName(f.identifier)
+      output.push(`function ${funcName}(${gen(f.params).join(", ")}) {`)
       gen(f.body)
       output.push("}")
     },
@@ -78,17 +65,13 @@ export default function generate(program) {
         }
         output.push(`${targetCode};`)
     },
+    PrintStatement(p) {
+        output.push(standardFunctions.get("pour")(p.argument))
+    },
+    typeOfStatement(p) {
+        output.push(standardFunctions.get("species")(p.argument))
+    },
     IfStatement(s) {
-        // output.push(`if (${gen(s.cases)}) {`)
-        // gen(s.consequent)
-        // if (s.alternate.constructor === IfStatement) {
-        //   output.push("} else")
-        //   gen(s.alternate)
-        // } else {
-        //   output.push("} else {")
-        //   gen(s.alternate)
-        //   output.push("}")
-        // }
         output.push(`if (${gen(s.cases[0].condition)}) {`)
         gen(s.cases[0].body)
         for(let i = 1; i < s.cases.length; i ++) {
@@ -103,95 +86,78 @@ export default function generate(program) {
         output.push(`} else if (${gen(s.condition)}) {`)
         gen(s.body)
     },
-    Parameter(p) {
-      return targetName(p)
-    },
-    Variable(v) {
-      // Standard library constants just get special treatment
-      if (v === stdlib.constants.π) {
-        return "Math.PI"
-      }
-      return targetName(v)
-    },
-    Function(f) {
-      return targetName(f)
-    },
-    Increment(s) {
-      output.push(`${gen(s.variable)}++;`)
-    },
-    Decrement(s) {
-      output.push(`${gen(s.variable)}--;`)
-    },
-    Assignment(s) {
-      output.push(`${gen(s.target)} = ${gen(s.source)};`)
-    },
-    BreakStatement(s) {
-      output.push("break;")
-    },
-    ReturnStatement(s) {
-      output.push(`return ${gen(s.expression)};`)
-    },
-    ShortReturnStatement(s) {
-      output.push("return;")
-    },
-    
     WhileStatement(s) {
-      output.push(`while (${gen(s.test)}) {`)
-      gen(s.body)
-      output.push("}")
-    },
-    RepeatStatement(s) {
-      // JS can only repeat n times with a counter variable!
-      const i = targetName({ name: "i" })
-      output.push(`for (let ${i} = 0; ${i} < ${gen(s.count)}; ${i}++) {`)
-      gen(s.body)
-      output.push("}")
-    },
-    ForRangeStatement(s) {
-      const i = targetName(s.iterator)
-      const op = s.op === "..." ? "<=" : "<"
-      output.push(`for (let ${i} = ${gen(s.low)}; ${i} ${op} ${gen(s.high)}; ${i}++) {`)
-      gen(s.body)
-      output.push("}")
+        output.push(`while (${gen(s.condition)}) {`)
+        gen(s.body)
+        output.push("}")
     },
     ForStatement(s) {
-      output.push(`for (let ${gen(s.iterator)} of ${gen(s.collection)}) {`)
-      gen(s.body)
-      output.push("}")
+        gen(s.forArgs)
+        gen(s.body)
+        output.push("}")
     },
-    Conditional(e) {
-      return `((${gen(e.test)}) ? (${gen(e.consequent)}) : (${gen(e.alternate)}))`
+    ForArgs(s) {
+        output.push(`for (let ${gen(s.variable)} = ${gen(s.exp)}; ${gen(s.condition)}; ${gen(s.sliceCrement)}) {`)
+    },
+    SwitchStatement(s) {
+        output.push(`switch(${gen(s.expression)}) {`)
+        for(let i = 0; i < s.cases.length; i ++) {
+            gen(s.cases[i]);
+        }
+        output.push(`default:`)
+        gen(s.defaultCase)
+        output.push(`}`)
+
+    },
+    LemonCase(s){
+        output.push(`case ${gen(s.caseExp)}:`)
+        gen(s.statements)
+    },
+    ReturnStatement(s) {
+        output.push(`return ${gen(s.returnValue)};`)
+      },
+    ShortReturnStatement(s) {
+        output.push("return;")
     },
     BinaryExpression(e) {
-      const op = { "==": "===", "!=": "!==" }[e.op] ?? e.op
-      return `(${gen(e.left)} ${op} ${gen(e.right)})`
+        const op = { "==": "===", "!=": "!==", "^":"**" }[e.op] ?? e.op
+        return `(${gen(e.left)} ${op} ${gen(e.right)})`
     },
     UnaryExpression(e) {
-      return `${e.op}(${gen(e.operand)})`
+        if(e.isPrefix) return `${e.op}(${gen(e.operand)})`
+        return `(${gen(e.operand)})${e.op}`
     },
-    EmptyOptional(e) {
-      return "undefined"
+    ArrayLit(a){
+        return `[${gen(a.elements).join(",")}]`
     },
-    SubscriptExpression(e) {
-      return `${gen(e.array)}[${gen(e.index)}]`
+    ObjLit(o){
+        return `{${gen(o.keyValuePairs).join(",")}}`
     },
-    ArrayExpression(e) {
-      return `[${gen(e.elements).join(",")}]`
-    },
-    EmptyArray(e) {
-      return "[]"
+    ObjPair(p){
+        return `${gen(p.key)}: ${gen(p.value)}}`
     },
     MemberExpression(e) {
-      return `(${gen(e.object)}[${JSON.stringify(gen(e.field))}])`
+        return `(${gen(e.vari)}[${e.index}])`
     },
-    
+    PropertyExpression(e) {
+        return `(${gen(e.var1)}[${e.var2}])`
+    },
+    Continue(s) {
+        output.push("continue;")
+    },
+    Break(s) {
+        output.push("break;")
+    },
+    Variable(v) {
+      return targetName(v)
+    },
+    Bool(b){
+        return `${b.value)}`
+    }
     Number(e) {
       return e
     },
     BigInt(e) {
-      return e
-    },
-    Boolean(e) {
       return e
     },
     String(e) {

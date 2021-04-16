@@ -397,7 +397,6 @@ class Context {
     return a
 
   }
-
   ObjLit(a) {
 
     if(a.keyValuePairs.length > 0 ) {
@@ -453,11 +452,6 @@ class Context {
     b.type = this.lookup(b.type)
     return b
   }
-  // TypeId(t) {
-  //   t = this.lookup(t.name)
-  //   check(t).isAType()
-  //   return t
-  // }
   Number(e) {
     return e
   }
