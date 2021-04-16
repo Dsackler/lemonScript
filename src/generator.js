@@ -124,7 +124,7 @@ export default function generate(program) {
         return `(${gen(e.left)} ${op} ${gen(e.right)})`
     },
     UnaryExpression(e) {
-        if(e.isPrefix) return `${e.op}(${gen(e.operand)})`
+        if(e.isprefix) return `${e.op}(${gen(e.operand)})`
         return `(${gen(e.operand)})${e.op}`
     },
     ArrayLit(a){
