@@ -12,12 +12,12 @@ const fixtures = [
   {
     name: "small",
     source: `
-      let x = 3 * 7;
+      slice x = 10 * 2
       x++;
       x--;
-      let y = true;
-      y = 5 ** -x / -100 > - x || false;
-      print((y && y) || false || (x*2) != 5);
+      taste y = sweet
+      y = 5 ** -x / -100 > - x || sour;
+      pour((y && y) || false || (x*2) != 5);
     `,
     expected: dedent`
       let x_1 = 21;
