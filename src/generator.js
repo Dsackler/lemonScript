@@ -11,10 +11,6 @@ export default function generate(program) {
   var expStandalone = true
   var isParam = false
 
-  const standardFunctions = new Map([
-    [stdlib.functions.pour, x => `console.log(${x})`],
-    [stdlib.functions.species, x => `typeof ${x}`],
-  ])
 
   // Variable and function names in JS will be suffixed with _1, _2, _3,
   // etc. This is because "switch", for example, is a legal name in Carlos,
@@ -25,7 +21,7 @@ export default function generate(program) {
       if (!mapping.has(entity)) {
         mapping.set(entity, mapping.size + 1)
       }
-      return `${entity.name ?? entity.identifier.name }_${mapping.get(entity)}`
+      return `${entity.name }_${mapping.get(entity)}`
     }
   })(new Map())
 
@@ -70,9 +66,7 @@ export default function generate(program) {
       output.push("}")
     },
     Call(c) {
-        const targetCode = standardFunctions.has(c.callee)
-          ? standardFunctions.get(c.callee)(gen(c.args))
-          : `${gen(c.callee)}(${gen(c.args).join(", ")})`
+        const targetCode = `${gen(c.callee)}(${gen(c.args).join(", ")})`
         // Calls in expressions vs in statements are handled differently
         if (c.callee.type.returnTypes !== Type.VOID) {
           return targetCode
@@ -83,13 +77,9 @@ export default function generate(program) {
       return targetName(f)
     },
     PrintStatement(p) {
-        if(expStandalone){
-          expStandalone = false
-          output.push(`console.log(${gen(p.argument)});`)
-          expStandalone = true
-        } else {
-          return `console.log(${gen(p.argument)})`
-        }
+        expStandalone = false
+        output.push(`console.log(${gen(p.argument)});`)
+        expStandalone = true
     },
     typeOfStatement(p) {
         if(expStandalone){
@@ -161,21 +151,33 @@ export default function generate(program) {
 
         if(["+=", "-="].includes(e.op)){
           if(expStandalone){
+            expStandalone = false
             output.push(`${gen(e.left)} ${op} ${gen(e.right)};`)
+            expStandalone = true
+            return
           }
           return `${gen(e.left)} ${op} ${gen(e.right)}`
         }
         if(expStandalone){
+          expStandalone = false
           output.push(`(${gen(e.left)} ${op} ${gen(e.right)});`)
+          expStandalone = true
+          return
         }
         return `(${gen(e.left)} ${op} ${gen(e.right)})`
     },
     UnaryExpression(e) {
         if(expStandalone){
           if(e.isprefix) {
+            expStandalone = false
             output.push(`${e.op}(${gen(e.operand)});`)
+            expStandalone = true
+            return
           }
+          expStandalone = false
           output.push(`${gen(e.operand)}${e.op};`)
+          expStandalone = true
+          return
         }
         if(e.isprefix) {
           return `${e.op}(${gen(e.operand)})`

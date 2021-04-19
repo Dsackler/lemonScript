@@ -13,12 +13,16 @@ const fixtures = [
     source: `
       slice x = 10 * 2
       x++
+      x += 1
       pour(species(x))
+      -x
     `,
     expected: dedent`
       let x_1 = (10 * 2);
       x_1++;
+      x_1 += 1;
       console.log(typeof x_1);
+      -(x_1);
     `,
   },
   {
@@ -38,6 +42,25 @@ const fixtures = [
       let y_2 = true;
       y_2 = ((((5 ** -(x_1)) / -(100)) > -(x_1)) || false);
       console.log((((y_2 && y_2) || false) || ((x_1 * 2) !== 5)));
+    `,
+  },
+  {
+    name: "declaration then assignment",
+    source: `
+      slice x
+      x = 2
+      species(x)
+      slice y = -x
+      pour(y)
+      -(-(y+x)) == 0
+    `,
+    expected: dedent`
+      let x_1;
+      x_1 = 2;
+      typeof x_1;
+      let y_2 = -(x_1);
+      console.log(y_2);
+      (-(-((y_2 + x_1))) === 0);
     `,
   },
   {
@@ -148,6 +171,36 @@ const fixtures = [
       }
       for (let i_2 = 0; (i_2 < 5); i_2 += 2) {
         console.log(i_2);
+      }
+    `,
+  },
+  {
+    name: "switch",
+    source: `
+    slice number = 2
+    Pick (number)
+        BEGIN JUICING
+        lemonCase 2
+            pour("its even")
+            chop
+        lemonCase 1
+            pour("its odd")
+            chop
+        citrusLimon
+            pour("je ne sais pas")
+        END JUICING
+    `,
+    expected: dedent`
+      let number_1 = 2;
+      switch(number_1) {
+        case 2:
+          console.log("its even");
+          break;
+        case 1:
+          console.log("its odd");
+          break;
+        default:
+          console.log("je ne sais pas");
       }
     `,
   },
