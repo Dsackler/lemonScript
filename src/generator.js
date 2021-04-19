@@ -8,6 +8,8 @@ import * as stdlib from "./stdlib.js"
 
 export default function generate(program) {
   const output = []
+  var expStandalone = true
+  var isParam = false
 
   const standardFunctions = new Map([
     [stdlib.functions.pour, x => `console.log(${x})`],
@@ -23,11 +25,11 @@ export default function generate(program) {
       if (!mapping.has(entity)) {
         mapping.set(entity, mapping.size + 1)
       }
-      return `${entity.name ?? entity.description}_${mapping.get(entity)}`
+      return `${entity.name ?? entity.identifier.name }_${mapping.get(entity)}`
     }
   })(new Map())
 
-  const gen = node => generators[node.constructor.name](node)
+  const gen = node => { return generators[node.constructor.name](node) }
 
   const generators = {
     // Key idea: when generating an expression, just return the JS string; when
@@ -40,18 +42,30 @@ export default function generate(program) {
     VariableDecInit(d) {
       // We don't care about const vs. let in the generated code! The analyzer has
       // already checked that we never updated a const, so let is always fine.
+      expStandalone = false
       output.push(`let ${gen(d.variable)} = ${gen(d.init)};`)
+      expStandalone = true
     },
     VariableDec(d) {
-      output.push(`let ${gen(d.variable)};`)
+      expStandalone = false
+      if (isParam) {
+        let variable = `${gen(d.variable)}`
+        expStandalone = true
+        return variable
+      } else { output.push(`let ${gen(d.variable)};`) }
+      expStandalone = true
     },
     Assignment(s) {
-        output.push(`${gen(s.variable)} = ${gen(s.target)};`)
-      },
+      expStandalone = false
+      output.push(`${gen(s.target)} = ${gen(s.source)};`)
+      expStandalone = true
+    },
 
-    FunctionDeclaration(f) {
-      const funcName = targetName(f.identifier)
+    FunctionDec(f) {
+      const funcName = targetName(f.function)
+      isParam = true
       output.push(`function ${funcName}(${gen(f.params).join(", ")}) {`)
+      isParam = false
       gen(f.body)
       output.push("}")
     },
@@ -60,19 +74,36 @@ export default function generate(program) {
           ? standardFunctions.get(c.callee)(gen(c.args))
           : `${gen(c.callee)}(${gen(c.args).join(", ")})`
         // Calls in expressions vs in statements are handled differently
-        if (c.callee.type.returnType !== Type.VOID) {
+        if (c.callee.type.returnTypes !== Type.VOID) {
           return targetCode
         }
         output.push(`${targetCode};`)
     },
+    Function(f){
+      return targetName(f)
+    },
     PrintStatement(p) {
-        output.push(standardFunctions.get("pour")(p.argument))
+        if(expStandalone){
+          expStandalone = false
+          output.push(`console.log(${gen(p.argument)});`)
+          expStandalone = true
+        } else {
+          return `console.log(${gen(p.argument)})`
+        }
     },
     typeOfStatement(p) {
-        output.push(standardFunctions.get("species")(p.argument))
+        if(expStandalone){
+          expStandalone = false
+          output.push(`typeof ${gen(p.argument)};`)
+          expStandalone = true
+        } else {
+          return `typeof ${gen(p.argument)}`
+        }
     },
     IfStatement(s) {
+        expStandalone = false
         output.push(`if (${gen(s.cases[0].condition)}) {`)
+        expStandalone = true
         gen(s.cases[0].body)
         for(let i = 1; i < s.cases.length; i ++) {
             gen(s.cases[i]);
@@ -83,11 +114,15 @@ export default function generate(program) {
 
     },
     IfCase(s) {
+        expStandalone = false
         output.push(`} else if (${gen(s.condition)}) {`)
+        expStandalone = true
         gen(s.body)
     },
     WhileStatement(s) {
+        expStandalone = false
         output.push(`while (${gen(s.condition)}) {`)
+        expStandalone = true
         gen(s.body)
         output.push("}")
     },
@@ -97,7 +132,9 @@ export default function generate(program) {
         output.push("}")
     },
     ForArgs(s) {
+        expStandalone = false
         output.push(`for (let ${gen(s.variable)} = ${gen(s.exp)}; ${gen(s.condition)}; ${gen(s.sliceCrement)}) {`)
+        expStandalone = true
     },
     SwitchStatement(s) {
         output.push(`switch(${gen(s.expression)}) {`)
@@ -119,13 +156,31 @@ export default function generate(program) {
     ShortReturnStatement(s) {
         output.push("return;")
     },
-    BinaryExpression(e) {
+    BinaryExp(e) {
         const op = { "==": "===", "!=": "!==", "^":"**" }[e.op] ?? e.op
+
+        if(["+=", "-="].includes(e.op)){
+          if(expStandalone){
+            output.push(`${gen(e.left)} ${op} ${gen(e.right)};`)
+          }
+          return `${gen(e.left)} ${op} ${gen(e.right)}`
+        }
+        if(expStandalone){
+          output.push(`(${gen(e.left)} ${op} ${gen(e.right)});`)
+        }
         return `(${gen(e.left)} ${op} ${gen(e.right)})`
     },
     UnaryExpression(e) {
-        if(e.isprefix) return `${e.op}(${gen(e.operand)})`
-        return `(${gen(e.operand)})${e.op}`
+        if(expStandalone){
+          if(e.isprefix) {
+            output.push(`${e.op}(${gen(e.operand)});`)
+          }
+          output.push(`${gen(e.operand)}${e.op};`)
+        }
+        if(e.isprefix) {
+          return `${e.op}(${gen(e.operand)})`
+        }
+        return `${gen(e.operand)}${e.op}`
     },
     ArrayLit(a){
         return `[${gen(a.elements).join(",")}]`
@@ -134,7 +189,7 @@ export default function generate(program) {
         return `{${gen(o.keyValuePairs).join(",")}}`
     },
     ObjPair(p){
-        return `${gen(p.key)}: ${gen(p.value)}}`
+        return `${gen(p.key)}: ${gen(p.value)}`
     },
     MemberExpression(e) {
         return `(${gen(e.vari)}[${e.index}])`
@@ -172,5 +227,3 @@ export default function generate(program) {
   gen(program)
   return output.join("\n")
 }
-
-

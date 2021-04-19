@@ -1,7 +1,6 @@
-import assert from "assert/strict"
+import assert from "assert"
 import parse from "../src/parser.js"
 import analyze from "../src/analyzer.js"
-//import optimize from "../src/optimizer.js"
 import generate from "../src/generator.js"
 
 function dedent(s) {
@@ -10,73 +9,69 @@ function dedent(s) {
 
 const fixtures = [
   {
+    name: "very small",
+    source: `
+      slice x = 10 * 2
+      x++
+      pour(species(x))
+    `,
+    expected: dedent`
+      let x_1 = (10 * 2);
+      x_1++;
+      console.log(typeof x_1);
+    `,
+  },
+  {
     name: "small",
     source: `
       slice x = 10 * 2
-      x++;
-      x--;
+      x++
+      x--
       taste y = sweet
-      y = 5 ** -x / -100 > - x || sour;
-      pour((y && y) || false || (x*2) != 5);
+      y = 5 ^ -x / -100 > - x || sour
+      pour((y && y) || sour || (x*2) != 5)
     `,
     expected: dedent`
-      let x_1 = 21;
+      let x_1 = (10 * 2);
       x_1++;
       x_1--;
       let y_2 = true;
-      y_2 = (((5 ** -(x_1)) / -(100)) > -(x_1));
-      console.log(((y_2 && y_2) || ((x_1 * 2) !== 5)));
+      y_2 = ((((5 ** -(x_1)) / -(100)) > -(x_1)) || false);
+      console.log((((y_2 && y_2) || false) || ((x_1 * 2) !== 5)));
     `,
   },
   {
     name: "if",
     source: `
-      let x = 0;
-      if (x == 0) { print("1"); }
-      if (x == 0) { print(1); } else { print(2); }
-      if (x == 0) { print(1); } else if (x == 2) { print(3); }
-      if (x == 0) { print(1); } else if (x == 2) { print(3); } else { print(4); }
+      slice x = 0
+      Squeeze the lemon if(x == 0) BEGIN JUICING pour("1") END JUICING
+      Keep juicing if(x == 2) BEGIN JUICING pour(3) END JUICING
+      Toss the lemon and do BEGIN JUICING pour(sour) END JUICING
     `,
     expected: dedent`
       let x_1 = 0;
       if ((x_1 === 0)) {
         console.log("1");
-      }
-      if ((x_1 === 0)) {
-        console.log(1);
-      } else {
-        console.log(2);
-      }
-      if ((x_1 === 0)) {
-        console.log(1);
-      } else {
-        if ((x_1 === 2)) {
+      } else if ((x_1 === 2)) {
           console.log(3);
-        }
+      } else {
+          console.log(false);
       }
-      if ((x_1 === 0)) {
-        console.log(1);
-      } else
-        if ((x_1 === 2)) {
-          console.log(3);
-        } else {
-          console.log(4);
-        }
     `,
   },
   {
     name: "while",
     source: `
-      let x = 0;
-      while x < 5 {
-        let y = 0;
-        while y < 5 {
-          print(x * y);
-          y = y + 1;
-          break;
-        }
-        x = x + 1;
-      }
+      slice x = 0
+      Drink the lemonade while (x < 5) BEGIN JUICING
+        slice y = 0
+        Drink the lemonade while (y < 5) BEGIN JUICING
+          pour(x * y)
+          y = y + 1
+          chop
+        END JUICING
+        x = x + 1
+      END JUICING
     `,
     expected: dedent`
       let x_1 = 0;
@@ -94,112 +89,66 @@ const fixtures = [
   {
     name: "functions",
     source: `
-      let z = 0.5;
-      function f(x: float, y: boolean) {
-        print(sin(x) > π);
-        return;
-      }
-      function g(): boolean {
-        return false;
-      }
-      f(z, g());
+      dontUseMeForEyeDrops z = 0.5
+      When life gives you lemons try noLemon f(dontUseMeForEyeDrops x, taste y)
+      BEGIN JUICING
+        pour(x > 10.0)
+        you get lemonade and
+      END JUICING
+      When life gives you lemons try taste g()
+      BEGIN JUICING
+        you get lemonade and sour
+      END JUICING
+      taste q = g()
+      f(z, q)
     `,
     expected: dedent`
       let z_1 = 0.5;
       function f_2(x_3, y_4) {
-        console.log((Math.sin(x_3) > Math.PI));
+        console.log((x_3 > 10));
         return;
       }
       function g_5() {
         return false;
       }
-      f_2(z_1, g_5());
+      let q_6 = g_5();
+      f_2(z_1, q_6);
     `,
   },
   {
-    name: "arrays",
+    name: "arrays and objects",
     source: `
-      let a = [true, false, true];
-      let b = [10, 40 - 20, 30];
-      const c = [](of [int]);
-      print(a[1] || (b[0] < 88 ? false : true));
+      taste[] a = [sweet, sour, sweet]
+      <slice, taste> b = {0: sour, 1: sweet}
+      pour(b.key(0) == a[1])
     `,
     expected: dedent`
       let a_1 = [true,false,true];
-      let b_2 = [10,20,30];
-      let c_3 = [];
-      console.log((a_1[1] || (((b_2[0] < 88)) ? (false) : (true))));
-    `,
-  },
-  {
-    name: "structs",
-    source: `
-      struct S { x: int }
-      let x = S(3);
-      print(x.x);
-    `,
-    expected: dedent`
-      class S_1 {
-      constructor(x_2) {
-      this["x_2"] = x_2;
-      }
-      }
-      let x_3 = new S_1(3);
-      console.log((x_3["x_2"]));
-    `,
-  },
-  {
-    name: "optionals",
-    source: `
-      let x = no int;
-      let y = x ?? 2;
-    `,
-    expected: dedent`
-      let x_1 = undefined;
-      let y_2 = (x_1 ?? 2);
+      let b_2 = {0: false,1: true};
+      console.log(((b_2[0]) === (a_1[1])));
     `,
   },
   {
     name: "for loops",
     source: `
-      for i in 1..<50 {
-        print(i);
-      }
-      for j in [10, 20, 30] {
-        print(j);
-      }
-      repeat 3 {
-        // hello
-      }
-      for k in 1...10 {
-      }
+        forEachLemon (slice i = 0; i < 5; i++)
+            BEGIN JUICING
+            pour(i)
+            nextLemon
+            END JUICING
+        forEachLemon (slice i = 0; i < 5; i+=2)
+            BEGIN JUICING
+            pour(i)
+            END JUICING
     `,
     expected: dedent`
-      for (let i_1 = 1; i_1 < 50; i_1++) {
+      for (let i_1 = 0; (i_1 < 5); i_1++) {
         console.log(i_1);
+        continue;
       }
-      for (let j_2 of [10,20,30]) {
-        console.log(j_2);
+      for (let i_2 = 0; (i_2 < 5); i_2 += 2) {
+        console.log(i_2);
       }
-      for (let i_3 = 0; i_3 < 3; i_3++) {
-      }
-      for (let k_4 = 1; k_4 <= 10; k_4++) {
-      }
-    `,
-  },
-  {
-    name: "standard library",
-    source: `
-      let x = 0.5;
-      print(sin(x) - cos(x) + exp(x) * ln(x) / hypot(2.3, x));
-      print(bytes("∞§¶•"));
-      print(codepoints("💪🏽💪🏽🖖👩🏾💁🏽‍♀️"));
-    `,
-    expected: dedent`
-      let x_1 = 0.5;
-      console.log(((Math.sin(x_1) - Math.cos(x_1)) + ((Math.exp(x_1) * Math.log(x_1)) / Math.hypot(2.3,x_1))));
-      console.log([...Buffer.from("∞§¶•", "utf8")]);
-      console.log([...("💪🏽💪🏽🖖👩🏾💁🏽‍♀️")].map(s=>s.codePointAt(0)));
     `,
   },
 ]
@@ -207,7 +156,7 @@ const fixtures = [
 describe("The code generator", () => {
   for (const fixture of fixtures) {
     it(`produces expected js output for the ${fixture.name} program`, () => {
-      const actual = generate(optimize(analyze(parse(fixture.source))))
+      const actual = generate(analyze(parse(fixture.source)))
       assert.deepEqual(actual, fixture.expected)
     })
   }
