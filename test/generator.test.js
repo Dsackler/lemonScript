@@ -9,6 +9,85 @@ function dedent(s) {
 
 const fixtures = [
   {
+    name: "Hello world",
+    source: `
+      pour("Hello World!")
+    `,
+    expected: dedent`
+      console.log("Hello World!");
+    `,
+  },
+  {
+    name: "medium sized program",
+    source: `
+      When life gives you lemons try slice sumOfSequence( slice seqLength )
+          BEGIN JUICING
+          slice sum = 0
+          forEachLemon (slice i = 1; i < seqLength; i++)
+              BEGIN JUICING
+              sum = sum + i
+              END JUICING
+          you get lemonade and sum
+          END JUICING
+      slice sum = sumOfSequence(7)
+      pour(sum)
+      taste isEven = sum % 2 == 0
+      Pick (isEven)
+          BEGIN JUICING
+          lemonCase sweet
+              pour("the sum is even!")
+              chop
+          lemonCase sour
+              pour("the sum is odd!")
+              chop
+          citrusLimon
+              pour("How?")
+          END JUICING
+      When life gives you lemons try noLemon countdown( slice total )
+          BEGIN JUICING
+          pour("Begin countdown!")
+          Drink the lemonade while (total > 0)
+              BEGIN JUICING
+              pour(total)
+              total--
+              END JUICING
+          pour("Blast off!")
+          END JUICING
+      countdown(sum)
+    `,
+    expected: dedent`
+      function sumOfSequence_1(seqLength_2) {
+        let sum_3 = 0;
+        for (let i_4 = 1; (i_4 < seqLength_2); i_4++) {
+          sum_3 = (sum_3 + i_4);
+        }
+        return sum_3;
+      }
+      let sum_5 = sumOfSequence_1(7);
+      console.log(sum_5);
+      let isEven_6 = ((sum_5 % 2) === 0);
+      switch(isEven_6) {
+        case true:
+          console.log("the sum is even!");
+          break;
+        case false:
+          console.log("the sum is odd!");
+          break;
+        default:
+          console.log("How?");
+      }
+      function countdown_7(total_8) {
+        console.log("Begin countdown!");
+        while ((total_8 > 0)) {
+          console.log(total_8);
+          total_8--;
+        }
+        console.log("Blast off!");
+      }
+      countdown_7(sum_5);
+    `,
+  },
+  {
     name: "very small",
     source: `
       slice x = 10 * 2
