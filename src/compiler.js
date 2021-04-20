@@ -23,6 +23,15 @@ export default function compile(source, outputType) {
     return analyze(parse(source))
   } else if (outputType === "generate") {
     return generate(analyze(parse(source)))
+  } else if (outputType === "lemon") {
+    let easterEggQuotes = [
+      "unsqueeze the lemonade till you get lemons 🍋",
+      "🍋 🍋🍋 🍋🍋🍋 🍋🍋🍋🍋 🍋🍋🍋🍋🍋 ...",
+      "no lemons here :(",
+      "chocoMilk coming out next ?",
+      "lemonScript > python"
+    ]
+    return easterEggQuotes[Math.floor(Math.random() * easterEggQuotes.length)];
   } else {
     return "Unknown output type"
   }
