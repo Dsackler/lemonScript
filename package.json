@@ -22,10 +22,14 @@
     "fs": "0.0.1-security",
     "js-beautify": "^1.13.5",
     "ohm-js": "^15.4.1",
+    "prettier": "^2.2.1",
     "yargs": "^15.4.1"
   },
   "devDependencies": {
-    "c8": "^7.4.0",
-    "mocha": "^8.2.1"
+    "c8": "^7.6.0",
+    "eslint": "^7.22.0",
+    "eslint-config-google": "^0.14.0",
+    "mocha": "^8.3.2",
+    "prettier": "^2.2.1"
   }
 }

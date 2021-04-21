@@ -1,32 +1,56 @@
 import util from "util"
 
 export class Program {
-    constructor(imps, statements) {
-        Object.assign(this, {imps, statements})
+    constructor(statements) {
+        Object.assign(this, {statements})
     }
     [util.inspect.custom]() {
       return prettied(this)
     }
 }
 
-export class Import {
-    constructor(imp, location) {
-        Object.assign(this, {imp, location})
+export class Type {
+    constructor(name) {
+      this.name = name
+    }
+    static BOOLEAN = new Type("taste")
+    static INT = new Type("slice")
+    static FLOAT = new Type("dontUseMeForEyeDrops")
+    static STRING = new Type("pulp")
+    static VOID = new Type("noLemon")
+    static EMPTY_ARRAY = new Type("emptyArray")
+    static EMPTY_OBJECT = new Type("emptyObject")
+    static ANY = new Type("any")
+    // Equivalence: when are two types the same
+    isEquivalentTo(target) {
+      return this === target
+    }
+    // T1 assignable to T2 is when x:T1 can be assigned to y:T2. By default
+    // this is only when two types are equivalent; however, for other kinds
+    // of types there may be special rules.
+    isAssignableTo(target) {
+      return this.isEquivalentTo(target)
+    }
+}
+
+export class Bool extends Type {
+    constructor(name, value, type) {
+        super(name)
+        Object.assign(this, {name, value, type})
     }
 }
 
 export class VariableDecInit {
-    constructor(con, stat, type, variable, init ) {
-        Object.assign(this, {con, stat, type, variable, init})
+    constructor( type, variable, init, con ) {
+        Object.assign(this, {con,  type, variable, init})
     }
 }
 
 export class VariableDec {
-    constructor(con, stat, type, identifier) {
-        Object.assign(this, {con, stat, type, identifier})
+    constructor( type, identifier, con) {
+        Object.assign(this, {con, type, identifier})
     }
 }
-
 
 export class Assignment {
     constructor(target, source) {
@@ -34,29 +58,32 @@ export class Assignment {
     }
 }
 
-export class ClassDec extends Type {
-    constructor(name, ext, classBody) {
-        super(name)
-        Object.assign(this, {name, ext, classBody})
-    }
-}
-
-export class ClassBody {
-    constructor(constructor, statements) {
-        Object.assign(this, {constructor, statements})
-    }
-}
-
-export class Constructor {
-    constructor(parameters, body) {
-        Object.assign(this, {parameters, body})
-    }
-}
-
 export class FunctionDec {
-    constructor(name, stat, returnType, params, body) {
-        Object.assign(this, {name, stat, returnType, params, body})
+    constructor(identifier, returnTypes, params, body) {
+        Object.assign(this, {identifier, returnTypes, params, body})
     }
+}
+
+// Created during semantic analysis only!
+export class Function {
+  constructor(name) {
+    this.name = name
+  }
+}
+
+// Created during semantic analysis only!
+export class FunctionType {
+  constructor(paramTypes, returnTypes) {
+    Object.assign(this, { paramTypes, returnTypes })
+  }
+  // isAssignableTo(target) {
+  //   return (
+  //     target.constructor === FunctionType &&
+  //     this.returnTypes.isAssignableTo(target.returnTypes) &&
+  //     this.parameterTypes.length === target.parameterTypes.length &&
+  //     this.parameterTypes.every((t, i) => target.parameterTypes[i].isAssignableTo(t))
+  //   )
+  // }
 }
 
 export class Call {
@@ -89,11 +116,13 @@ export class ForStatement {
 }
 
 export class ForArgs {
-    constructor(variable, exp, condition, sliceCrement) {
-        Object.assign(this, {variable, exp, condition, sliceCrement})
+    constructor(identifier, exp, condition, sliceCrement) {
+        Object.assign(this, {identifier, exp, condition, sliceCrement})
     }
 }
 
+// our version of switch forces the first right case to end the statement,
+// so no need for break
 export class SwitchStatement {
     constructor(expression, cases, defaultCase) {
       Object.assign(this, { expression, cases, defaultCase});
@@ -125,6 +154,12 @@ export class ReturnStatement {
     }
 }
 
+export class ShortReturnStatement {
+  constructor(returnValue) {
+    this.returnValue = Type.VOID
+  }
+}
+
 export class BinaryExp {
     constructor(left, op, right) {
         Object.assign(this, {left, op, right})
@@ -137,62 +172,58 @@ export class UnaryExpression {
     }
 }
 
-export class Type {
-    constructor(name) {
-      this.name = name
-    }
-    static BOOLEAN = new Type("taste")
-    static INT = new Type("slice")
-    static FLOAT = new Type("dontUseMeForEyeDrops")
-    static STRING = new Type("pulp")
-    static VOID = new Type("noLemon")
-    static TYPE = new Type("type")
-    static ANY = new Type("any")
-    // Equivalence: when are two types the same
-    isEquivalentTo(target) {
-      return this == target
-    }
-    // T1 assignable to T2 is when x:T1 can be assigned to y:T2. By default
-    // this is only when two types are equivalent; however, for other kinds
-    // of types there may be special rules.
-    isAssignableTo(target) {
-      return this.isEquivalentTo(target)
-    }
-}
-
 // Created during semantic analysis only!
 export class Variable {
-  constructor(name, con) {
-    Object.assign(this, { name, con })
+  constructor(name, con, type) {
+    Object.assign(this, { name, con, type })
   }
 }
 
-// Created during semantic analysis only!
-export class Function {
-  constructor(name) {
-    this.name = name
-  }
-}
 
 export class ArrayType extends Type {
     constructor(memberType) {
-      super(`[${memberType.name}]`)
+      let memberName = getObjName(memberType)
+      super(`${memberName}[]`)
       Object.assign(this, {memberType})
     }
 
     isEquivalentTo(target) {
-        return target.constructor === ArrayType && this.memberType === target.memberType
+      if(target  === Type.EMPTY_ARRAY || this === Type.EMPTY_ARRAY  ){
+        return true
+      }
+        return target.constructor === ArrayType && this.memberType.isEquivalentTo(target.memberType)
     }
 }
 
 export class ObjType extends Type {
     constructor(keyType, valueType) {
-      super(`<${keyType.name}, ${valueType.name}>`)
+      let keyName = getObjName(keyType)
+      let valueName = getObjName(valueType)
+      super(`<${keyName}, ${valueName}>`)
       Object.assign(this, {keyType, valueType})
     }
     isEquivalentTo(target) {
-        return target.constructor === ObjType && this.keyType === target.keyType && this.valueType === target.valueType
+      if(target  === Type.EMPTY_OBJECT || this === Type.EMPTY_OBJECT  ){
+        return true
+      }
+        return target.constructor === ObjType
+        && this.keyType.isEquivalentTo(target.keyType)
+        && this.valueType.isEquivalentTo(target.valueType)
     }
+}
+
+function getObjName(type){
+  if(type.constructor === ObjType){
+    let keyName = getObjName(type.keyType)
+    let valueName = getObjName(type.valueType)
+    return `<${keyName}, ${valueName}>`
+  } else if(type.constructor === ArrayType){
+    return getObjName(type.memberType) + "[]"
+  } else if(type.constructor === Type){
+    return type.name
+  }else {
+    return type
+  }
 }
 
 export class ArrayLit {

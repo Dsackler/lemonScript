@@ -6,77 +6,74 @@ import ohm from 'ohm-js'
 import * as ast from './ast.js'
 
 const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
-    Program               = Import* Statement*
-    Import                = import id from id
-    Statement             = const? static? Type id "=" Exp                                                --varDecInit
-                            | const? static? Type id                                                      --varDec
-                            | Var "=" Exp                                                                 --assignExp
+    Program               = Statement*
+    Statement             = const? Type id "=" Exp                                                --varDecInit
+                            | const? Type id                                                      --varDec
+                            | Var "=" Exp                                                         --assignExp
                             | SwitchStatement
                             | FunctionCall
                             | FunctionDec
                             | IfStatement
                             | WhileStatement
                             | ForStatement
-                            | ClassDec
                             | Print
                             | ReturnStatement
                             | SliceCrement
                             | continue
                             | break
                             | Exp
-    ClassDec              = classType id (extends id)? ClassBeginToEnd
-    ClassBeginToEnd       = openBrace Constructor Statement* closeBrace
-    Constructor           = plant "(" Parameters ")" BeginToEnd
-    FunctionDec           = functionBeginning static? (Type | void | id) id "(" Parameters ")" BeginToEnd
+    FunctionDec           = functionBeginning (Type | void | id) id "(" Parameters ")" BeginToEnd
     FunctionCall          = Var "(" Arguments ")"
     IfStatement           = ifBeginning "(" Exp ")" BeginToEnd ElseifStatement* ElseStatement?
     ElseifStatement       = elifBeginning "(" Exp ")" BeginToEnd
     ElseStatement         = elseBeginning BeginToEnd
     WhileStatement        = whileBeginning "(" Exp ")" BeginToEnd
     ForStatement          = forBeginning "(" ForArgs ")" BeginToEnd
-    ForArgs               = "slice" id "=" Exp ";" Exp ";" SliceCrement
-    SliceCrement          = (id "+=" AddOp | id "-=" AddOp )                                             --binary
-                            | (id"++" | id"--" )                                                         --postfix
+    ForArgs               = iteratorType id "=" Exp ";" Exp ";" SliceCrement
+    SliceCrement          = (id "+=" AddOp | id "-=" AddOp )                                         --binary
+                            | (id"++" | id"--" )                                                     --postfix
     SwitchStatement       = switch "("Var")" openBrace Lemoncase+ Defaultcase? closeBrace
     Lemoncase             = case Exp Statement*
     Defaultcase           = default Statement*
     Print                 = print "("Exp")"
     TypeOf                = typeof "("Exp")"
     ReturnStatement       = return Exp?
-    BeginToEnd            = openBrace Statement+ closeBrace
-    Exp                   = Exp logop Joint                                                             --binary
+    BeginToEnd            = openBrace Statement* closeBrace
+    Exp                   = Exp logop Joint                                                          --binary
                             | Joint
-    Joint                 = Joint relop AddOp                                                           --binary
+    Joint                 = Joint relop AddOp                                                        --binary
                             | AddOp
-    AddOp                 = AddOp addop Term                                                            --binary
+    AddOp                 = AddOp addop Term                                                         --binary
                             | Term
-    Term                  = Term mulop Exponential                                                      --binary
+    Term                  = Term mulop Exponential                                                   --binary
                             | Exponential
-    Exponential           = Factor "^" Exponential                                                      --binary
+    Exponential           = Factor "^" Exponential                                                   --binary
                             | Factor
     Factor                = TypeOf
                             | FunctionCall
-                            | ("-") Factor                                                              --prefix
-                            | "(" Exp ")"                                                               --parens
-                            | "[" Arguments "]"                                                         --arrayLit
-                            | "{" DictValues "}"                                                        --objLit
+                            | ("-") Factor                                                           --negation
+                            | ("!") Factor                                                           --boolNegation
+                            | "(" Exp ")"                                                            --parens
+                            | "[" Arguments "]"                                                      --arrayLit
+                            | "{" DictValues "}"                                                     --objLit
                             | numlit
                             | stringlit
                             | boollit
                             | Var
-    numlit                = digit+ ("." digit+)?
+    numlit                = digit+ "." digit+                                                        --float
+                            | digit+                                                                 --int
     boollit               = "sweet" | "sour"
     stringlit             = "\"" char* "\""
     char                  = "\\n"
                             | "\\'"
                             | "\\\""
                             | "\\\\"
-                            | "\\u{" hexDigit hexDigit? hexDigit? hexDigit? hexDigit? hexDigit?  "}"       --hex
+                            | "\\u{" hexDigit hexDigit? hexDigit? hexDigit? hexDigit? hexDigit?  "}"  --hex
                             | ~"\"" ~"\\" any
     Var                   = Property
                             | id
-    Property              = Var "." Var                                                                    --dotMemberExp
-                            | Var "["digit+"]"                                                             --memberExp
+    Property              = Var ".key(" (Var | numlit | stringlit | boollit) ")"                       --dotMemberExp
+                            | Var "["digit+"]"                                                         --memberExp
     Type                  = ArrayType | types | DictType
     types                 = ("pulp"|"slice"|"taste"|"dontUseMeForEyeDrops") ~alnum
     ArrayType             = Type "[]"
@@ -89,6 +86,7 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
     whileBeginning        = "Drink the lemonade while" ~alnum
     forBeginning          = "forEachLemon" ~alnum
     classType             = "Limon" ~alnum
+    iteratorType          = "slice" ~alnum
     plant                 = "plant"
     extends               = "branches" ~alnum
     case                  = "lemonCase" ~alnum
@@ -109,6 +107,7 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
                             | closeBrace | switch | break | case
                             | default | classType | plant | const
                             | forBeginning | continue | boollit | typeof
+                            | iteratorType
     id                    = ~keyword letter (alnum | "_")*
     Arguments             = ListOf<Exp, ",">
     Parameters            = ListOf<Binding, ",">
@@ -124,44 +123,29 @@ const lemonScriptGrammar = ohm.grammar(String.raw`lemonScript {
   }`)
 
 const astBuilder = lemonScriptGrammar.createSemantics().addOperation('tree', {
-	Program(imports, statements) {
-		return new ast.Program(imports.tree(), statements.tree())
+	Program(statements) {
+		return new ast.Program(statements.tree())
 	},
-	Import(_import, imp, _from, location) {
-		return new ast.Import(imp.tree(), location.tree())
-	},
-	Statement_varDecInit(con, stat, type, identifiers, _eq, exp) {
+	Statement_varDecInit(con, type, identifiers, _eq, exp) {
 		return new ast.VariableDecInit(
-			con.tree().length !== 0,
-			stat.tree().length !== 0,
 			type.tree(),
 			identifiers.tree(),
-			exp.tree()
+			exp.tree(),
+			con.tree().length !== 0
 		)
 	},
-	Statement_varDec(con, stat, type, identifier) {
+	Statement_varDec(con, type, identifier) {
 		return new ast.VariableDec(
-			con.tree().length !== 0,
-			stat.tree().length !== 0,
 			type.tree(),
-			identifier.tree()
+			identifier.tree(),
+			con.tree().length !== 0
 		)
 	},
 	Statement_assignExp(variable, _eq, exp) {
 		return new ast.Assignment(variable.tree(), exp.tree())
 	},
-	ClassDec(_classtype, name, _extKeyword, ext, classBody) {
-		return new ast.ClassDec(name.tree(), ext.sourceString, classBody.tree())
-	},
-	ClassBeginToEnd(_classOpen, constructor, statements, _classClose) {
-		return new ast.ClassBody(constructor.tree(), statements.tree())
-	},
-	Constructor(_plant, _open, parameters, _close, body) {
-		return new ast.Constructor(parameters.tree(), body.tree())
-	},
 	FunctionDec(
 		_functionBeginning,
-		stat,
 		returnType,
 		name,
 		_left,
@@ -171,7 +155,6 @@ const astBuilder = lemonScriptGrammar.createSemantics().addOperation('tree', {
 	) {
 		return new ast.FunctionDec(
 			name.tree(),
-			stat.tree().length !== 0,
 			returnType.tree(),
 			parameters.tree(),
 			body.tree()
@@ -230,11 +213,7 @@ const astBuilder = lemonScriptGrammar.createSemantics().addOperation('tree', {
 		defaultCase,
 		_close
 	) {
-		return new ast.SwitchStatement(
-			exp.tree(),
-			cases.tree(),
-			defaultCase.tree()
-		)
+		return new ast.SwitchStatement(exp.tree(), cases.tree(), defaultCase.tree())
 	},
 	Lemoncase(_caseKeyword, exp, statements) {
 		return new ast.LemonCase(exp.tree(), statements.tree())
@@ -275,7 +254,10 @@ const astBuilder = lemonScriptGrammar.createSemantics().addOperation('tree', {
 	Exponential_binary(left, op, right) {
 		return new ast.BinaryExp(left.tree(), op.sourceString, right.tree())
 	},
-	Factor_prefix(op, operand) {
+	Factor_negation(op, operand) {
+		return new ast.UnaryExpression(op.sourceString, operand.tree(), true)
+	},
+	Factor_boolNegation(op, operand) {
 		return new ast.UnaryExpression(op.sourceString, operand.tree(), true)
 	},
 	Factor_parens(_left, exp, _right) {
@@ -294,25 +276,35 @@ const astBuilder = lemonScriptGrammar.createSemantics().addOperation('tree', {
 		return new ast.Continue()
 	},
 	ReturnStatement(_return, returnValue) {
-		return new ast.ReturnStatement(returnValue.tree())
+		if (returnValue.tree().length === 0) {
+			return new ast.ShortReturnStatement()
+		}
+
+		return new ast.ReturnStatement(returnValue.tree()[0])
 	},
 	id(_first, _rest) {
 		return new ast.IdentifierExpression(this.sourceString)
 	},
-	numlit(digits, dot, decimals) {
+	numlit_int(digits) {
+		return BigInt(this.sourceString)
+	},
+	numlit_float(digits, dot, decimals) {
 		return Number(this.sourceString)
 	},
 	stringlit(_left, chars, _right) {
 		return chars.sourceString
 	},
 	boollit(bool) {
-		return bool.sourceString
+		if (bool.sourceString === 'sour') {
+			return new ast.Bool(bool.sourceString, false, 'taste')
+		}
+		return new ast.Bool(bool.sourceString, true, 'taste')
 	},
-	Property_dotMemberExp(var1, _dot, var2) {
+	Property_dotMemberExp(var1, _dot, var2, _close) {
 		return new ast.PropertyExpression(var1.tree(), var2.tree())
 	},
 	Property_memberExp(variable, _open, index, _close) {
-		return new ast.MemberExpression(variable.tree(), index.sourceString)
+		return new ast.MemberExpression(variable.tree(), BigInt(index.sourceString))
 	},
 	ArrayType(type, _brac) {
 		return new ast.ArrayType(type.tree())
@@ -324,7 +316,7 @@ const astBuilder = lemonScriptGrammar.createSemantics().addOperation('tree', {
 		return new ast.ObjPair(key.tree(), value.tree())
 	},
 	Binding(type, name) {
-		return new ast.VariableDec(type.tree(), name.tree())
+		return new ast.VariableDec(type.tree(), name.tree(), false, false)
 	},
 	_terminal() {
 		return this.sourceString

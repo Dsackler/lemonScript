@@ -9,6 +9,8 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 
 **Brought to you by:** [Julian Arregoces](https://github.com/Jarregoc),[Raul Rodriguez](https://github.com/RaulRdz15), [Brent Shafer](https://github.com/bshafer93), [Justin Yee](https://github.com/jyee5), [David Sackler](https://github.com/Dsackler), [Khalid Alghunaim](https://github.com/kfg2000)
 
+If you would like to learn more about lemonScript you can visit our official website: https://dsackler.github.io/lemonScript/
+
 ## Features
 
 - Statically typed language
@@ -30,6 +32,26 @@ The stage has been set. lemonScript was to be a self-explanatory, statically-typ
 | Number     | slice (for integers) or dontUseMeForEyeDrops (for floats)  |
 | Boolean    | taste                                                      |
 | const      | lemonStain                                                 |
+
+## Types of Static Semantic Errors
+- Type mismatch
+- Assignment to constant variable
+- Continue/Break can only be used in a loop
+- Number of arguments when calling a function
+- Arguments passed into a function has the correct types
+- Is callable
+- Returns something
+- Returns nothing
+- The return type is correct
+- Not inside a function
+- Is a number
+- Is an integer 
+- Is a boolean
+- Is an array
+- Is a dictionary
+- All elements in an array has the same type
+- All keys are unique
+- Keys and Values have the correct type
 
 ## Variable Declaration and Assignment
 
