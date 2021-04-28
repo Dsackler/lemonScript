@@ -128,7 +128,8 @@ const optimizers = {
         else if (e.op === "-") return e.left - e.right
         else if (e.op === "*") return e.left * e.right
         else if (e.op === "/") return e.left / e.right
-        else if (e.op === "**") return e.left ** e.right
+        else if (e.op === "%") return e.left % e.right
+        else if (e.op === "^") return e.left ** e.right
         else if (e.op === "<") return e.left < e.right
         else if (e.op === "<=") return e.left <= e.right
         else if (e.op === "==") return e.left === e.right
@@ -138,102 +139,74 @@ const optimizers = {
       } else if (e.left === 0 && e.op === "+") return e.right
       else if (e.left === 1 && e.op === "*") return e.right
       else if (e.left === 0 && e.op === "-") return new ast.UnaryExpression("-", e.right)
-      else if (e.left === 1 && e.op === "**") return 1
+      else if (e.left === 1 && e.op === "^") return 1
       else if (e.left === 0 && ["*", "/"].includes(e.op)) return 0
     } else if (e.right.constructor === Number) {
       // Numeric constant folding when right operand is constant
       if (["+", "-"].includes(e.op) && e.right === 0) return e.left
       else if (["*", "/"].includes(e.op) && e.right === 1) return e.left
       else if (e.op === "*" && e.right === 0) return 0
-      else if (e.op === "**" && e.right === 0) return 1
-    }
+      else if (e.op === "^" && e.right === 0) return 1
+    } else if (e.op === "+" && e.left.constructor === String) return e.left + e.right
     return e
   },
-  
-
-  
-  Variable(v) {
-    return v
-  },
-  Function(f) {
-    // f.body = optimize(f.body)
-    return f
-  },
-  Parameter(p) {
-    return p
-  },
-  Increment(s) {
-    return s
-  },
-  Decrement(s) {
-    return s
-  },
-  
-  BreakStatement(s) {
-    return s
-  },
-  
-  
-  
-  
-  
-  RepeatStatement(s) {
-    s.count = optimize(s.count)
-    if (s.count === 0) {
-      // repeat 0 times is a no-op
-      return []
-    }
-    s.body = optimize(s.body)
-    return s
-  },
-  
-  
-  Conditional(e) {
-    e.test = optimize(e.test)
-    e.consequent = optimize(e.consequent)
-    e.alternate = optimize(e.alternate)
-    if (e.test.constructor === Boolean) {
-      return e.test ? e.consequent : e.alternate
-    }
-    return e
-  },
-  
   UnaryExpression(e) {
     e.operand = optimize(e.operand)
-    if (e.operand.constructor === Number) {
+    if ([Number, BigInt].includes(e.operand.constructor)) {
       if (e.op === "-") {
         return -e.operand
+      }
+    } else if (e.operand.constructor === Boolean) {
+      if (e.op === "!") {
+        return !e.operand
       }
     }
     return e
   },
-  EmptyOptional(e) {
-    return e
+  ArrayType(t) {
+    return t
   },
-  SubscriptExpression(e) {
-    e.array = optimize(e.array)
-    e.index = optimize(e.index)
-    return e
+  ObjType(t) {
+    return t
   },
-  ArrayExpression(e) {
+  ArrayLit(e) {
     e.elements = optimize(e.elements)
     return e
   },
-  EmptyArray(e) {
-    return e
+  ObjLit(a) {
+    a.keyValuePairs.map(keyValuePair => optimize(keyValuePair))
+    return a
+  },
+  ObjPair(p) {
+    p.key = optimize(p.key)
+    p.value = optimize(p.value)
   },
   MemberExpression(e) {
-    e.object = optimize(e.object)
+    e.vari = optimize(e.vari)
     return e
   },
-  
-  BigInt(e) {
+  PropertyExpression(e) {
+    e.var1 = optimize(e.var1)
+    e.var2 = optimize(e.var2)
+    return e
+  },
+  IdentifierExpression(e) {
+    // Id expressions get "replaced" with the variables they refer to
+    return e
+  },
+  Continue(s) {
+    return s
+  },
+  Break(s) {
+    return s
+  },
+  Bool(e) {
     return e
   },
   Number(e) {
     return e
   },
-  Boolean(e) {
+  BigInt(e) {
     return e
   },
   String(e) {
@@ -242,5 +215,5 @@ const optimizers = {
   Array(a) {
     // Flatmap since each element can be an array
     return a.flatMap(optimize)
-  },
+  }
 }
