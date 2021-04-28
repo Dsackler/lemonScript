@@ -1,0 +1,7 @@
+
+forEachLemon (slice i = 0; i < 5; i++)
+    BEGIN JUICING
+    pour("LEMONS")
+    END JUICING
+
+

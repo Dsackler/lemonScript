@@ -28,37 +28,12 @@ const optimizers = {
     p.statements = optimize(p.statements)
     return p
   },
-  VariableDeclaration(d) {
-    d.initializer = optimize(d.initializer)
+  VariableDecInit(d) {
+    d.init = optimize(d.init)
     return d
   },
-  TypeDeclaration(d) {
+  VariableDec(d) {
     return d
-  },
-  StructType(d) {
-    return d
-  },
-  FunctionDeclaration(d) {
-    console.log(d)
-    console.log(d.fun)
-    d.body = optimize(d.body)
-    return d
-  },
-  Variable(v) {
-    return v
-  },
-  Function(f) {
-    // f.body = optimize(f.body)
-    return f
-  },
-  Parameter(p) {
-    return p
-  },
-  Increment(s) {
-    return s
-  },
-  Decrement(s) {
-    return s
   },
   Assignment(s) {
     s.source = optimize(s.source)
@@ -68,90 +43,78 @@ const optimizers = {
     }
     return s
   },
-  BreakStatement(s) {
+  FunctionDec(d) {
+    d.body = optimize(d.body)
+    return d
+  },
+  Call(c) {
+    c.callee = optimize(c.callee)
+    c.args = optimize(c.args)
+    return c
+  },
+  IfStatement(s) {
+    s.cases.map(c => optimize(c))
+    s.elseBlock = optimize(s.elseBlock)
+    // if (s.test.constructor === Boolean) {
+    //   return s.cases ? s.consequent : s.elseBlock
+    // }
     return s
   },
-  ReturnStatement(s) {
+  IfCase(s) {
+    s.condition = optimize(s.condition)
+    s.body = optimize(s.body)
+    // if (s.test.constructor === Boolean) {
+    //   return s.test ? s.consequent : []
+    // }
+    return s
+  },
+  WhileStatement(s) {
+    s.condition = optimize(s.condition)
+    // if (s.condition === false) {
+    //   // while false is a no-op
+    //   return []
+    // }
+    s.body = optimize(s.body)
+    return s
+  },
+  ForStatement(s) {
+    s.forArgs = optimize(s.forArgs)
+    s.body = optimize(s.body)
+    // if (s.collection.constructor === ast.EmptyArray) {
+    //   return []
+    // }
+    return s
+  },
+  SwitchStatement(s) {
     s.expression = optimize(s.expression)
+    s.cases.map(c => optimize(c))
+    s.defaultCase = optimize(s.defaultCase)
+    return s
+  },
+  LemonCase(s){
+    s.caseExp = optimize(s.caseExp)
+    s.statements = this.newChild({ inLoop: true }).optimize(s.statements)
+    return s
+  },
+  PrintStatement(p) {
+    p.argument = optimize(p.argument)
+    return p
+  },
+  typeOfStatement(p) {
+    p.argument = optimize(p.argument)
+    return p
+  },
+  ReturnStatement(s) {
+    s.returnValue = optimize(s.returnValue)
     return s
   },
   ShortReturnStatement(s) {
     return s
   },
-  IfStatement(s) {
-    s.test = optimize(s.test)
-    s.consequent = optimize(s.consequent)
-    s.alternate = optimize(s.alternate)
-    if (s.test.constructor === Boolean) {
-      return s.test ? s.consequent : s.alternate
-    }
-    return s
-  },
-  ShortIfStatement(s) {
-    s.test = optimize(s.test)
-    s.consequent = optimize(s.consequent)
-    if (s.test.constructor === Boolean) {
-      return s.test ? s.consequent : []
-    }
-    return s
-  },
-  WhileStatement(s) {
-    s.test = optimize(s.test)
-    if (s.test === false) {
-      // while false is a no-op
-      return []
-    }
-    s.body = optimize(s.body)
-    return s
-  },
-  RepeatStatement(s) {
-    s.count = optimize(s.count)
-    if (s.count === 0) {
-      // repeat 0 times is a no-op
-      return []
-    }
-    s.body = optimize(s.body)
-    return s
-  },
-  ForRangeStatement(s) {
-    s.low = optimize(s.low)
-    s.high = optimize(s.high)
-    s.body = optimize(s.body)
-    if (s.low.constructor === Number) {
-      if (s.high.constructor === Number) {
-        if (s.low > s.high) {
-          return []
-        }
-      }
-    }
-    return s
-  },
-  ForStatement(s) {
-    s.collection = optimize(s.collection)
-    s.body = optimize(s.body)
-    if (s.collection.constructor === ast.EmptyArray) {
-      return []
-    }
-    return s
-  },
-  Conditional(e) {
-    e.test = optimize(e.test)
-    e.consequent = optimize(e.consequent)
-    e.alternate = optimize(e.alternate)
-    if (e.test.constructor === Boolean) {
-      return e.test ? e.consequent : e.alternate
-    }
-    return e
-  },
-  BinaryExpression(e) {
+  BinaryExp(e) {
     e.left = optimize(e.left)
     e.right = optimize(e.right)
-    if (e.op === "??") {
-      // Coalesce Empty Optional Unwraps
-      if (e.left.constructor === ast.EmptyOptional) {
-        return e.right
-      }
-    } else if (e.op === "&&") {
+    if (e.op === "&&") {
       // Optimize boolean constants in && and ||
       if (e.left === true) return e.right
       else if (e.right === true) return e.left
@@ -186,6 +149,55 @@ const optimizers = {
     }
     return e
   },
+  
+
+  
+  Variable(v) {
+    return v
+  },
+  Function(f) {
+    // f.body = optimize(f.body)
+    return f
+  },
+  Parameter(p) {
+    return p
+  },
+  Increment(s) {
+    return s
+  },
+  Decrement(s) {
+    return s
+  },
+  
+  BreakStatement(s) {
+    return s
+  },
+  
+  
+  
+  
+  
+  RepeatStatement(s) {
+    s.count = optimize(s.count)
+    if (s.count === 0) {
+      // repeat 0 times is a no-op
+      return []
+    }
+    s.body = optimize(s.body)
+    return s
+  },
+  
+  
+  Conditional(e) {
+    e.test = optimize(e.test)
+    e.consequent = optimize(e.consequent)
+    e.alternate = optimize(e.alternate)
+    if (e.test.constructor === Boolean) {
+      return e.test ? e.consequent : e.alternate
+    }
+    return e
+  },
+  
   UnaryExpression(e) {
     e.operand = optimize(e.operand)
     if (e.operand.constructor === Number) {
@@ -214,11 +226,7 @@ const optimizers = {
     e.object = optimize(e.object)
     return e
   },
-  Call(c) {
-    c.callee = optimize(c.callee)
-    c.args = optimize(c.args)
-    return c
-  },
+  
   BigInt(e) {
     return e
   },
