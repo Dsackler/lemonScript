@@ -24,6 +24,10 @@ export default function optimize(node) {
   return optimizers[node.constructor.name](node)
 }
 
+const toBool = (boolean) => {
+  return boolean ? new Bool("sweet", true, "taste") : new Bool("sour", false, "taste")
+}
+
 const optimizers = {
   Program(p) {
     p.statements = optimize(p.statements)
@@ -58,6 +62,7 @@ const optimizers = {
   },
   IfStatement(s) {
     let last = null
+    s.cases[0] = optimize(s.cases[0])
     if(s.cases[0].condition.constructor === Bool){
       if(s.cases[0].condition.value){
         return s.cases[0].body
@@ -66,6 +71,7 @@ const optimizers = {
       }
     }
     for(let index = 1; index < s.cases.length; index++){
+      s.cases[index] = optimize(s.cases[index])
       if(s.cases[index].condition.constructor === Bool){
         if(s.cases[index].condition.value){
           last = s.cases[index]
@@ -77,7 +83,6 @@ const optimizers = {
           continue
         }
       }
-      s.cases[index] = optimize(s.cases[index])
     }
     if(last != null){
       s.elseBlock = last.body
@@ -93,7 +98,7 @@ const optimizers = {
   },
   WhileStatement(s) {
     s.condition = optimize(s.condition)
-    if (s.condition === false) {
+    if (s.condition.constructor === Bool && !s.condition.value) {
       return []
     }
     s.body = optimize(s.body)
@@ -112,7 +117,7 @@ const optimizers = {
   },
   LemonCase(s){
     s.caseExp = optimize(s.caseExp)
-    s.statements = this.newChild({ inLoop: true }).optimize(s.statements)
+    s.statements = optimize(s.statements)
     return s
   },
   PrintStatement(p) {
@@ -149,12 +154,12 @@ const optimizers = {
         else if (e.op === "/") return e.left / e.right
         else if (e.op === "%") return e.left % e.right
         else if (e.op === "^") return e.left ** e.right
-        else if (e.op === "<") return e.left < e.right
-        else if (e.op === "<=") return e.left <= e.right
-        else if (e.op === "==") return e.left === e.right
-        else if (e.op === "!=") return e.left !== e.right
-        else if (e.op === ">=") return e.left >= e.right
-        else if (e.op === ">") return e.left > e.right
+        else if (e.op === "<") return toBool(e.left < e.right)
+        else if (e.op === "<=") return toBool(e.left <= e.right)
+        else if (e.op === "==") return toBool(e.left === e.right)
+        else if (e.op === "!=") return toBool(e.left !== e.right)
+        else if (e.op === ">=") return toBool(e.left >= e.right)
+        else if (e.op === ">") return toBool(e.left > e.right)
       } else if (e.left === 0 && e.op === "+") return e.right
       else if (e.left === 1 && e.op === "*") return e.right
       else if (e.left === 0 && e.op === "-") return new ast.UnaryExpression("-", e.right, true)
@@ -175,18 +180,12 @@ const optimizers = {
       if (e.op === "-") {
         return -e.operand
       }
-    } else if (e.operand.constructor === Boolean) {
+    } else if (e.operand.constructor === Bool) {
       if (e.op === "!") {
-        return !e.operand
+        return toBool(!e.operand.value)
       }
     }
     return e
-  },
-  ArrayType(t) {
-    return t
-  },
-  ObjType(t) {
-    return t
   },
   ArrayLit(e) {
     e.elements = optimize(e.elements)
@@ -202,6 +201,7 @@ const optimizers = {
   },
   MemberExpression(e) {
     e.vari = optimize(e.vari)
+    // doesnt need to check the subscript because parser forces it to be a number
     return e
   },
   PropertyExpression(e) {
@@ -209,10 +209,11 @@ const optimizers = {
     e.var2 = optimize(e.var2)
     return e
   },
-  IdentifierExpression(e) {
-    // Id expressions get "replaced" with the variables they refer to
-    return e
-  },
+  // IdentifierExpression(e) {
+  //   // Id expressions get "replaced" with the variables they refer to
+  //   return e
+  // },
+  // test when doing for statement
   Continue(s) {
     return s
   },

@@ -41,13 +41,13 @@ export class Bool extends Type {
 }
 
 export class VariableDecInit {
-    constructor( type, variable, init, con ) {
+    constructor(type, variable, init, con ) {
         Object.assign(this, {con,  type, variable, init})
     }
 }
 
 export class VariableDec {
-    constructor( type, identifier, con) {
+    constructor(type, identifier, con) {
         Object.assign(this, {con, type, identifier})
     }
 }
