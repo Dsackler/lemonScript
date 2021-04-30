@@ -18,6 +18,7 @@
 //   - if-true and if-false reduce to only the taken arm
 
 import * as ast from "./ast.js"
+import { Bool } from "./ast.js"
 
 export default function optimize(node) {
   return optimizers[node.constructor.name](node)
@@ -34,6 +35,9 @@ const optimizers = {
   },
   VariableDec(d) {
     return d
+  },
+  Variable(v) {
+    return v
   },
   Assignment(s) {
     s.source = optimize(s.source)
@@ -53,36 +57,51 @@ const optimizers = {
     return c
   },
   IfStatement(s) {
-    s.cases.map(c => optimize(c))
+    let last = null
+    if(s.cases[0].condition.constructor === Bool){
+      if(s.cases[0].condition.value){
+        return s.cases[0].body
+      } else {
+        s.cases.splice(0, 1)
+      }
+    }
+    for(let index = 1; index < s.cases.length; index++){
+      if(s.cases[index].condition.constructor === Bool){
+        if(s.cases[index].condition.value){
+          last = s.cases[index]
+          s.cases.splice(index)
+          break
+        } else {
+          s.cases.splice(index, 1)
+          index--
+          continue
+        }
+      }
+      s.cases[index] = optimize(s.cases[index])
+    }
+    if(last != null){
+      s.elseBlock = last.body
+    }
     s.elseBlock = optimize(s.elseBlock)
-    // if (s.test.constructor === Boolean) {
-    //   return s.cases ? s.consequent : s.elseBlock
-    // }
-    return s
+
+    return s.cases.length === 0 ? s.elseBlock : s
   },
   IfCase(s) {
     s.condition = optimize(s.condition)
     s.body = optimize(s.body)
-    // if (s.test.constructor === Boolean) {
-    //   return s.test ? s.consequent : []
-    // }
     return s
   },
   WhileStatement(s) {
     s.condition = optimize(s.condition)
-    // if (s.condition === false) {
-    //   // while false is a no-op
-    //   return []
-    // }
+    if (s.condition === false) {
+      return []
+    }
     s.body = optimize(s.body)
     return s
   },
   ForStatement(s) {
     s.forArgs = optimize(s.forArgs)
     s.body = optimize(s.body)
-    // if (s.collection.constructor === ast.EmptyArray) {
-    //   return []
-    // }
     return s
   },
   SwitchStatement(s) {
@@ -116,11 +135,11 @@ const optimizers = {
     e.right = optimize(e.right)
     if (e.op === "&&") {
       // Optimize boolean constants in && and ||
-      if (e.left === true) return e.right
-      else if (e.right === true) return e.left
+      if (e.left.value === true) return e.right
+      else if (e.right.value === true) return e.left
     } else if (e.op === "||") {
-      if (e.left === false) return e.right
-      else if (e.right === false) return e.left
+      if (e.left.value === false) return e.right
+      else if (e.right.value === false) return e.left
     } else if ([Number, BigInt].includes(e.left.constructor)) {
       // Numeric constant folding when left operand is constant
       if ([Number, BigInt].includes(e.right.constructor)) {
@@ -138,7 +157,7 @@ const optimizers = {
         else if (e.op === ">") return e.left > e.right
       } else if (e.left === 0 && e.op === "+") return e.right
       else if (e.left === 1 && e.op === "*") return e.right
-      else if (e.left === 0 && e.op === "-") return new ast.UnaryExpression("-", e.right)
+      else if (e.left === 0 && e.op === "-") return new ast.UnaryExpression("-", e.right, true)
       else if (e.left === 1 && e.op === "^") return 1
       else if (e.left === 0 && ["*", "/"].includes(e.op)) return 0
     } else if (e.right.constructor === Number) {
