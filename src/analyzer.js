@@ -162,9 +162,7 @@ class Context {
   }
   VariableDecInit(d) {
     // Declarations generate brand new variable objects
-    console.log(d.init)
     d.init = this.analyze(d.init)
-    console.log(d.init)
     d.type = this.analyze(d.type)
     let type = d.type.constructor === String ? d.type : d.type.name
     if(!this.sees(type)){
@@ -177,6 +175,7 @@ class Context {
   }
   VariableDec(d) {
     // Declarations generate brand new variable objects
+    d.type = this.analyze(d.type)
     let type = d.type.constructor === String ? d.type : d.type.name
     if(!this.sees(type)){
       this.add(d.type.name, d.type)
@@ -206,7 +205,6 @@ class Context {
     const childContext = this.newChild({ inLoop: false, function: f })
     d.params = childContext.analyze(d.params)
     f.type = new FunctionType(
-      //d.params.map(p => this.lookup(p.type)),
       d.params.map(p => p.type),
       d.returnTypes
     )
