@@ -3,7 +3,7 @@ When life gives you lemons try slice sumOfArray( slice[] arr, slice arrLength )
     slice sum = 0
     forEachLemon (slice i = 0; i < arrLength; i++)
         BEGIN JUICING
-        sum = sum + arr[1] + (4)
+        sum = arr[1]
         nextLemon
         END JUICING
     you get lemonade and sum

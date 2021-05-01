@@ -138,14 +138,14 @@ class Context {
     }
     this.locals.set(name, entity)
   }
-  lookup(name) {
-    const entity = this.locals.get(name)
+  lookup(typeName) {
+    const entity = this.locals.get(typeName) ?? this.locals.get(typeName.name)
     if (entity) {
       return entity
     } else if (this.parent) {
-      return this.parent.lookup(name)
+      return this.parent.lookup(typeName)
     }
-    throw new Error(`Identifier ${name} not declared`)
+    throw new Error(`Identifier ${typeName} not declared`)
   }
   newChild(configuration = {}) {
     // Create new (nested) context, which is just like the current context
@@ -175,6 +175,7 @@ class Context {
   }
   VariableDec(d) {
     // Declarations generate brand new variable objects
+    d.type = this.analyze(d.type)
     let type = d.type.constructor === String ? d.type : d.type.name
     if(!this.sees(type)){
       this.add(d.type.name, d.type)
@@ -187,7 +188,6 @@ class Context {
   Assignment(s) {
     s.source = this.analyze(s.source)
     s.target = this.analyze(s.target)
-
 
     check(s.source).isAssignableTo(s.target.type)
     check(s.target).isNotAConstant()
@@ -205,7 +205,6 @@ class Context {
     const childContext = this.newChild({ inLoop: false, function: f })
     d.params = childContext.analyze(d.params)
     f.type = new FunctionType(
-      //d.params.map(p => this.lookup(p.type)),
       d.params.map(p => p.type),
       d.returnTypes
     )
