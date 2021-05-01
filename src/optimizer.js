@@ -107,7 +107,98 @@ const optimizers = {
   ForStatement(s) {
     s.forArgs = optimize(s.forArgs)
     s.body = optimize(s.body)
+    if(s.forArgs.canUnroll){
+      const checkBody = (body) => {
+        for(let statementIndex = 0; statementIndex < body.length; statementIndex++){
+          if(body[statementIndex].constructor === ast.Assignment){
+            if(s.forArgs.identifier === body[statementIndex].source) {
+              return false
+            }
+          }
+          if(body[statementIndex].constructor === ast.UnaryExpression && ["++", "--"].includes(body[statementIndex].op)){
+            if(s.forArgs.identifier === body[statementIndex].operrand) {
+              return false
+            }
+          }
+          if([ast.ForStatement, ast.WhileStatement, ast.FunctionDec, ast.IfStatement, ast.SwitchStatement].includes(body[statementIndex].constructor)){
+            return false
+          }
+        }
+        return true
+      }
+
+      const makeBody = (body, identifier) => {
+        let newBody = []
+        for(let statementIndex = 0; statementIndex < body.length; statementIndex++){
+          if(body[statementIndex].constructor === ast.VariableDecInit){
+            if()
+          }
+          if(body[statementIndex].constructor === ast.Assignment){
+            if()
+          }
+          if(body[statementIndex].constructor === ast.Call){
+            if()
+          }
+          if(body[statementIndex].constructor === ast.SwitchStatement){
+            if()
+          }
+          if(body[statementIndex].constructor === ast.PrintStatement){
+            if()
+          }
+          if(body[statementIndex].constructor === ast.typeOfStatement){
+            if()
+          }
+          if(body[statementIndex].constructor === ast.ReturnStatement){
+            if()
+          }
+          if(body[statementIndex].constructor === ast.BinaryExp){
+            if()
+          }
+          if(body[statementIndex].constructor === ast.UnaryExpression){
+            if()
+          }
+        }
+      }
+
+      if(checkBody(s.body)){
+        if("<"){
+          a.condition.left--
+        }
+        for(let i = s.forArgs.exp; i <= a.condition.left; i++){
+          
+        }
+      }
+    }
     return s
+  },
+  // vardec init
+  // assingment
+  // call
+  // switch statement
+  // print statement
+  // type of statement
+  // return statement
+  // binary exp
+  // unary exp
+  // arraylit
+  // objlit
+  ForArgs(a) {
+    a.identifier = optimize(a.identifier)
+    a.exp = optimize(a.exp)
+    a.condition = optimize(a.condition)
+    a.sliceCrement = optimize(a.sliceCrement)
+    if(![Number, BigInt].includes(a.exp.constructor)) {
+      return a
+    } 
+    if(a.condition.constructor !== ast.BinaryExp || ![Number, BigInt].includes(a.condition.right.constructor) || a.condition.left !== a.identifier || !["<","<=",">",">="].includes(a.condition.op)) {
+      return a
+    } 
+    if(a.sliceCrement.constructor === ast.UnaryExpression && a.sliceCrement.operand === a.identifier){
+      if(a.sliceCrement.op === "++") {
+        a.canUnroll = true
+      }
+    }
+    return a
   },
   SwitchStatement(s) {
     s.expression = optimize(s.expression)
@@ -172,7 +263,13 @@ const optimizers = {
       else if (["*", "/"].includes(e.op) && e.right === 1) return e.left
       else if (e.op === "*" && e.right === 0) return 0
       else if (e.op === "^" && e.right === 0) return 1
-    } else if (e.op === "+" && e.left.constructor === String) return e.left + e.right
+    } else if (e.op === "+" && e.left.constructor === String) {
+      return e.left + e.right
+    } else if(e.op === "+=") {
+      return new ast.Assignment(e.left, new ast.BinaryExp(e.left, "+", e.right))
+    } else if(e.op === "-=") {
+      return new ast.Assignment(e.left, new ast.BinaryExp(e.left, "-", e.right))
+    }
     return e
   },
   UnaryExpression(e) {
