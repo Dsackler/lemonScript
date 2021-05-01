@@ -15,5 +15,5 @@ export const types = {
 
 export const functions = {
   pour: makeFunction("pour", new FunctionType([Type.ANY], Type.VOID)),
-  species: makeFunction("species", new FunctionType([Type.ANY], Type.STRING))
+  species: makeFunction("species", new FunctionType([Type.ANY], Type.STRING)),
 }

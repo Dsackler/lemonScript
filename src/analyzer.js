@@ -1,11 +1,4 @@
-import {
-  Variable,
-  Type,
-  FunctionType,
-  Function,
-  ArrayType,
-  ObjType,
-} from "./ast.js"
+import { Variable, Type, FunctionType, Function, ArrayType, ObjType } from "./ast.js"
 import * as stdlib from "./stdlib.js"
 
 function must(condition, errorMessage) {
@@ -70,13 +63,13 @@ const check = self => ({
     must(self.function, "Return can only appear in a function")
   },
   isCallable() {
-    must(
-      self.type.constructor == FunctionType,
-      "Call of non-function"
-    )
+    must(self.type.constructor == FunctionType, "Call of non-function")
   },
   returnsNothing() {
-    must(self.type.returnTypes.isEquivalentTo(Type.VOID), "Something should be returned here")
+    must(
+      self.type.returnTypes.isEquivalentTo(Type.VOID),
+      "Something should be returned here"
+    )
   },
   returnsSomething() {
     must(!self.type.returnTypes.isEquivalentTo(Type.VOID), "Cannot return a value here")
@@ -96,17 +89,16 @@ const check = self => ({
     check(self).match(paramTypes)
   },
   areAllDistinct() {
-    must(new Set(self.map(pair => pair.key)).size === self.length, "Keys must be distinct")
+    must(
+      new Set(self.map(pair => pair.key)).size === self.length,
+      "Keys must be distinct"
+    )
   },
   allSameKeyTypes() {
-    must(
-      self.slice(1).every(pair => pair.key.type.isEquivalentTo(self[0].key.type)),
-    )
+    must(self.slice(1).every(pair => pair.key.type.isEquivalentTo(self[0].key.type)))
   },
   allSameValueTypes() {
-    must(
-      self.slice(1).every(pair => pair.value.type.isEquivalentTo(self[0].value.type)),
-    )
+    must(self.slice(1).every(pair => pair.value.type.isEquivalentTo(self[0].value.type)))
   },
 })
 
@@ -165,7 +157,7 @@ class Context {
     d.init = this.analyze(d.init)
     d.type = this.analyze(d.type)
     let type = d.type.constructor === String ? d.type : d.type.name
-    if(!this.sees(type)){
+    if (!this.sees(type)) {
       this.add(d.type.name, d.type)
     }
     d.variable = new Variable(d.variable.name, d.con, this.lookup(type))
@@ -177,7 +169,7 @@ class Context {
     // Declarations generate brand new variable objects
     d.type = this.analyze(d.type)
     let type = d.type.constructor === String ? d.type : d.type.name
-    if(!this.sees(type)){
+    if (!this.sees(type)) {
       this.add(d.type.name, d.type)
     }
     d.identifier = d.identifier.name
@@ -194,8 +186,8 @@ class Context {
     return s
   }
   FunctionDec(d) {
-    d.returnTypes =  this.analyze(d.returnTypes)
-    if(d.returnTypes.constructor === String){
+    d.returnTypes = this.analyze(d.returnTypes)
+    if (d.returnTypes.constructor === String) {
       d.returnTypes = this.locals.get(d.returnTypes)
     }
     // Declarations generate brand new function objects
@@ -219,18 +211,20 @@ class Context {
     c.callee = this.analyze(c.callee)
     check(c.callee).isCallable()
     c.args = this.analyze(c.args)
-    check(c.args).matchParametersOf(c.callee.type.paramTypes.map(p => {
-      if(p.constructor === ArrayType){
-        p.memberType = this.lookup(p.memberType)
-        return p
-      } else if(p.constructor === ObjType){
-        p.keyType = this.lookup(p.keyType)
-        p.valueType = this.lookup(p.valueType)
-        return p
-      } else {
-        return this.lookup(p)
-      }
-    }))
+    check(c.args).matchParametersOf(
+      c.callee.type.paramTypes.map(p => {
+        if (p.constructor === ArrayType) {
+          p.memberType = this.lookup(p.memberType)
+          return p
+        } else if (p.constructor === ObjType) {
+          p.keyType = this.lookup(p.keyType)
+          p.valueType = this.lookup(p.valueType)
+          return p
+        } else {
+          return this.lookup(p)
+        }
+      })
+    )
     c.type = c.callee.type.returnTypes
     return c
   }
@@ -270,14 +264,14 @@ class Context {
 
     return s
   }
-  SwitchStatement(s){
+  SwitchStatement(s) {
     s.expression = this.analyze(s.expression)
     s.cases.map(c => this.analyze(c))
     check(s.expression).allCasesHaveSameType(s.cases)
     s.defaultCase = this.analyze(s.defaultCase)
     return s
   }
-  LemonCase(s){
+  LemonCase(s) {
     s.caseExp = this.analyze(s.caseExp)
     s.statements = this.newChild({ inLoop: true }).analyze(s.statements)
     return s
@@ -316,14 +310,14 @@ class Context {
       check(e.right).isBoolean()
       e.type = Type.BOOLEAN
     } else if (["+", "+="].includes(e.op)) {
-      if(e.op === "+="){
+      if (e.op === "+=") {
         check(e.left).isNotAConstant()
       }
       check(e.left).isNumericOrString()
       check(e.left).hasSameTypeAs(e.right)
       e.type = e.left.type
     } else if (["-", "*", "/", "%", "^", "-="].includes(e.op)) {
-      if(e.op === "-="){
+      if (e.op === "-=") {
         check(e.left).isNotAConstant()
       }
       check(e.left).isNumeric()
@@ -341,14 +335,14 @@ class Context {
   }
   UnaryExpression(e) {
     e.operand = this.analyze(e.operand)
-    if(["++", "--"].includes(e.op)){
+    if (["++", "--"].includes(e.op)) {
       check(e.operand).isNotAConstant()
       check(e.operand).isNumeric()
       e.type = e.operand.type
-    } else if("-" === e.op){
+    } else if ("-" === e.op) {
       check(e.operand).isNumeric()
       e.type = e.operand.type
-    } else if("!" === e.op){
+    } else if ("!" === e.op) {
       check(e.operand).isBoolean()
       e.type = e.operand.type
     }
@@ -358,7 +352,7 @@ class Context {
   ArrayType(t) {
     t.memberType = this.analyze(t.memberType)
     let type = t.memberType.constructor === String ? t.memberType : t.memberType.name
-    if(!this.sees(type)){
+    if (!this.sees(type)) {
       this.add(t.memberType.name, t.memberType)
     }
     t.memberType = this.lookup(type)
@@ -368,14 +362,14 @@ class Context {
   ObjType(t) {
     t.keyType = this.analyze(t.keyType)
     let keyType = t.keyType.constructor === String ? t.keyType : t.keyType.name
-    if(!this.sees(keyType)){
+    if (!this.sees(keyType)) {
       this.add(t.keyType.name, t.keyType)
     }
     t.keyType = this.lookup(keyType)
 
     t.valueType = this.analyze(t.valueType)
     let valueType = t.valueType.constructor === String ? t.valueType : t.valueType.name
-    if(!this.sees(valueType)){
+    if (!this.sees(valueType)) {
       this.add(t.valueType.name, t.valueType)
     }
     t.valueType = this.lookup(valueType)
@@ -383,28 +377,25 @@ class Context {
   }
 
   ArrayLit(a) {
-
     //Check if the literal is empty, then we keep the type it came with.
     // If a.type is undefined we could just assign it to TYPE.any
     a.elements = this.analyze(a.elements)
-    if(a.elements.length  > 0){
+    if (a.elements.length > 0) {
       check(a.elements).allHaveSameType()
       a.type = new ArrayType(a.elements[0].type)
-    }else{
+    } else {
       a.type = Type.EMPTY_ARRAY
     }
     return a
-
   }
   ObjLit(a) {
-
-    if(a.keyValuePairs.length > 0 ) {
+    if (a.keyValuePairs.length > 0) {
       a.keyValuePairs = this.analyze(a.keyValuePairs)
       check(a.keyValuePairs).allSameKeyTypes()
       check(a.keyValuePairs).areAllDistinct()
       check(a.keyValuePairs).allSameValueTypes()
       a.type = new ObjType(a.keyValuePairs[0].key.type, a.keyValuePairs[0].value.type)
-    }else{
+    } else {
       a.type = Type.EMPTY_OBJECT
     }
 
@@ -447,7 +438,7 @@ class Context {
     // Id expressions get "replaced" with the variables they refer to
     return this.lookup(e.name)
   }
-  Bool(b){
+  Bool(b) {
     b.type = this.lookup(b.type)
     return b
   }

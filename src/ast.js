@@ -1,67 +1,67 @@
 import util from "util"
 
 export class Program {
-    constructor(statements) {
-        Object.assign(this, {statements})
-    }
-    [util.inspect.custom]() {
-      return prettied(this)
-    }
+  constructor(statements) {
+    Object.assign(this, { statements })
+  }
+  [util.inspect.custom]() {
+    return prettied(this)
+  }
 }
 
 export class Type {
-    constructor(name) {
-      this.name = name
-    }
-    static BOOLEAN = new Type("taste")
-    static INT = new Type("slice")
-    static FLOAT = new Type("dontUseMeForEyeDrops")
-    static STRING = new Type("pulp")
-    static VOID = new Type("noLemon")
-    static EMPTY_ARRAY = new Type("emptyArray")
-    static EMPTY_OBJECT = new Type("emptyObject")
-    static ANY = new Type("any")
-    // Equivalence: when are two types the same
-    isEquivalentTo(target) {
-      return this === target
-    }
-    // T1 assignable to T2 is when x:T1 can be assigned to y:T2. By default
-    // this is only when two types are equivalent; however, for other kinds
-    // of types there may be special rules.
-    isAssignableTo(target) {
-      return this.isEquivalentTo(target)
-    }
+  constructor(name) {
+    this.name = name
+  }
+  static BOOLEAN = new Type("taste")
+  static INT = new Type("slice")
+  static FLOAT = new Type("dontUseMeForEyeDrops")
+  static STRING = new Type("pulp")
+  static VOID = new Type("noLemon")
+  static EMPTY_ARRAY = new Type("emptyArray")
+  static EMPTY_OBJECT = new Type("emptyObject")
+  static ANY = new Type("any")
+  // Equivalence: when are two types the same
+  isEquivalentTo(target) {
+    return this === target
+  }
+  // T1 assignable to T2 is when x:T1 can be assigned to y:T2. By default
+  // this is only when two types are equivalent; however, for other kinds
+  // of types there may be special rules.
+  isAssignableTo(target) {
+    return this.isEquivalentTo(target)
+  }
 }
 
 export class Bool extends Type {
-    constructor(name, value, type) {
-        super(name)
-        Object.assign(this, {name, value, type})
-    }
+  constructor(name, value, type) {
+    super(name)
+    Object.assign(this, { name, value, type })
+  }
 }
 
 export class VariableDecInit {
-    constructor(type, variable, init, con ) {
-        Object.assign(this, {con,  type, variable, init})
-    }
+  constructor(type, variable, init, con) {
+    Object.assign(this, { con, type, variable, init })
+  }
 }
 
 export class VariableDec {
-    constructor(type, identifier, con) {
-        Object.assign(this, {con, type, identifier})
-    }
+  constructor(type, identifier, con) {
+    Object.assign(this, { con, type, identifier })
+  }
 }
 
 export class Assignment {
-    constructor(target, source) {
-        Object.assign(this, {target, source})
-    }
+  constructor(target, source) {
+    Object.assign(this, { target, source })
+  }
 }
 
 export class FunctionDec {
-    constructor(identifier, returnTypes, params, body) {
-        Object.assign(this, {identifier, returnTypes, params, body})
-    }
+  constructor(identifier, returnTypes, params, body) {
+    Object.assign(this, { identifier, returnTypes, params, body })
+  }
 }
 
 // Created during semantic analysis only!
@@ -87,71 +87,71 @@ export class FunctionType {
 }
 
 export class Call {
-    constructor(callee, args) {
-      Object.assign(this, { callee, args })
-    }
+  constructor(callee, args) {
+    Object.assign(this, { callee, args })
+  }
 }
 
 export class IfStatement {
-    constructor(cases, elseBlock) {
-        Object.assign(this, {cases, elseBlock})
-    }
+  constructor(cases, elseBlock) {
+    Object.assign(this, { cases, elseBlock })
+  }
 }
 export class IfCase {
-    constructor(condition, body) {
-        Object.assign(this, {condition, body})
-    }
+  constructor(condition, body) {
+    Object.assign(this, { condition, body })
+  }
 }
 
 export class WhileStatement {
-    constructor(condition, body) {
-        Object.assign(this, {condition, body})
-    }
+  constructor(condition, body) {
+    Object.assign(this, { condition, body })
+  }
 }
 
 export class ForStatement {
-    constructor(forArgs, body) {
-        Object.assign(this, {forArgs, body})
-    }
+  constructor(forArgs, body) {
+    Object.assign(this, { forArgs, body })
+  }
 }
 
 export class ForArgs {
-    constructor(identifier, exp, condition, sliceCrement) {
-        Object.assign(this, {identifier, exp, condition, sliceCrement})
-    }
+  constructor(identifier, exp, condition, sliceCrement) {
+    Object.assign(this, { identifier, exp, condition, sliceCrement })
+  }
 }
 
 // our version of switch forces the first right case to end the statement,
 // so no need for break
 export class SwitchStatement {
-    constructor(expression, cases, defaultCase) {
-      Object.assign(this, { expression, cases, defaultCase});
-    }
+  constructor(expression, cases, defaultCase) {
+    Object.assign(this, { expression, cases, defaultCase })
+  }
 }
 
 export class LemonCase {
-    constructor(caseExp, statements) {
-      Object.assign(this, { caseExp, statements });
-    }
+  constructor(caseExp, statements) {
+    Object.assign(this, { caseExp, statements })
+  }
 }
 
 export class PrintStatement {
-    constructor(argument) {
-        this.argument = argument
-    }
+  constructor(argument) {
+    this.argument = argument
+  }
 }
 
 // move to exp
 export class typeOfStatement {
-    constructor(argument) {
-        this.argument = argument
-    }
+  constructor(argument) {
+    this.argument = argument
+  }
 }
 
 export class ReturnStatement {
-    constructor(returnValue) {
-      this.returnValue = returnValue
-    }
+  constructor(returnValue) {
+    this.returnValue = returnValue
+  }
 }
 
 export class ShortReturnStatement {
@@ -161,15 +161,15 @@ export class ShortReturnStatement {
 }
 
 export class BinaryExp {
-    constructor(left, op, right) {
-        Object.assign(this, {left, op, right})
-    }
+  constructor(left, op, right) {
+    Object.assign(this, { left, op, right })
+  }
 }
 
 export class UnaryExpression {
-    constructor(op, operand, isprefix) {
-      Object.assign(this, { op, operand, isprefix })
-    }
+  constructor(op, operand, isprefix) {
+    Object.assign(this, { op, operand, isprefix })
+  }
 }
 
 // Created during semantic analysis only!
@@ -179,92 +179,95 @@ export class Variable {
   }
 }
 
-
 export class ArrayType extends Type {
-    constructor(memberType) {
-      let memberName = getObjName(memberType)
-      super(`${memberName}[]`)
-      Object.assign(this, {memberType})
-    }
+  constructor(memberType) {
+    let memberName = getObjName(memberType)
+    super(`${memberName}[]`)
+    Object.assign(this, { memberType })
+  }
 
-    isEquivalentTo(target) {
-      if(target  === Type.EMPTY_ARRAY || this === Type.EMPTY_ARRAY  ){
-        return true
-      }
-        return target.constructor === ArrayType && this.memberType.isEquivalentTo(target.memberType)
+  isEquivalentTo(target) {
+    if (target === Type.EMPTY_ARRAY || this === Type.EMPTY_ARRAY) {
+      return true
     }
+    return (
+      target.constructor === ArrayType &&
+      this.memberType.isEquivalentTo(target.memberType)
+    )
+  }
 }
 
 export class ObjType extends Type {
-    constructor(keyType, valueType) {
-      let keyName = getObjName(keyType)
-      let valueName = getObjName(valueType)
-      super(`<${keyName}, ${valueName}>`)
-      Object.assign(this, {keyType, valueType})
+  constructor(keyType, valueType) {
+    let keyName = getObjName(keyType)
+    let valueName = getObjName(valueType)
+    super(`<${keyName}, ${valueName}>`)
+    Object.assign(this, { keyType, valueType })
+  }
+  isEquivalentTo(target) {
+    if (target === Type.EMPTY_OBJECT || this === Type.EMPTY_OBJECT) {
+      return true
     }
-    isEquivalentTo(target) {
-      if(target  === Type.EMPTY_OBJECT || this === Type.EMPTY_OBJECT  ){
-        return true
-      }
-        return target.constructor === ObjType
-        && this.keyType.isEquivalentTo(target.keyType)
-        && this.valueType.isEquivalentTo(target.valueType)
-    }
+    return (
+      target.constructor === ObjType &&
+      this.keyType.isEquivalentTo(target.keyType) &&
+      this.valueType.isEquivalentTo(target.valueType)
+    )
+  }
 }
 
-function getObjName(type){
-  if(type.constructor === ObjType){
+function getObjName(type) {
+  if (type.constructor === ObjType) {
     let keyName = getObjName(type.keyType)
     let valueName = getObjName(type.valueType)
     return `<${keyName}, ${valueName}>`
-  } else if(type.constructor === ArrayType){
+  } else if (type.constructor === ArrayType) {
     return getObjName(type.memberType) + "[]"
-  } else if(type.constructor === Type){
+  } else if (type.constructor === Type) {
     return type.name
-  }else {
+  } else {
     return type
   }
 }
 
 export class ArrayLit {
-    constructor(elements) {
-      Object.assign(this, {elements})
-    }
+  constructor(elements) {
+    Object.assign(this, { elements })
+  }
 }
 
 export class ObjLit {
-    constructor(keyValuePairs) {
-      Object.assign(this, {keyValuePairs})
-    }
+  constructor(keyValuePairs) {
+    Object.assign(this, { keyValuePairs })
+  }
 }
 
 export class ObjPair {
-    constructor(key, value) {
-      Object.assign(this, {key, value})
-    }
+  constructor(key, value) {
+    Object.assign(this, { key, value })
+  }
 }
 
 export class MemberExpression {
-    constructor(vari, index) {
-        Object.assign(this, {vari, index})
-    }
+  constructor(vari, index) {
+    Object.assign(this, { vari, index })
+  }
 }
 
 export class PropertyExpression {
-    constructor(var1, var2) {
-        Object.assign(this, {var1, var2})
-    }
+  constructor(var1, var2) {
+    Object.assign(this, { var1, var2 })
+  }
 }
-
 
 export class Continue {}
 
 export class Break {}
 
-export class IdentifierExpression{
-    constructor(name) {
-        this.name = name
-    }
+export class IdentifierExpression {
+  constructor(name) {
+    this.name = name
+  }
 }
 
 // Stolen from Dr Toal, thanks!
