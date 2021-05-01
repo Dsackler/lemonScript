@@ -138,14 +138,14 @@ class Context {
     }
     this.locals.set(name, entity)
   }
-  lookup(name) {
-    const entity = this.locals.get(name)
+  lookup(typeName) {
+    const entity = this.locals.get(typeName) ?? this.locals.get(typeName.name)
     if (entity) {
       return entity
     } else if (this.parent) {
-      return this.parent.lookup(name)
+      return this.parent.lookup(typeName)
     }
-    throw new Error(`Identifier ${name} not declared`)
+    throw new Error(`Identifier ${typeName} not declared`)
   }
   newChild(configuration = {}) {
     // Create new (nested) context, which is just like the current context

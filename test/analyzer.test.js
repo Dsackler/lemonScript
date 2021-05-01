@@ -148,9 +148,9 @@ describe("The analyzer", () => {
       assert.ok(analyze(parse(source)))
     })
   }
-  // for (const [scenario, source, errorMessagePattern] of semanticErrors) {
-  //   it(`throws on ${scenario}`, () => {
-  //     assert.throws(() => analyze(parse(source)), errorMessagePattern)
-  //   })
-  // }
+  for (const [scenario, source, errorMessagePattern] of semanticErrors) {
+    it(`throws on ${scenario}`, () => {
+      assert.throws(() => analyze(parse(source)), errorMessagePattern)
+    })
+  }
 })
