@@ -162,7 +162,9 @@ class Context {
   }
   VariableDecInit(d) {
     // Declarations generate brand new variable objects
+    console.log(d.init)
     d.init = this.analyze(d.init)
+    console.log(d.init)
     d.type = this.analyze(d.type)
     let type = d.type.constructor === String ? d.type : d.type.name
     if(!this.sees(type)){
@@ -187,7 +189,6 @@ class Context {
   Assignment(s) {
     s.source = this.analyze(s.source)
     s.target = this.analyze(s.target)
-
 
     check(s.source).isAssignableTo(s.target.type)
     check(s.target).isNotAConstant()
