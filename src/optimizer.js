@@ -24,7 +24,7 @@ export default function optimize(node) {
   return optimizers[node.constructor.name](node)
 }
 
-const toBool = (boolean) => {
+const toBool = boolean => {
   return boolean ? new Bool("sweet", true, "taste") : new Bool("sour", false, "taste")
 }
 
@@ -63,17 +63,17 @@ const optimizers = {
   IfStatement(s) {
     let last = null
     s.cases[0] = optimize(s.cases[0])
-    if(s.cases[0].condition.constructor === Bool){
-      if(s.cases[0].condition.value){
+    if (s.cases[0].condition.constructor === Bool) {
+      if (s.cases[0].condition.value) {
         return s.cases[0].body
       } else {
         s.cases.splice(0, 1)
       }
     }
-    for(let index = 1; index < s.cases.length; index++){
+    for (let index = 1; index < s.cases.length; index++) {
       s.cases[index] = optimize(s.cases[index])
-      if(s.cases[index].condition.constructor === Bool){
-        if(s.cases[index].condition.value){
+      if (s.cases[index].condition.constructor === Bool) {
+        if (s.cases[index].condition.value) {
           last = s.cases[index]
           s.cases.splice(index)
           break
@@ -84,7 +84,7 @@ const optimizers = {
         }
       }
     }
-    if(last != null){
+    if (last != null) {
       s.elseBlock = last.body
     }
     s.elseBlock = optimize(s.elseBlock)
@@ -115,7 +115,7 @@ const optimizers = {
     s.defaultCase = optimize(s.defaultCase)
     return s
   },
-  LemonCase(s){
+  LemonCase(s) {
     s.caseExp = optimize(s.caseExp)
     s.statements = optimize(s.statements)
     return s
@@ -162,7 +162,8 @@ const optimizers = {
         else if (e.op === ">") return toBool(e.left > e.right)
       } else if (e.left === 0 && e.op === "+") return e.right
       else if (e.left === 1 && e.op === "*") return e.right
-      else if (e.left === 0 && e.op === "-") return new ast.UnaryExpression("-", e.right, true)
+      else if (e.left === 0 && e.op === "-")
+        return new ast.UnaryExpression("-", e.right, true)
       else if (e.left === 1 && e.op === "^") return 1
       else if (e.left === 0 && ["*", "/"].includes(e.op)) return 0
     } else if (e.right.constructor === Number) {
@@ -235,5 +236,5 @@ const optimizers = {
   Array(a) {
     // Flatmap since each element can be an array
     return a.flatMap(optimize)
-  }
+  },
 }

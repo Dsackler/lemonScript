@@ -29,9 +29,9 @@ export default function compile(source, outputType) {
       "🍋 🍋🍋 🍋🍋🍋 🍋🍋🍋🍋 🍋🍋🍋🍋🍋 ...",
       "no lemons here :(",
       "chocoMilk coming out next ?",
-      "lemonScript > python"
+      "lemonScript > python",
     ]
-    return easterEggQuotes[Math.floor(Math.random() * easterEggQuotes.length)];
+    return easterEggQuotes[Math.floor(Math.random() * easterEggQuotes.length)]
   } else {
     return "Unknown output type"
   }

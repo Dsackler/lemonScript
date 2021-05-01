@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "lint": "eslint .",
+    "lint": "node_modules/.bin/eslint src",
     "test": "c8 node_modules/.bin/mocha"
   },
   "repository": {
@@ -19,17 +19,14 @@
   },
   "homepage": "https://github.com/Dsackler/lemonScript#readme",
   "dependencies": {
-    "fs": "0.0.1-security",
-    "js-beautify": "^1.13.5",
-    "ohm-js": "^15.4.1",
-    "prettier": "^2.2.1",
-    "yargs": "^15.4.1"
+    "ohm-js": "^15.4.1"
   },
   "devDependencies": {
     "c8": "^7.6.0",
     "eslint": "^7.22.0",
-    "eslint-config-google": "^0.14.0",
+    "eslint-config-prettier": "^7.1.0",
+    "eslint-plugin-prettier": "^3.3.1",
     "mocha": "^8.3.2",
-    "prettier": "^2.2.1"
+    "prettier": "2.2.1"
   }
 }
