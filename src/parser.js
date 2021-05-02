@@ -203,7 +203,7 @@ const astBuilder = lemonScriptGrammar.createSemantics().addOperation("tree", {
     return new ast.PrintStatement(argument.tree())
   },
   TypeOf(_typeof, _left, argument, _right) {
-    return new ast.typeOfStatement(argument.tree())
+    return new ast.TypeOfOperator(argument.tree())
   },
   Exp_binary(left, op, right) {
     return new ast.BinaryExp(left.tree(), op.sourceString, right.tree())
@@ -266,8 +266,8 @@ const astBuilder = lemonScriptGrammar.createSemantics().addOperation("tree", {
     }
     return new ast.Bool(bool.sourceString, true, "taste")
   },
-  Property_dotMemberExp(var1, _dot, var2, _close) {
-    return new ast.PropertyExpression(var1.tree(), var2.tree())
+  Property_dotMemberExp(object, _dot, field, _close) {
+    return new ast.PropertyExpression(object.tree(), field.tree())
   },
   Property_memberExp(variable, _open, index, _close) {
     return new ast.MemberExpression(variable.tree(), BigInt(index.sourceString))

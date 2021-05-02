@@ -13,6 +13,7 @@
 
 import parse from "./parser.js"
 import analyze from "./analyzer.js"
+import optimize from "./optimizer.js"
 import generate from "./generator.js"
 
 export default function compile(source, outputType) {
@@ -22,7 +23,9 @@ export default function compile(source, outputType) {
   } else if (outputType === "analyze") {
     return analyze(parse(source))
   } else if (outputType === "generate") {
-    return generate(analyze(parse(source)))
+    return generate(optimize(analyze(parse(source))))
+  } else if (outputType === "optimize") {
+    return optimize(analyze(parse(source)))
   } else if (outputType === "lemon") {
     let easterEggQuotes = [
       "unsqueeze the lemonade till you get lemons 🍋",

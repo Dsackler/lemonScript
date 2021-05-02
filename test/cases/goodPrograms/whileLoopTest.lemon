@@ -1,6 +1,6 @@
 slice x = 100
 Drink the lemonade while (x > 0)
     BEGIN JUICING
-    pour("x = " + x)
+    pour(x)
     x = x - 1
     END JUICING

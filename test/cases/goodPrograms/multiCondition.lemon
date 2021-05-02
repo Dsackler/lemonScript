@@ -1,9 +1,13 @@
-When life gives you lemons try taste multConditionTest() 
+When life gives you lemons try taste multConditionTest()
     BEGIN JUICING
     taste lemonOne = sour
     taste lemonTwo = sour
     Squeeze the lemon if(lemonOne == sour && lemonTwo == sour)
+        BEGIN JUICING
         you get lemonade and sour
+        END JUICING
     Toss the lemon and do
+        BEGIN JUICING
         you get lemonade and sweet
+        END JUICING
     END JUICING

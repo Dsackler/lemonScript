@@ -67,15 +67,15 @@ const check = self => ({
   },
   returnsNothing() {
     must(
-      self.type.returnTypes.isEquivalentTo(Type.VOID),
+      self.type.returnType.isEquivalentTo(Type.VOID),
       "Something should be returned here"
     )
   },
   returnsSomething() {
-    must(!self.type.returnTypes.isEquivalentTo(Type.VOID), "Cannot return a value here")
+    must(!self.type.returnType.isEquivalentTo(Type.VOID), "Cannot return a value here")
   },
   isReturnableFrom(f) {
-    check(self).isAssignableTo(f.type.returnTypes)
+    check(self).isAssignableTo(f.type.returnType)
   },
   match(targetTypes) {
     // self is the array of arguments
@@ -186,9 +186,9 @@ class Context {
     return s
   }
   FunctionDec(d) {
-    d.returnTypes = this.analyze(d.returnTypes)
-    if (d.returnTypes.constructor === String) {
-      d.returnTypes = this.locals.get(d.returnTypes)
+    d.returnType = this.analyze(d.returnType)
+    if (d.returnType.constructor === String) {
+      d.returnType = this.locals.get(d.returnType)
     }
     // Declarations generate brand new function objects
     const f = (d.function = new Function(d.identifier.name))
@@ -198,7 +198,7 @@ class Context {
     d.params = childContext.analyze(d.params)
     f.type = new FunctionType(
       d.params.map(p => p.type),
-      d.returnTypes
+      d.returnType
     )
 
     // Add before analyzing the body to allow recursion
@@ -225,7 +225,7 @@ class Context {
         }
       })
     )
-    c.type = c.callee.type.returnTypes
+    c.type = c.callee.type.returnType
     return c
   }
   IfStatement(s) {
@@ -282,7 +282,7 @@ class Context {
     return p
   }
 
-  typeOfStatement(p) {
+  TypeOfOperator(p) {
     p.argument = this.analyze(p.argument)
     return p
   }
@@ -409,20 +409,20 @@ class Context {
   }
 
   MemberExpression(e) {
-    e.vari = this.analyze(e.vari)
-    check(e.vari).isAnArray()
-    e.type = e.vari.type.memberType
+    e.array = this.analyze(e.array)
+    check(e.array).isAnArray()
+    e.type = e.array.type.memberType
     e.index = this.analyze(e.index)
     check(e.index).isInteger()
     return e
   }
 
   PropertyExpression(e) {
-    e.var1 = this.analyze(e.var1)
-    check(e.var1).isDict()
-    e.var2 = this.analyze(e.var2)
-    e.var1.type.keyType.isEquivalentTo(e.var2.type)
-    e.type = e.var1.type.valueType
+    e.object = this.analyze(e.object)
+    check(e.object).isDict()
+    e.field = this.analyze(e.field)
+    e.object.type.keyType.isEquivalentTo(e.field.type)
+    e.type = e.object.type.valueType
     return e
   }
   Continue(s) {

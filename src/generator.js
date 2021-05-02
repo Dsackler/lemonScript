@@ -70,7 +70,7 @@ export default function generate(program) {
     Call(c) {
       const targetCode = `${gen(c.callee)}(${gen(c.args).join(", ")})`
       // Calls in expressions vs in statements are handled differently
-      if (c.callee.type.returnTypes !== Type.VOID) {
+      if (c.callee.type.returnType !== Type.VOID) {
         return targetCode
       }
       output.push(`${targetCode};`)
@@ -83,7 +83,7 @@ export default function generate(program) {
       output.push(`console.log(${gen(p.argument)});`)
       expStandalone = true
     },
-    typeOfStatement(p) {
+    TypeOfOperator(p) {
       if (expStandalone) {
         expStandalone = false
         output.push(`typeof ${gen(p.argument)};`)
@@ -145,7 +145,9 @@ export default function generate(program) {
       gen(s.statements)
     },
     ReturnStatement(s) {
+      expStandalone = false
       output.push(`return ${gen(s.returnValue)};`)
+      expStandalone = true
     },
     ShortReturnStatement(s) {
       output.push("return;")
@@ -198,10 +200,10 @@ export default function generate(program) {
       return `${gen(p.key)}: ${gen(p.value)}`
     },
     MemberExpression(e) {
-      return `(${gen(e.vari)}[${e.index}])`
+      return `(${gen(e.array)}[${e.index}])`
     },
     PropertyExpression(e) {
-      return `(${gen(e.var1)}[${e.var2}])`
+      return `(${gen(e.object)}[${e.field}])`
     },
     Continue(s) {
       output.push("continue;")

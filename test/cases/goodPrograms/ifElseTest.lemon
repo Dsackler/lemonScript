@@ -1,9 +1,10 @@
+slice x = 1
 Squeeze the lemon if(x == 10)
 	BEGIN JUICING
 	taste good = sweet
 	pour("Number is 10")
 	END JUICING
-	
+
 Keep juicing if(x == 20)
 	BEGIN JUICING
 	pour("Number is 10")

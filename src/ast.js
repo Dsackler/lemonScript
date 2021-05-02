@@ -59,8 +59,8 @@ export class Assignment {
 }
 
 export class FunctionDec {
-  constructor(identifier, returnTypes, params, body) {
-    Object.assign(this, { identifier, returnTypes, params, body })
+  constructor(identifier, returnType, params, body) {
+    Object.assign(this, { identifier, returnType, params, body })
   }
 }
 
@@ -73,17 +73,9 @@ export class Function {
 
 // Created during semantic analysis only!
 export class FunctionType {
-  constructor(paramTypes, returnTypes) {
-    Object.assign(this, { paramTypes, returnTypes })
+  constructor(paramTypes, returnType) {
+    Object.assign(this, { paramTypes, returnType })
   }
-  // isAssignableTo(target) {
-  //   return (
-  //     target.constructor === FunctionType &&
-  //     this.returnTypes.isAssignableTo(target.returnTypes) &&
-  //     this.parameterTypes.length === target.parameterTypes.length &&
-  //     this.parameterTypes.every((t, i) => target.parameterTypes[i].isAssignableTo(t))
-  //   )
-  // }
 }
 
 export class Call {
@@ -142,7 +134,7 @@ export class PrintStatement {
 }
 
 // move to exp
-export class typeOfStatement {
+export class TypeOfOperator {
   constructor(argument) {
     this.argument = argument
   }
@@ -249,14 +241,14 @@ export class ObjPair {
 }
 
 export class MemberExpression {
-  constructor(vari, index) {
-    Object.assign(this, { vari, index })
+  constructor(array, index) {
+    Object.assign(this, { array, index })
   }
 }
 
 export class PropertyExpression {
-  constructor(var1, var2) {
-    Object.assign(this, { var1, var2 })
+  constructor(object, field) {
+    Object.assign(this, { object, field })
   }
 }
 

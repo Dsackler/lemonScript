@@ -16,6 +16,7 @@
 //   - for-loop over empty array is a no-op
 //   - for-loop with low > high is a no-op
 //   - if-true and if-false reduce to only the taken arm
+//   - loop unrolling
 
 import * as ast from "./ast.js"
 import { Bool } from "./ast.js"
@@ -59,6 +60,9 @@ const optimizers = {
     c.callee = optimize(c.callee)
     c.args = optimize(c.args)
     return c
+  },
+  Function(d) {
+    return d
   },
   IfStatement(s) {
     let last = null
@@ -111,12 +115,12 @@ const optimizers = {
       const checkBody = (body) => {
         for(let statementIndex = 0; statementIndex < body.length; statementIndex++){
           if(body[statementIndex].constructor === ast.Assignment){
-            if(s.forArgs.identifier === body[statementIndex].source.name) {
+            if(s.forArgs.identifier.name === body[statementIndex].source.name) {
               return false
             }
           }
           if(body[statementIndex].constructor === ast.UnaryExpression && ["++", "--"].includes(body[statementIndex].op)){
-            if(s.forArgs.identifier === body[statementIndex].operand.name) {
+            if(s.forArgs.identifier.name === body[statementIndex].operand.name) {
               return false
             }
           }
@@ -148,8 +152,8 @@ const optimizers = {
         if(statement.constructor === ast.PrintStatement){
           return new ast.PrintStatement(newStatement(statement.argument, identifier, value))
         }
-        if(statement.constructor === ast.typeOfStatement){
-          return new ast.typeOfStatement(newStatement(statement.argument, identifier, value))
+        if(statement.constructor === ast.TypeOfOperator){
+          return new ast.TypeOfOperator(newStatement(statement.argument, identifier, value))
         }
         if(statement.constructor === ast.BinaryExp){
           return new ast.BinaryExp(newStatement(statement.left, identifier, value), statement.op, newStatement(statement.right, identifier, value))
@@ -194,11 +198,11 @@ const optimizers = {
         }
         if(s.forArgs.sliceCrement.op === "++"){
           for(let i = s.forArgs.exp; i <= bound; i++){
-            newBody.push(makeBody(s.body, s.forArgs.identifier, i))
+            newBody.push(makeBody(s.body, s.forArgs.identifier.name, i))
           }
         } else {
           for(let i = s.forArgs.exp; i >= bound; i--){
-            newBody.push(makeBody(s.body, s.forArgs.identifier, i))
+            newBody.push(makeBody(s.body, s.forArgs.identifier.name, i))
           }
         }
         return optimize(newBody)
@@ -211,10 +215,11 @@ const optimizers = {
     a.exp = optimize(a.exp)
     a.condition = optimize(a.condition)
     a.sliceCrement = optimize(a.sliceCrement)
-    if(a.condition.constructor !== ast.BinaryExp || ![Number, BigInt].includes(a.condition.right.constructor) || a.condition.left.name !== a.identifier || !["<","<=",">",">="].includes(a.condition.op)) {
+    // identifier prob
+    if(a.condition.constructor !== ast.BinaryExp || ![Number, BigInt].includes(a.condition.right.constructor) || a.condition.left.name !== a.identifier.name || !["<","<=",">",">="].includes(a.condition.op)) {
       return a
     }
-    if(a.sliceCrement.constructor === ast.UnaryExpression && a.sliceCrement.operand.name === a.identifier){
+    if(a.sliceCrement.constructor === ast.UnaryExpression && a.sliceCrement.operand.name === a.identifier.name){
       if(a.sliceCrement.op === "++" && ["<", "<="].includes(a.condition.op)) {
         a.canUnroll = true
       } else if(a.sliceCrement.op === "--" && [">", ">="].includes(a.condition.op)) {
@@ -238,7 +243,7 @@ const optimizers = {
     p.argument = optimize(p.argument)
     return p
   },
-  typeOfStatement(p) {
+  TypeOfOperator(p) {
     p.argument = optimize(p.argument)
     return p
   },
@@ -319,25 +324,23 @@ const optimizers = {
     p.value = optimize(p.value)
   },
   MemberExpression(e) {
-    e.vari = optimize(e.vari)
+    e.array = optimize(e.array)
     // doesnt need to check the subscript because parser forces it to be a number
     return e
   },
   PropertyExpression(e) {
-    e.var1 = optimize(e.var1)
-    e.var2 = optimize(e.var2)
+    e.object = optimize(e.object)
+    e.field = optimize(e.field)
     return e
   },
-  // IdentifierExpression(e) {
-  //   // Id expressions get "replaced" with the variables they refer to
-  //   return e
-  // },
-  // test when doing for statement
   Continue(s) {
     return s
   },
   Break(s) {
     return s
+  },
+  IdentifierExpression(e) {
+    return e
   },
   Bool(e) {
     return e
