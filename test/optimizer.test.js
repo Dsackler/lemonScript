@@ -4,6 +4,8 @@ import * as ast from "../src/ast.js"
 
 // Make some test cases easier to read
 const x = new ast.Variable("x", false)
+const y = new ast.Variable("y", false)
+const z = new ast.Variable("z", false)
 const i = new ast.Variable("i", false)
 const sweet = new ast.Bool("sweet", true, "taste")
 const sour = new ast.Bool("sour", false, "taste")
@@ -12,18 +14,8 @@ const xmm = new ast.UnaryExpression("--", x, false)
 const return1p1 = new ast.ReturnStatement(new ast.BinaryExp(1, "+", 1))
 const return2 = new ast.ReturnStatement(2)
 const returnShort = new ast.ShortReturnStatement()
-const forArgs = new ast.ForArgs("i", 0, new ast.BinaryExp(i, "<", 3), new ast.UnaryExpression("++", i, false))
-const forArgsWithoutUnrolling = new ast.ForArgs("i", 0, new ast.BinaryExp(10, ">=", i), new ast.BinaryExp(i, "+=", 2))
-const forShort = new ast.ForStatement(forArgsWithoutUnrolling, [new ast.Continue()])
-const forArgsWithoutUnrollingOptimized = new ast.ForArgs("i", 0, new ast.BinaryExp(10, ">=", i), new ast.Assignment(i, new ast.BinaryExp(i, "+", 2)))
-const forShortOptimized = new ast.ForStatement(forArgsWithoutUnrollingOptimized, [new ast.Continue()])
 
-const forShortPrint = new ast.ForStatement(forArgs, [new ast.PrintStatement(i), new ast.PrintStatement(new ast.BinaryExp(i, "+", 1))])
-const forShortTypeOf = new ast.ForStatement(forArgs, [new ast.typeOfStatement(i)])
-// const forShortPrint = new ast.ForStatement(forArgs, [new ast.PrintStatement(i)])
-// const forShortPrint = new ast.ForStatement(forArgs, [new ast.PrintStatement(i)])
-const loopUnrollingShortPrint = [new ast.PrintStatement("0"), new ast.PrintStatement("1"), new ast.PrintStatement("1"), new ast.PrintStatement("2"), new ast.PrintStatement("2"), new ast.PrintStatement("3")]
-const loopUnrollingShorttypeOf = [new ast.typeOfStatement(0), new ast.typeOfStatement(1), new ast.typeOfStatement(2)]
+
 const onePlusTwo = new ast.BinaryExp(1, "+", 2)
 const intFun = body => new ast.FunctionDec("f", ast.Type.INT, [], body)
 const switch1p2 = (...cases) => new ast.SwitchStatement(onePlusTwo, cases, return1p1)
@@ -33,16 +25,60 @@ const ifStatementsXmm = (...ifcases) => new ast.IfStatement(ifcases, xmm)
 const ifCase = exp => new ast.IfCase(exp, [])
 const program = (...statements) => new ast.Program(statements)
 
-// const callIdentity = args => new ast.Call(identity, args)
 const or = (...d) => d.reduce((x, y) => new ast.BinaryExp(x, "||", y))
 const and = (...c) => c.reduce((x, y) => new ast.BinaryExp(x, "&&", y))
 const less = (x, y) => new ast.BinaryExp(x, "<", y)
 const eq = (x, y) => new ast.BinaryExp(x, "==", y)
-// const times = (x, y) => new ast.BinaryExp("*", x, y)
 const neg = x => new ast.UnaryExpression("-", x, true)
 const array = (...elements) => new ast.ArrayLit(elements)
 const obj = (...keyValuePairs) => new ast.ObjLit(keyValuePairs)
 const objPair = (key, value) => new ast.ObjPair(key, value)
+
+// nounrolling
+const forArgs = new ast.ForArgs("i", 0, new ast.BinaryExp(10, ">=", i), new ast.BinaryExp(i, "+=", 2))
+const forShort = new ast.ForStatement(forArgs, [new ast.Continue()])
+
+const forArgsOptimized = new ast.ForArgs("i", 0, new ast.BinaryExp(10, ">=", i), new ast.Assignment(i, new ast.BinaryExp(i, "+", 2)))
+const forShortOptimized = new ast.ForStatement(forArgsOptimized, [new ast.Continue()])
+
+const forArgs2 = new ast.ForArgs("i", 0, new ast.BinaryExp(10, ">=", i), new ast.BinaryExp(i, "-=", 2))
+const forShort2 = new ast.ForStatement(forArgs2, [new ast.Break()])
+
+const forArgsOptimized2 = new ast.ForArgs("i", 0, new ast.BinaryExp(10, ">=", i), new ast.Assignment(i, new ast.BinaryExp(i, "-", 2)))
+const forShortOptimized2 = new ast.ForStatement(forArgsOptimized2, [new ast.Break()])
+
+const forArgspp = new ast.ForArgs("i", 0, new ast.BinaryExp(i, "<", 3), new ast.UnaryExpression("++", i, false))
+const forArgsmm = new ast.ForArgs("i", 3, new ast.BinaryExp(i, ">", 0), new ast.UnaryExpression("--", i, false))
+const forWhile = new ast.ForStatement(forArgspp, [new ast.WhileStatement(sweet, [])])
+const forUnary = new ast.ForStatement(forArgspp, [new ast.UnaryExpression("++", i, false)])
+const forAssignment = new ast.ForStatement(forArgspp, [new ast.Assignment(i, 1)])
+
+// unrolling
+// print and typeof
+const forShortPrint = new ast.ForStatement(forArgspp, [new ast.PrintStatement(i), new ast.PrintStatement(new ast.BinaryExp(i, "+", 1))])
+const forShortTypeOf = new ast.ForStatement(forArgsmm, [new ast.typeOfStatement(i)])
+const loopUnrollingShortPrint = [new ast.PrintStatement(0), new ast.PrintStatement(1), new ast.PrintStatement(1), new ast.PrintStatement(2), new ast.PrintStatement(2), new ast.PrintStatement(3)]
+const loopUnrollingShorttypeOf = [new ast.typeOfStatement(3), new ast.typeOfStatement(2), new ast.typeOfStatement(1)]
+
+// with arrays and objects
+const forShortwArrObjBody = [new ast.VariableDecInit("slice[]", x, new ast.ArrayLit([1,2,i])), new ast.VariableDecInit("<slice, slice>", y, new ast.ObjLit([new ast.ObjPair(1,i)])), new ast.Assignment(z, i)]
+const forShortwArrObj = new ast.ForStatement(forArgspp, forShortwArrObjBody)
+const forShortwArrObjOptimized = [
+  new ast.VariableDecInit("slice[]", x, new ast.ArrayLit([1,2,0])), new ast.VariableDecInit("<slice, slice>", y, new ast.ObjLit([new ast.ObjPair(1,0)])), new ast.Assignment(z, 0),
+  new ast.VariableDecInit("slice[]", x, new ast.ArrayLit([1,2,1])), new ast.VariableDecInit("<slice, slice>", y, new ast.ObjLit([new ast.ObjPair(1,1)])), new ast.Assignment(z, 1),
+  new ast.VariableDecInit("slice[]", x, new ast.ArrayLit([1,2,2])), new ast.VariableDecInit("<slice, slice>", y, new ast.ObjLit([new ast.ObjPair(1,2)])), new ast.Assignment(z, 2),
+]
+
+// calls and unary
+const forShortBodyCall = [new ast.Call("f", [new ast.UnaryExpression("-",i,true)])]
+const forShortCall = new ast.ForStatement(forArgspp, forShortBodyCall)
+const forShortCallOptimized = [new ast.Call("f", [-0]),new ast.Call("f", [-1]),new ast.Call("f", [-2])]
+
+// calls and unary
+// const forShortBodyCall = [new ast.Call("f", [new ast.UnaryExpression("-",i,true)])]
+// const forShortCall = new ast.ForStatement(forArgspp, forShortBodyCall)
+// const forShortCallOptimized = [new ast.Call("f", [-0]),new ast.Call("f", [-1]),new ast.Call("f", [-2])]
+
 
 // const emptyArray = new ast.EmptyArray(ast.Type.INT)
 // const sub = (a, e) => new ast.SubscriptExpression(a, e)
@@ -159,9 +195,29 @@ const tests = [
     program(new ast.VariableDecInit(ast.Type.BOOLEAN, "y", sour)),
   ],
   [
-    "optimizes in simple for",
+    "optimizes in simple for without unrolling using += in sliceCrement",
     forShort,
     forShortOptimized
+  ],
+  [
+    "optimizes in simple for without unrolling using -= in sliceCrement",
+    forShort2,
+    forShortOptimized2
+  ],
+  [
+    "optimizes in simple for without unrolling with while",
+    forWhile,
+    forWhile
+  ],
+  [
+    "optimizes in simple for without unrolling with unary",
+    forUnary,
+    forUnary
+  ],
+  [
+    "optimizes in simple for without unrolling with Assignment",
+    forAssignment,
+    forAssignment
   ],
   [
     "optimizes in simple for print",
@@ -173,29 +229,16 @@ const tests = [
     forShortTypeOf,
     loopUnrollingShorttypeOf
   ],
-
-  // ["optimizes in arguments", callIdentity([times(3, 5)]), callIdentity([15])],
-  //   [
-  //     "passes through nonoptimizable constructs",
-  //     ...Array(2).fill([
-  //       new ast.Program([new ast.ShortReturnStatement()]),
-  //       new ast.VariableDeclaration("x", true, "z"),
-  //       new ast.TypeDeclaration([new ast.Field("x", ast.Type.INT)]),
-  //       new ast.Assignment(x, new ast.BinaryExp("*", x, "z")),
-  //       new ast.Assignment(x, new ast.UnaryExpression("not", x)),
-  //       new ast.Call(identity, new ast.MemberExpression(x, "f")),
-  //       new ast.VariableDeclaration("q", false, new ast.EmptyArray(ast.Type.FLOAT)),
-  //       new ast.VariableDeclaration("r", false, new ast.EmptyOptional(ast.Type.INT)),
-  //       new ast.WhileStatement(true, [new ast.BreakStatement()]),
-  //       new ast.RepeatStatement(5, [new ast.ReturnStatement(1)]),
-  //       conditional(x, 1, 2),
-  //       unwrapElse(some(x), 7),
-  //       new ast.IfStatement(x, [], []),
-  //       new ast.ShortIfStatement(x, []),
-  //       new ast.ForRangeStatement(x, 2, "..<", 5, []),
-  //       new ast.ForStatement(x, array(1, 2, 3), []),
-  //     ]),
-  //   ],
+  [
+    "optimizes in simple for with arrays and dictionaries",
+    forShortwArrObj,
+    forShortwArrObjOptimized
+  ],
+  [
+    "optimizes in simple for with calls and unary exps",
+    forShortCall,
+    forShortCallOptimized
+  ],
 ]
 
 describe("The optimizer", () => {
@@ -203,6 +246,7 @@ describe("The optimizer", () => {
     it(`${scenario}`, () => {
       // console.log(before)
       // console.log(optimize(before))
+      // console.log(after)
       assert.deepEqual(optimize(before), after)
     })
   }

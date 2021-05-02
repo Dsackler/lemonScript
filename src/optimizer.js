@@ -111,16 +111,17 @@ const optimizers = {
       const checkBody = (body) => {
         for(let statementIndex = 0; statementIndex < body.length; statementIndex++){
           if(body[statementIndex].constructor === ast.Assignment){
-            if(s.forArgs.identifier === body[statementIndex].source) {
+            if(s.forArgs.identifier === body[statementIndex].source.name) {
               return false
             }
           }
           if(body[statementIndex].constructor === ast.UnaryExpression && ["++", "--"].includes(body[statementIndex].op)){
-            if(s.forArgs.identifier === body[statementIndex].operrand) {
+            if(s.forArgs.identifier === body[statementIndex].operand.name) {
               return false
             }
           }
-          if([ast.FunctionDec].includes(body[statementIndex].constructor)){
+          // because functions can have shadow variables
+          if([ast.FunctionDec, ast.WhileStatement, ast.IfStatement, ast.SwitchStatement, ast.ForStatement].includes(body[statementIndex].constructor)){
             return false
           }
         }
@@ -129,39 +130,13 @@ const optimizers = {
 
       const newStatement = (statement, identifier, value) => {
         if(statement.constructor === ast.Variable){
-          return value
-        }
-        if(statement.constructor === Array){
-          return makeBody(statement, identifier, value)
+          if (statement.name === identifier) return value
         }
         if(statement.constructor === ast.VariableDecInit){
           return new ast.VariableDecInit(statement.type, statement.variable, newStatement(statement.init, identifier, value), statement.con)
         }
         if(statement.constructor === ast.Assignment){
-          return new ast.Assignment(statement.source, newStatement(statement.target,identifier, value), statement.con)
-        }
-        if(statement.constructor === ast.IfStatement){
-          let cases = []
-          statement.cases.forEach(ifCase => {
-            cases.push(newStatement(ifCase, identifier, value))
-          });
-          return new ast.IfStatement(cases, makeBody(statement.elseBlock, value))
-        }
-        if(statement.constructor === ast.IfCase){
-          return new ast.IfCase(newStatement(statement.condition, identifier, value), statement.body)
-        }
-        if(statement.constructor === ast.WhileStatement){
-          return new ast.WhileStatement(newStatement(statement.condition, identifier, value), statement.body)
-        }
-        if(statement.constructor === ast.SwitchStatement){
-          let cases = []
-          statement.cases.forEach((lemonCase) => {
-            cases.push(newStatement(lemonCase, identifier, value))
-          })
-          return new ast.SwitchStatement(newStatement(statement.expression, identifier, value), cases, statement.body)
-        }
-        if(statement.constructor === ast.LemonCase){
-          return new ast.LemonCase(newStatement(statement.caseExp, identifier, value), statement.statements)
+          return new ast.Assignment(statement.source, newStatement(statement.target, identifier, value))
         }
         if(statement.constructor === ast.Call){
           let args = []
@@ -212,13 +187,19 @@ const optimizers = {
       if(checkBody(s.body)){
         let newBody = []
         let bound = s.forArgs.condition.right
-        if("<"){
+        if(s.forArgs.condition.op === "<"){
           bound--
-        } else if(">"){
+        } else if(s.forArgs.condition.op === ">"){
           bound++
         }
-        for(let i = s.forArgs.exp; i <= bound; i++){
-          newBody.push(makeBody(s.body, s.forArgs.identifier, i))
+        if(s.forArgs.sliceCrement.op === "++"){
+          for(let i = s.forArgs.exp; i <= bound; i++){
+            newBody.push(makeBody(s.body, s.forArgs.identifier, i))
+          }
+        } else {
+          for(let i = s.forArgs.exp; i >= bound; i--){
+            newBody.push(makeBody(s.body, s.forArgs.identifier, i))
+          }
         }
         return optimize(newBody)
       }
@@ -309,7 +290,7 @@ const optimizers = {
       else if (e.op === "-=") return new ast.Assignment(e.left, new ast.BinaryExp(e.left, "-", e.right))
     } else if (e.op === "+" && e.left.constructor === String) {
       return e.left + e.right
-    } 
+    }
     return e
   },
   UnaryExpression(e) {

@@ -181,8 +181,8 @@ class Context {
     s.source = this.analyze(s.source)
     s.target = this.analyze(s.target)
 
-    check(s.source).isAssignableTo(s.target.type)
-    check(s.target).isNotAConstant()
+    check(s.target).isAssignableTo(s.source.type)
+    check(s.source).isNotAConstant()
     return s
   }
   FunctionDec(d) {

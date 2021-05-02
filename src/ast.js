@@ -53,7 +53,7 @@ export class VariableDec {
 }
 
 export class Assignment {
-  constructor(target, source) {
+  constructor(source, target) {
     Object.assign(this, { target, source })
   }
 }

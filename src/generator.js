@@ -55,7 +55,7 @@ export default function generate(program) {
     },
     Assignment(s) {
       expStandalone = false
-      output.push(`${gen(s.target)} = ${gen(s.source)};`)
+      output.push(`${gen(s.source)} = ${gen(s.target)};`)
       expStandalone = true
     },
 
